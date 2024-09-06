@@ -1,0 +1,165 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org"
+      xmlns:sec="http://www.thymeleaf.org/thymeleaf-extras-springsecurity6">
+<head>
+    <th:block th:insert="~{/reusable/admin_panel_head :: admin_panel_links}"></th:block>
+
+</head>
+<body>
+<div th:fragment="sidebar" class="sidebar" sec:authorize="isAuthenticated()">
+    <div class="sidebar-inner">
+        <a class="logo-link" th:href="@{/static}">
+            <div class="logo-wrapper">
+                <i class="fa-solid fa-calendar-days fa-lg"></i>
+                <span class="company-name"> UniSchedule</span>
+            </div>
+        </a>
+        <nav class="sidebar-nav">
+            <ul>
+                <li class="nav-link sidebar-nav-item" sec:authorize="hasAnyRole('ROLE_TEACHER')">
+                    <a th:href="@{/students/}">
+                        <i class="fa-solid fa-user-graduate"></i>
+                        <span class="nav-text">
+                                        Students
+                                    </span>
+                    </a>
+                </li>
+                <li class="nav-link sidebar-nav-item" sec:authorize="hasAnyRole('ROLE_STUDENT','ROLE_TEACHER')">
+                    <a th:href="@{/teachers/}">
+                        <i class="fa-solid fa-person-chalkboard"></i>
+                        <span class="nav-text">
+                                        Teachers
+                                    </span>
+                    </a>
+                </li>
+                <li class="nav-link sidebar-nav-item" sec:authorize="hasRole('ROLE_TEACHER')">
+                    <a th:href="@{/teachers/my-groups}">
+                        <i class="fa-solid fa-user-group"></i>                        <span class="nav-text">
+                            My groups
+                        </span>
+                    </a>
+                </li>
+                <li class="nav-link sidebar-nav-item" sec:authorize="hasAnyRole('ROLE_TEACHER')">
+                    <a th:href="@{/groups/}">
+                        <i class="fa-solid fa-users-rectangle"></i>
+                        <span class="nav-text">
+                                        Groups
+                                    </span>
+                    </a>
+                </li>
+                <li class="nav-link sidebar-nav-item" sec:authorize="hasAnyRole('ROLE_TEACHER','ROLE_STUDENT')">
+                    <a th:href="@{/specialities/}">
+                        <i class="fa-solid fa-screwdriver-wrench fa-lg"></i>
+                        <span class="nav-text">
+                                        Specialities
+                                    </span>
+                    </a>
+                </li>
+                <li class="nav-link sidebar-nav-item" sec:authorize="hasAnyRole('ROLE_TEACHER','ROLE_STUDENT')">
+                    <a th:href="@{/disciplines/}">
+                        <i class="fa-solid fa-book"></i>
+                        <span class="nav-text">
+                                        Disciplines
+                                    </span>
+                    </a>
+                </li>
+                <li class="nav-link sidebar-nav-item" sec:authorize="hasAnyRole('ROLE_TEACHER','ROLE_STUDENT')">
+                    <a th:href="@{/lesson-types/}">
+                        <i class="fa-solid fa-shapes"></i>
+                        <span class="nav-text">
+                                        Lesson types
+                                    </span>
+                    </a>
+                </li>
+                <li class="nav-link sidebar-nav-item" sec:authorize="hasAnyRole('ROLE_TEACHER','ROLE_STUDENT')">
+                    <a th:href="@{/lessons/}">
+                        <i class="fa-solid fa-business-time"></i>
+                        <span class="nav-text">
+                                        Lessons
+                                    </span>
+                    </a>
+                </li>
+                <li class="nav-link sidebar-nav-item" sec:authorize="hasRole('ROLE_STUDENT')">
+                    <a th:href="@{/students/my-group}">
+                        <i class="fa-solid fa-users-rectangle"></i>
+                        <span class="nav-text">
+                            My group
+                        </span>
+                    </a>
+                </li>
+
+
+
+
+
+                <li class="nav-link sidebar-nav-item" sec:authorize="hasRole('ROLE_ADMIN')">
+                    <a th:href="@{/administrators/admins}">
+                        <i class="fa-solid fa-crown"></i>
+                        <span class="nav-text">
+                            Administrators
+                        </span>
+                    </a>
+                </li>
+                <li class="nav-link sidebar-nav-item" sec:authorize="hasRole('ROLE_ADMIN')">
+                    <a th:href="@{/administrators/students}">
+                        <i class="fa-solid fa-user-graduate"></i>
+                        <span class="nav-text">
+                                        Students
+                                    </span>
+                    </a>
+                </li>
+                <li class="nav-link sidebar-nav-item" sec:authorize="hasRole('ROLE_ADMIN')">
+                    <a th:href="@{/administrators/teachers}">
+                        <i class="fa-solid fa-person-chalkboard"></i>
+                        <span class="nav-text">
+                                        Teachers
+                                    </span>
+                    </a>
+                </li>
+                <li class="nav-link sidebar-nav-item" sec:authorize="hasRole('ROLE_ADMIN')">
+                    <a th:href="@{/administrators/groups}">
+                        <i class="fa-solid fa-users-rectangle"></i>
+                        <span class="nav-text">
+                                        Groups
+                                    </span>
+                    </a>
+                </li>
+                <li class="nav-link sidebar-nav-item" sec:authorize="hasRole('ROLE_ADMIN')">
+                    <a th:href="@{/administrators/specialities}">
+                        <i class="fa-solid fa-screwdriver-wrench fa-lg"></i>
+                        <span class="nav-text">
+                                        Specialities
+                                    </span>
+                    </a>
+                </li>
+                <li class="nav-link sidebar-nav-item" sec:authorize="hasRole('ROLE_ADMIN')">
+                    <a th:href="@{/administrators/disciplines}">
+                        <i class="fa-solid fa-book"></i>
+                        <span class="nav-text">
+                                        Disciplines
+                                    </span>
+                    </a>
+                </li>
+                <li class="nav-link sidebar-nav-item" sec:authorize="hasRole('ROLE_ADMIN')">
+                    <a th:href="@{/administrators/lesson-types}">
+                        <i class="fa-solid fa-shapes"></i>
+                        <span class="nav-text">
+                                        Lesson types
+                                    </span>
+                    </a>
+                </li>
+                <li class="nav-link sidebar-nav-item" sec:authorize="hasRole('ROLE_ADMIN')">
+                    <a th:href="@{/administrators/lessons}">
+                        <i class="fa-solid fa-business-time"></i>
+                        <span class="nav-text">
+                                        Lessons
+                                    </span>
+                    </a>
+                </li>
+
+            </ul>
+        </nav>
+    </div>
+</div>
+</body>
+</html>

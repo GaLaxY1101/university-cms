@@ -1,0 +1,30 @@
+package com.foxminded.korniichyk.university.model;
+
+import jakarta.persistence.*;
+import lombok.Data;
+import lombok.EqualsAndHashCode;
+import lombok.NoArgsConstructor;
+import lombok.ToString;
+
+@NoArgsConstructor
+@Data
+@EqualsAndHashCode
+@ToString
+@Entity
+@Table(name = "admins",
+        uniqueConstraints = {
+                @UniqueConstraint(name = "uk_admins_user_id", columnNames = "user_id")
+        }
+)
+public class Admin {
+
+    @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    private int id;
+
+    @OneToOne(cascade = CascadeType.ALL)
+    @JoinColumn(name = "user_id",
+            foreignKey = @ForeignKey(name = "fk_admins_user")
+    )
+    private User user;
+}

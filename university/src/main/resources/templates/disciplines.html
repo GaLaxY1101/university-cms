@@ -1,0 +1,136 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org" xmlns:sec="http://www.thymeleaf.org/thymeleaf-extras-springsecurity6">
+<head>
+    <th:block th:insert="~{/reusable/admin_panel_head :: admin_panel_links}"></th:block>
+
+</head>
+<body>
+
+<nav th:replace="~{reusable/sidebar :: sidebar}"></nav>
+
+</div>
+<div class="main-content">
+    <div th:replace="~{home :: greeting}"></div>
+    <header class="dashboard-header">
+        <span>Disciplines dashboard</span>
+        <div class="input-wrapper">
+            <div class="input-container">
+                <i class="fas fa-search"></i>
+                <input type="text" placeholder="Search...">
+            </div>
+
+            <button type="button" sec:authorize="hasRole('ROLE_ADMIN')">
+                Add
+                <i class="fa-solid fa-plus"></i>
+            </button>
+            <div class="sort-by-wrapper">
+                <span>Sort by</span>
+                <span>▼</span>
+            </div>
+            <div class="filter-wrapper">
+                <span>Filter</span>
+                <i class="fa-solid fa-sliders fa-sm"></i>
+            </div>
+        </div>
+
+    </header>
+    <div class="list-wrapper">
+        <div class="list" th:if="${totalElements != 0}">
+            <header>Disciplines list</header>
+            <table>
+
+                <thead>
+                <tr>
+                    <th>Id</th>
+                    <th>Name</th>
+                    <th>Description</th>
+                    <th></th>
+                </tr>
+                </thead>
+                <tbody>
+                <tr th:each="discipline : ${disciplines}">
+                    <td th:text="${discipline.id}"/>
+                    <td th:text="${discipline.name}"/>
+                    <td th:text="${discipline.description} ?: 'Not set'"></td>
+                    <td sec:authorize="hasRole('ROLE_ADMIN')">
+                        <i class="fa-regular fa-pen-to-square"></i>
+                        <i class="fa-solid fa-trash"></i>
+                    </td>
+                </tr>
+                </tbody>
+            </table>
+        </div>
+
+        <div class="pagination">
+            <div>
+                <a th:if="${currentPage > 0}" th:href="@{/disciplines/(pageNumber=${currentPage - 1})}">
+                    <i class="fa-solid fa-arrow-left"></i>
+                </a>
+                <a th:unless="${currentPage > 0}">
+                    <i class="fa-solid fa-arrow-left" style="color: #a1a1a1;"></i>
+                </a>
+            </div>
+
+            <ul class="pagination" th:if="${totalPages <= 7}">
+                <li th:each="i : ${#numbers.sequence(1, totalPages)}">
+
+                    <a th:text="${i}" th:id="${i == currentPage + 1 ? 'selected-page-number' : ''}"
+                       th:href="@{/disciplines/(pageNumber=${i - 1})}"></a>
+                </li>
+            </ul>
+            <ul class="pagination" th:if="${totalPages > 7 and currentPage < 7}">
+                <li th:each="i : ${#numbers.sequence(1, 7)}">
+
+                    <a th:text="${i}" th:id="${i == currentPage + 1 ? 'selected-page-number' : ''}"
+                       th:href="@{/disciplines/(pageNumber=${i - 1})}"></a>
+                </li>
+                <li>
+                    <a th:text="..." th:href="@{/disciplines/(pageNumber=7)}" ></a>
+                </li>
+                <li>
+                    <a th:text="${totalPages}" th:href="@{/disciplines/(pageNumber=${totalPages - 1})}" ></a>
+                </li>
+            </ul>
+            <ul class="pagination" th:if="${totalPages > 7 and currentPage > 6 and totalPages - currentPage > 7 } ">
+                <li>
+                    <a th:text="1" th:href="@{/disciplines/(pageNumber=0)}"></a>
+                </li>
+                <li>
+                    <a th:text="..." th:href="@{/disciplines/(pageNumber=${currentPage - 3})}" ></a>
+                </li>
+                <li th:each="i : ${#numbers.sequence(currentPage - 1, currentPage + 3)}">
+                    <a th:text="${i}" th:id="${i == currentPage + 1 ? 'selected-page-number' : ''}"
+                       th:href="@{/disciplines/(pageNumber=${i - 1})}"></a>
+                </li>
+                <li>
+                    <a th:text="..." th:href="@{/disciplines/(pageNumber=${currentPage + 3})}"></a>
+                </li>
+                <li>
+                    <a th:text="${totalPages}" th:href="@{/disciplines/(pageNumber=${totalPages - 1})}"></a>
+                </li>
+            </ul>
+            <ul class = "pagination" th:if="${totalPages > 7 and currentPage > 6 and totalPages - currentPage <= 7}">
+                <li>
+                    <a th:text="1" th:href="@{/disciplines/(pageNumber=0)}"></a>
+                </li>
+                <li>
+                    <a th:text="..." th:href="@{/disciplines/(pageNumber=${totalPages - 7})}" ></a>
+                <li th:each="i : ${#numbers.sequence(totalPages - 6, totalPages)}">
+                    <a th:text="${i}" th:id="${i == currentPage + 1 ? 'selected-page-number' : ''}"
+                       th:href="@{/disciplines/(pageNumber=${i - 1})}"></a>
+                </li>
+                </li>
+            </ul>
+            <div>
+                <a th:if="${currentPage < totalPages - 1}" th:href="@{/disciplines/(pageNumber=${currentPage + 1})}">
+                    <i class="fa-solid fa-arrow-right"></i>
+                </a>
+                <a th:unless="${currentPage < totalPages - 1}">
+                    <i class="fa-solid fa-arrow-right" style="color: #a1a1a1"></i>
+                </a>
+            </div>
+        </div>
+    </div>
+</div>
+</body>
+</html>

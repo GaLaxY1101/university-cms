@@ -1,0 +1,49 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org"
+      xmlns:sec="http://www.thymeleaf.org/thymeleaf-security">
+<head>
+    <th:block th:insert="~{/reusable/admin_panel_head :: admin_panel_links}"></th:block>
+
+</head>
+<body>
+
+<nav th:replace="~{reusable/sidebar :: sidebar}"></nav>
+
+<div class = "main-content">
+    <div sec:authorize="isAuthenticated()" th:fragment="greeting" class="greeting-wrapper">
+        <div class="greeting-left">
+            <span>Hello, <span th:text="${firstName}"/></span>
+            <form th:action="@{/logout}" method="post">
+                <button type="submit" class="logout-button">
+                    Logout
+                </button>
+            </form>
+        </div>
+        <div class="greeting-right">
+            <i class="fa-solid fa-user-tie fa-2x"></i>
+            <div class="user-wrapper">
+                <span class = "user-name" th:text="${firstName +' '+ lastName}" th:method="post" ></span>
+
+                <span class = "user-position" sec:authorize="hasRole('ROLE_ADMIN')">Admin</span>
+                <span class = "user-position" sec:authorize="hasRole('ROLE_TEACHER')">Teacher</span>
+                <span class = "user-position" sec:authorize="hasRole('ROLE_STUDENT')">Student</span>
+            </div>
+
+        </div>
+
+
+    </div>
+    <div class="welcome-container-wrapper" sec:authorize="!isAuthenticated()">
+        <div class="welcome-container" >
+            <h1>Welcome to UniSchedule</h1>
+            <p>UniSchedule is your go-to system for managing university schedules.</p>
+            <p>To get started, please contact your curator to receive your login credentials.</p>
+            <p>Already have your credentials? <a th:href="@{/login}">Log in</a> now to access your schedule.</p>
+        </div>
+    </div>
+
+</div>
+
+
+</body>
+</html>

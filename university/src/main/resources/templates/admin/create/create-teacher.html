@@ -1,0 +1,116 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org"
+      xmlns:sec="http://www.thymeleaf.org/thymeleaf-extras-springsecurity6">
+<head>
+  <th:block th:insert="~{/reusable/admin_panel_head :: admin_panel_links}"></th:block>
+  <link rel="stylesheet" th:href="@{/styles/add_entity_form.css}"/>
+  <link href="https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/css/select2.min.css" rel="stylesheet"/>
+
+
+</head>
+<body>
+
+<nav th:replace="~{reusable/sidebar :: sidebar}"></nav>
+
+</div>
+<div class="main-content">
+  <div th:replace="~{home :: greeting}"></div>
+  <div class="list-wrapper">
+    <div class="create-teacher-form-wrapper">
+      <h2>Create teacher</h2>
+      <form  th:action="@{/administrators/teachers/create-page}" th:object="${teacherRegistrationDto}" method="post">
+        <div class = "label-and-input-wrapper">
+          <label for="firstName">First name</label>
+          <div class = "registration-input-wrapper">
+            <input type="text"  id="firstName" th:field="*{user.firstName}" />
+            <div class="error-text" th:if="${#fields.hasErrors('user.firstName')}" th:errors="*{user.firstName}"></div>
+          </div>
+        </div>
+
+        <div class = "label-and-input-wrapper">
+          <label for="lastName">Last name</label>
+          <div class = "registration-input-wrapper">
+            <input type="text" id="lastName" th:field="*{user.lastName}" />
+            <div class="error-text" th:if="${#fields.hasErrors('user.lastName')}" th:errors="*{user.lastName}"></div>
+          </div>
+        </div>
+
+        <div class = "label-and-input-wrapper">
+          <label for="email">Email</label>
+          <div class = "registration-input-wrapper">
+            <input type="email" id="email" th:field="*{user.email}" />
+            <div class="error-text" th:if="${#fields.hasErrors('user.email')}" th:errors="*{user.email}"></div>
+          </div>
+        </div>
+
+        <div class = "label-and-input-wrapper">
+          <label for="phoneNumber">Phone number</label>
+          <div class = "registration-input-wrapper">
+            <input type="text"  id="phoneNumber" th:field="*{user.phoneNumber}" />
+            <div class="error-text" th:if="${#fields.hasErrors('user.phoneNumber')}" th:errors="*{user.phoneNumber}"></div>
+          </div>
+        </div>
+
+        <div class = "label-and-input-wrapper">
+          <label for="disciplines">Disciplines</label>
+          <select id="disciplines" th:field="*{disciplineIds}" multiple="multiple" class="form-control">
+            <option th:each="discipline : ${disciplines}"
+                    th:value="${discipline.id}"
+                    th:text="${discipline.name}">
+            </option>
+          </select>
+          <div class="error-text" th:if="${#fields.hasErrors('disciplineIds')}" th:errors="*{disciplineIds}"></div>
+        </div>
+
+        <div class = "label-and-input-wrapper">
+          <label for="dateOfBirth" >Date of birth</label>
+          <div class = "registration-input-wrapper">
+            <input type="date" id="dateOfBirth" max="9999-12-31" th:field="*{user.dateOfBirth}" />
+            <div class="error-text" th:if="${#fields.hasErrors('user.dateOfBirth')}" th:errors="*{user.dateOfBirth}"></div>
+          </div>
+        </div>
+
+        <div class = "label-and-input-wrapper">
+          <label for="password">Password</label>
+          <div class = "registration-input-wrapper">
+            <input type="password"  id="password" th:field="*{user.password}" />
+            <div  class="error-text" th:if="${#fields.hasErrors('user.password')}" th:errors="*{user.password}"></div>
+          </div>
+        </div>
+
+        <div class = "label-and-input-wrapper">
+          <label for="confirmPassword" >Confirm Password</label>
+          <div class = "registration-input-wrapper">
+            <input type="password"  id="confirmPassword" th:field="*{user.confirmPassword}" />
+            <div class="error-text" th:if="${#fields.hasErrors('user.confirmPassword')}" th:errors="*{user.confirmPassword}"></div>
+          </div>
+        </div>
+
+        <div>
+
+          <button type="submit" class="create-user-button">Create</button>
+
+        </div>
+      </form>
+
+    </div>
+  </div>
+
+  <!-- Include jQuery (required for Select2) -->
+  <script src="https://cdn.jsdelivr.net/npm/jquery@3.5.1/dist/jquery.min.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/js/select2.min.js"></script>
+  <script>
+    $(document).ready(function () {
+      $('#disciplines').select2({
+        placeholder: 'Select discipline(s)',
+        allowClear: true
+      });
+    });
+  </script>
+
+
+
+  </div>
+</div>
+</body>
+</html>

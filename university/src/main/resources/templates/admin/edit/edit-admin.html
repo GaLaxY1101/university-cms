@@ -1,0 +1,80 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org"
+      xmlns:sec="http://www.thymeleaf.org/thymeleaf-extras-springsecurity6">
+<head>
+  <th:block th:insert="~{/reusable/admin_panel_head :: admin_panel_links}"></th:block>
+  <link rel="stylesheet" th:href="@{/styles/add_entity_form.css}"/>
+
+
+</head>
+<body>
+
+<nav th:replace="~{reusable/sidebar :: sidebar}"></nav>
+
+<div>
+  <div class="main-content">
+    <div th:replace="~{home :: greeting}"></div>
+    <div class="list-wrapper">
+      <div class="create-teacher-form-wrapper">
+        <h2>Edit administrator</h2>
+        <form th:action="@{/administrators/admins/edit}" th:object="${adminUpdateDto}" method="post">
+          <input type="hidden" th:name="${_csrf.parameterName}" th:value="${_csrf.token}" />
+          <div class="label-and-input-wrapper">
+            <label for="firstName">First name</label>
+            <div class="registration-input-wrapper">
+              <input type="text" id="firstName" th:field="*{user.firstName}" />
+              <div class="error-text" th:if="${#fields.hasErrors('user.firstName')}"
+                   th:errors="*{user.firstName}"></div>
+            </div>
+          </div>
+
+          <div class="label-and-input-wrapper">
+            <label for="lastName">Last name</label>
+            <div class="registration-input-wrapper">
+              <input type="text" id="lastName" th:field="*{user.lastName}"/>
+              <div class="error-text" th:if="${#fields.hasErrors('user.lastName')}"
+                   th:errors="*{user.lastName}"></div>
+            </div>
+          </div>
+
+          <div class="label-and-input-wrapper">
+            <label for="email">Email</label>
+            <div class="registration-input-wrapper">
+              <input type="email" id="email" th:field="*{user.email}"/>
+              <div class="error-text" th:if="${#fields.hasErrors('user.email')}"
+                   th:errors="*{user.email}"></div>
+            </div>
+          </div>
+
+          <div class="label-and-input-wrapper">
+            <label for="phoneNumber">Phone number</label>
+            <div class="registration-input-wrapper">
+              <input type="text" id="phoneNumber" th:field="*{user.phoneNumber}"/>
+              <div class="error-text" th:if="${#fields.hasErrors('user.phoneNumber')}"
+                   th:errors="*{user.phoneNumber}"></div>
+            </div>
+          </div>
+
+          <div class="label-and-input-wrapper">
+            <label for="dateOfBirth">Date of birth</label>
+            <div class="registration-input-wrapper">
+              <input type="date" id="dateOfBirth" max="9999-12-31" th:field="*{user.dateOfBirth}"/>
+              <div class="error-text" th:if="${#fields.hasErrors('user.dateOfBirth')}"
+                   th:errors="*{user.dateOfBirth}"></div>
+            </div>
+          </div>
+          <div>
+            <input type="hidden" id="studentId" th:field="*{id}">
+            <button type="submit" class="create-user-button">Save</button>
+          </div>
+        </form>
+
+      </div>
+    </div>
+
+
+  </div>
+</div>
+
+</body>
+</html>
