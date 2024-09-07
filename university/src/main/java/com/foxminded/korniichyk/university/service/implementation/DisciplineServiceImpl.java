@@ -28,7 +28,6 @@ public class DisciplineServiceImpl implements DisciplineService {
     DisciplineDao disciplineDao;
     DisciplineMapper disciplineMapper;
 
-    @Autowired
     public DisciplineServiceImpl(DisciplineDao disciplineDao, DisciplineMapper disciplineMapper) {
         this.disciplineDao = disciplineDao;
         this.disciplineMapper = disciplineMapper;

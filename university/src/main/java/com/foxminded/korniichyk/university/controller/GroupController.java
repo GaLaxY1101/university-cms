@@ -20,7 +20,6 @@ public class GroupController {
     private final StudentService studentService;
     private final TeacherService teacherService;
 
-    @Autowired
     public GroupController(GroupService groupService,
                            StudentService studentService,
                            TeacherService teacherService

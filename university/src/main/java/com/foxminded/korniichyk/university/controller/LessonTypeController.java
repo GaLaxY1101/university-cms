@@ -17,7 +17,6 @@ public class LessonTypeController {
 
     private final LessonTypeService lessonTypeService;
 
-    @Autowired
     public LessonTypeController(LessonTypeService lessonTypeService) {
         this.lessonTypeService = lessonTypeService;
     }

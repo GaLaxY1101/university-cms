@@ -36,7 +36,6 @@ public class UserCreateUtil implements ApplicationRunner {
     private final TeacherService teacherService;
 
 
-    @Autowired
     public UserCreateUtil(UserService userService,
                           AdminService adminService,
                           PasswordEncoder passwordEncoder,

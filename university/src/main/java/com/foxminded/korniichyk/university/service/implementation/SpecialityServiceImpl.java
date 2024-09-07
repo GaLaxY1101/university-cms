@@ -25,7 +25,6 @@ public class SpecialityServiceImpl implements SpecialityService {
     SpecialityDao specialityDao;
     SpecialityMapper specialityMapper;
 
-    @Autowired
     public SpecialityServiceImpl(SpecialityDao specialityDao, SpecialityMapper specialityMapper) {
         this.specialityDao = specialityDao;
         this.specialityMapper = specialityMapper;

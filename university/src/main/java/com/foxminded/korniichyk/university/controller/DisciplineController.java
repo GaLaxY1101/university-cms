@@ -17,7 +17,6 @@ public class DisciplineController {
 
     private final DisciplineService disciplineService;
 
-    @Autowired
     public DisciplineController(DisciplineService disciplineService) {
         this.disciplineService = disciplineService;
     }

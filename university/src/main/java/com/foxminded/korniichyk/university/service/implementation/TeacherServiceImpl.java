@@ -45,7 +45,6 @@ public class TeacherServiceImpl implements TeacherService {
     private final RoleService roleService;
     private final TeacherUpdateMapper teacherUpdateMapper;
 
-    @Autowired
     public TeacherServiceImpl(TeacherDao teacherDao,
                               TeacherMapper teacherMapper,
                               DisciplineDao disciplineDao,

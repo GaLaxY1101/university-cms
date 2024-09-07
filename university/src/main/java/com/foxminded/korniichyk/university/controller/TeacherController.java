@@ -22,7 +22,6 @@ public class TeacherController {
     private final TeacherService teacherService;
     private final GroupService groupService;
 
-    @Autowired
     public TeacherController(TeacherService teacherService, GroupService groupService) {
         this.teacherService = teacherService;
         this.groupService =  groupService;

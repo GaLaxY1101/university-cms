@@ -33,7 +33,6 @@ public class UserServiceImpl implements UserService {
     private final UserMapper userMapper;
     private final UserRegistrationMapper userRegistrationMapper;
 
-    @Autowired
     public UserServiceImpl(UserDao userDao,
                            UserMapper userMapper,
                            UserRegistrationMapper userRegistrationMapper

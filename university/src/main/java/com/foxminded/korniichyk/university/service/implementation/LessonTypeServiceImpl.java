@@ -24,7 +24,6 @@ public class LessonTypeServiceImpl implements LessonTypeService {
     private final LessonTypeMapper lessonTypeMapper;
     private final LessonTypeDao lessonTypeDao;
 
-    @Autowired
     public LessonTypeServiceImpl(LessonTypeDao lessonTypeDao, LessonTypeMapper lessonTypeMapper) {
         this.lessonTypeDao = lessonTypeDao;
         this.lessonTypeMapper = lessonTypeMapper;

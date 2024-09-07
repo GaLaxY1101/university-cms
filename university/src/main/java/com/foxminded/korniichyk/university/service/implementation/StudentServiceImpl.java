@@ -45,7 +45,6 @@ public class StudentServiceImpl implements StudentService {
     private final StudentUpdateMapper studentUpdateMapper;
     private final GroupService groupService;
 
-    @Autowired
     public StudentServiceImpl(StudentDao studentDao,
                               StudentMapper studentMapper,
                               GroupDao groupDao,

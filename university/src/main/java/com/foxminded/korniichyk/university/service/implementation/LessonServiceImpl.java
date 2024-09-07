@@ -26,7 +26,6 @@ public class LessonServiceImpl implements LessonService {
     LessonDao lessonDao;
     LessonMapper lessonMapper;
 
-    @Autowired
     public LessonServiceImpl(LessonDao lessonDao, LessonMapper lessonMapper) {
         this.lessonDao = lessonDao;
         this.lessonMapper = lessonMapper;

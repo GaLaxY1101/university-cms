@@ -16,7 +16,6 @@ public class SpecialityController {
 
     private final SpecialityService specialityService;
 
-    @Autowired
     public SpecialityController(SpecialityService specialityService) {
         this.specialityService = specialityService;
     }

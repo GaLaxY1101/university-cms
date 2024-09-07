@@ -34,7 +34,6 @@ public class GroupServiceImpl implements GroupService {
     private final StudentDao studentDao;
     private final TeacherDao teacherDao;
 
-    @Autowired
     public GroupServiceImpl(GroupDao groupDao,
                             GroupMapper groupMapper,
                             StudentDao studentDao,

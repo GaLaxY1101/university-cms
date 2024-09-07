@@ -38,7 +38,6 @@ public class AdminServiceImpl implements AdminService {
     private final RoleService roleService;
     private final AdminUpdateMapper adminUpdateMapper;
 
-    @Autowired
     public AdminServiceImpl(AdminDao adminDao,
                             AdminMapper adminMapper,
                             UserService userService,

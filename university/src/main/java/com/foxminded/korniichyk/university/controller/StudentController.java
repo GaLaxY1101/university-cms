@@ -26,7 +26,6 @@ public class StudentController {
 
     private final GroupService groupService;
 
-    @Autowired
     public StudentController(StudentService studentService,
                              GroupService groupService) {
         this.studentService = studentService;
