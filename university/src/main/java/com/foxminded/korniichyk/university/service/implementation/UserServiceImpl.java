@@ -10,21 +10,22 @@ import com.foxminded.korniichyk.university.service.contract.UserService;
 import com.foxminded.korniichyk.university.service.exception.EmailAlreadyExistsException;
 import com.foxminded.korniichyk.university.service.exception.PhoneNumberAlreadyExistsException;
 import com.foxminded.korniichyk.university.service.exception.UserNotFoundException;
-import jakarta.transaction.Transactional;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
 import java.util.stream.Collectors;
 
+
 @Service
+@Transactional(readOnly = true)
 public class UserServiceImpl implements UserService {
 
     private static final Logger log = LoggerFactory.getLogger(UserServiceImpl.class);
@@ -42,7 +43,6 @@ public class UserServiceImpl implements UserService {
         this.userRegistrationMapper = userRegistrationMapper;
     }
 
-    @Transactional
     @Override
     public UserDto findById(Long id) {
         return userDao.findById(id)
@@ -50,7 +50,6 @@ public class UserServiceImpl implements UserService {
                 .orElseThrow(() -> new UserNotFoundException("User with id " + id + " not found"));
     }
 
-    @Transactional
     @Override
     public List<UserDto> findAll() {
         return userDao.findAll().stream().map(userMapper::toDto).collect(Collectors.toList());
@@ -80,7 +79,7 @@ public class UserServiceImpl implements UserService {
         return userDao.findAll(pageable).map(userMapper::toDto);
     }
 
-    @Transactional
+    @Override
     public User findByEmail(String email) {
         User user = userDao.findByEmail(email);
         if (user == null) {

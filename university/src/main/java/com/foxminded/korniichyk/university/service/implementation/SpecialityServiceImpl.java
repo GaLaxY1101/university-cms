@@ -6,18 +6,18 @@ import com.foxminded.korniichyk.university.model.Speciality;
 import com.foxminded.korniichyk.university.service.contract.SpecialityService;
 import com.foxminded.korniichyk.university.service.exception.SpecialityNotFoundException;
 import com.foxminded.korniichyk.university.mapper.display.SpecialityMapper;
-import jakarta.transaction.Transactional;
 import org.slf4j.Logger;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
 import java.util.stream.Collectors;
 
 @Service
+@Transactional(readOnly = true)
 public class SpecialityServiceImpl implements SpecialityService {
 
     private static final Logger log = org.slf4j.LoggerFactory.getLogger(SpecialityServiceImpl.class);
@@ -30,7 +30,6 @@ public class SpecialityServiceImpl implements SpecialityService {
         this.specialityMapper = specialityMapper;
     }
 
-    @Transactional
     @Override
     public SpecialityDto findById(Long id) {
         return specialityDao.findById(id)
@@ -38,7 +37,6 @@ public class SpecialityServiceImpl implements SpecialityService {
                 .orElseThrow(() -> new SpecialityNotFoundException("Speciality with id " + id + " not found"));
     }
 
-    @Transactional
     @Override
     public List<SpecialityDto> findAll() {
         return specialityDao.findAll()
@@ -69,7 +67,6 @@ public class SpecialityServiceImpl implements SpecialityService {
                 );
     }
 
-    @Transactional
     @Override
     public Page<SpecialityDto> findPage(int pageNumber, int pageSize){
         Pageable pageable = PageRequest.of(pageNumber, pageSize);

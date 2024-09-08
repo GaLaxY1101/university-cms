@@ -8,7 +8,6 @@ import com.foxminded.korniichyk.university.dto.update.StudentUpdateDto;
 import com.foxminded.korniichyk.university.mapper.display.RoleMapper;
 import com.foxminded.korniichyk.university.mapper.display.StudentMapper;
 import com.foxminded.korniichyk.university.mapper.update.StudentUpdateMapper;
-import com.foxminded.korniichyk.university.model.Group;
 import com.foxminded.korniichyk.university.model.Role;
 import com.foxminded.korniichyk.university.model.Student;
 import com.foxminded.korniichyk.university.model.User;
@@ -17,24 +16,22 @@ import com.foxminded.korniichyk.university.service.contract.GroupService;
 import com.foxminded.korniichyk.university.service.contract.RoleService;
 import com.foxminded.korniichyk.university.service.contract.StudentService;
 import com.foxminded.korniichyk.university.service.contract.UserService;
-import com.foxminded.korniichyk.university.service.exception.GroupAlreadyAssignedException;
 import com.foxminded.korniichyk.university.service.exception.GroupNotFoundException;
 import com.foxminded.korniichyk.university.service.exception.StudentNotFoundException;
-import jakarta.persistence.Temporal;
-import jakarta.transaction.Transactional;
 import org.slf4j.Logger;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.util.Collections;
 import java.util.List;
 import java.util.stream.Collectors;
 
+@Transactional(readOnly = true)
 @Service
 public class StudentServiceImpl implements StudentService {
 
@@ -64,7 +61,6 @@ public class StudentServiceImpl implements StudentService {
         this.studentUpdateMapper = studentUpdateMapper;
     }
 
-    @Transactional
     @Override
     public StudentDto findById(Long id) {
         return studentDao.findById(id)
@@ -72,7 +68,6 @@ public class StudentServiceImpl implements StudentService {
                 .orElseThrow(() -> new StudentNotFoundException("Student with id: " + id + "not found"));
     }
 
-    @Transactional
     @Override
     public List<StudentDto> findAll() {
         return studentDao.findAll()
@@ -103,7 +98,6 @@ public class StudentServiceImpl implements StudentService {
                 );
     }
 
-    @Transactional
     @Override
     public Page<StudentDto> findStudentsPageByGroupId(Long groupId, int pageNumber, int pageSize) {
         if (groupDao.findById(groupId).isEmpty()) {
@@ -114,7 +108,6 @@ public class StudentServiceImpl implements StudentService {
         return studentDao.findByGroupId(groupId, pageable).map(studentMapper::toDto);
     }
 
-    @Transactional
     @Override
     public List<StudentDto> findStudentsByGroupName(String groupName) {
         var group = groupDao.findByName(groupName)
@@ -146,7 +139,6 @@ public class StudentServiceImpl implements StudentService {
 
     }
 
-    @Transactional
     @Override
     public StudentDto findByUserId(Long userId) {
 
@@ -156,7 +148,6 @@ public class StudentServiceImpl implements StudentService {
         return studentMapper.toDto(student);
     }
 
-    @Transactional
     @Override
     public Page<StudentDto> findPage(int pageNumber, int pageSize) {
         Pageable pageable = PageRequest.of(pageNumber, pageSize);
@@ -209,7 +200,6 @@ public class StudentServiceImpl implements StudentService {
         student.getUser().setPhoneNumber(studentUpdateDto.getUser().getPhoneNumber());
     }
 
-    @Transactional
     @Override
     public Student getCurrentStudent() {
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();

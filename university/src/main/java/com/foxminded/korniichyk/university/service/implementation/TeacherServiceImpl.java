@@ -17,15 +17,14 @@ import com.foxminded.korniichyk.university.service.contract.RoleService;
 import com.foxminded.korniichyk.university.service.contract.TeacherService;
 import com.foxminded.korniichyk.university.service.contract.UserService;
 import com.foxminded.korniichyk.university.service.exception.*;
-import jakarta.transaction.Transactional;
 import org.slf4j.Logger;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.util.Collections;
 import java.util.List;
@@ -33,6 +32,7 @@ import java.util.Set;
 
 import static java.util.stream.Collectors.toList;
 
+@Transactional(readOnly = true)
 @Service
 public class TeacherServiceImpl implements TeacherService {
 
@@ -69,7 +69,6 @@ public class TeacherServiceImpl implements TeacherService {
         this.teacherUpdateMapper = teacherUpdateMapper;
     }
 
-    @Transactional
     @Override
     public TeacherDto findById(Long id) {
         return teacherDao.findById(id)
@@ -77,7 +76,6 @@ public class TeacherServiceImpl implements TeacherService {
                 .orElseThrow(() -> new TeacherNotFoundException("Teacher with id: " + id + " not found"));
     }
 
-    @Transactional
     @Override
     public List<TeacherDto> findAll() {
         return teacherDao.findAll()
@@ -186,15 +184,14 @@ public class TeacherServiceImpl implements TeacherService {
 
 
 
-    @Transactional
     @Override
     public Page<TeacherDto> findPage(int pageNumber, int pageSize) {
         Pageable pageable = PageRequest.of(pageNumber, pageSize);
         return teacherDao.findAll(pageable).map(teacherMapper::toDto);
     }
 
-    @Override
     @Transactional
+    @Override
     public Teacher registerTeacher(TeacherRegistrationDto teacherRegistrationDto) {
 
         Role teacherRole = roleService.findByName("ROLE_TEACHER");

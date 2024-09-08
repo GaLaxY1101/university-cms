@@ -21,19 +21,19 @@ public class Lesson {
     @SequenceGenerator(name = "lesson_seq", sequenceName = "lesson_sequence", allocationSize = 1)
     private Long id;
 
-    @ManyToOne(fetch = FetchType.LAZY)
+    @ManyToOne
     @JoinColumn(name = "discipline_id",
     foreignKey = @ForeignKey(name = "fk_lessons_discipline_id")
     )
     private Discipline discipline;
 
-    @ManyToOne(fetch = FetchType.LAZY)
+    @ManyToOne
     @JoinColumn(name = "lesson_type_id",
         foreignKey = @ForeignKey(name = "fk_lessons_lesson_type_id")
     )
     private LessonType lessonType;
 
-    @ManyToMany(mappedBy = "lessons", fetch = FetchType.LAZY)
+    @ManyToMany(mappedBy = "lessons")
     private Set<Teacher> teachers = new HashSet<>();
 
     @ManyToMany(mappedBy = "lessons")

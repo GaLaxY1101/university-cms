@@ -6,18 +6,19 @@ import com.foxminded.korniichyk.university.model.Role;
 import com.foxminded.korniichyk.university.service.contract.RoleService;
 import com.foxminded.korniichyk.university.service.exception.RoleNotFoundException;
 import com.foxminded.korniichyk.university.mapper.display.RoleMapper;
-import jakarta.transaction.Transactional;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
 import java.util.stream.Collectors;
 
 @Service
 @Slf4j
+@Transactional(readOnly = true)
 public class RoleServiceImpl implements RoleService {
 
     private final RoleDao roleDao;
@@ -28,7 +29,6 @@ public class RoleServiceImpl implements RoleService {
         this.roleMapper = roleMapper;
     }
 
-    @Transactional
     @Override
     public RoleDto findById(Long id) {
         return roleDao.findById(id)
@@ -36,7 +36,6 @@ public class RoleServiceImpl implements RoleService {
                 .orElseThrow(() -> new RoleNotFoundException("Role with id " + id + " not found"));
     }
 
-    @Transactional
     @Override
     public List<RoleDto> findAll() {
         return roleDao.findAll().stream()
@@ -44,7 +43,6 @@ public class RoleServiceImpl implements RoleService {
                 .collect(Collectors.toList());
     }
 
-    @Transactional
     @Override
     public Role findByName(String name) {
         Role role = roleDao.findByName(name);
@@ -70,7 +68,6 @@ public class RoleServiceImpl implements RoleService {
         log.info("{} deleted", role);
     }
 
-    @Transactional
     @Override
     public Page<RoleDto> findPage(int pageNumber, int pageSize) {
         Pageable pageable = PageRequest.of(pageNumber, pageSize);

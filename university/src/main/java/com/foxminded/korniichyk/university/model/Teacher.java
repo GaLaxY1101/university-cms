@@ -25,7 +25,7 @@ public class Teacher {
     private Long id;
 
 
-    @OneToOne(fetch = FetchType.LAZY, cascade = CascadeType.ALL)
+    @OneToOne(cascade = CascadeType.ALL)
     @JoinColumn(name = "user_id",
             foreignKey = @ForeignKey(name = "fk_teachers_user")
     )

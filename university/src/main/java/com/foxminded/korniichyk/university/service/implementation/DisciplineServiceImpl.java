@@ -7,19 +7,20 @@ import com.foxminded.korniichyk.university.model.Discipline;
 import com.foxminded.korniichyk.university.service.contract.DisciplineService;
 import com.foxminded.korniichyk.university.service.exception.DisciplineNotFoundException;
 import com.foxminded.korniichyk.university.mapper.display.DisciplineMapper;
-import jakarta.transaction.Transactional;
 import org.slf4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
 import java.util.Set;
 import java.util.stream.Collectors;
 
 @Service
+@Transactional(readOnly = true)
 public class DisciplineServiceImpl implements DisciplineService {
 
 
@@ -33,7 +34,6 @@ public class DisciplineServiceImpl implements DisciplineService {
         this.disciplineMapper = disciplineMapper;
     }
 
-    @Transactional
     @Override
     public DisciplineDto findById(Long id) {
         return disciplineDao.findById(id)
@@ -41,7 +41,6 @@ public class DisciplineServiceImpl implements DisciplineService {
                 .orElseThrow(() -> new DisciplineNotFoundException("Discipline with id: " + id + " not found"));
     }
 
-    @Transactional
     @Override
     public List<DisciplineDto> findAll() {
         return disciplineDao.findAll().stream()
@@ -72,7 +71,6 @@ public class DisciplineServiceImpl implements DisciplineService {
                         });
     }
 
-    @Transactional
     @Override
     public Page<DisciplineDto> findPage(int pageNumber, int pageSize) {
         Pageable pageable = PageRequest.of(pageNumber, pageSize);

@@ -2,7 +2,6 @@ package com.foxminded.korniichyk.university.service.implementation;
 
 import com.foxminded.korniichyk.university.dao.GroupDao;
 import com.foxminded.korniichyk.university.dao.StudentDao;
-import com.foxminded.korniichyk.university.dao.TeacherDao;
 import com.foxminded.korniichyk.university.dto.display.GroupDto;
 import com.foxminded.korniichyk.university.model.Group;
 import com.foxminded.korniichyk.university.model.Student;
@@ -12,14 +11,13 @@ import com.foxminded.korniichyk.university.service.exception.GroupNotFoundExcept
 import com.foxminded.korniichyk.university.service.exception.StudentNotFoundException;
 import com.foxminded.korniichyk.university.service.exception.TeacherNotFoundException;
 import com.foxminded.korniichyk.university.mapper.display.GroupMapper;
-import jakarta.transaction.Transactional;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageImpl;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
 
@@ -27,6 +25,7 @@ import static java.util.stream.Collectors.toList;
 
 @Slf4j
 @Service
+@Transactional(readOnly = true)
 public class GroupServiceImpl implements GroupService {
 
 
@@ -45,7 +44,6 @@ public class GroupServiceImpl implements GroupService {
         this.teacherService = teacherService;
     }
 
-    @Transactional
     @Override
     public GroupDto findById(Long id) {
         return groupDao.findById(id)
@@ -53,7 +51,6 @@ public class GroupServiceImpl implements GroupService {
                 .orElseThrow(() -> new GroupNotFoundException("Teacher with id " + id + " not found"));
     }
 
-    @Transactional
     @Override
     public List<GroupDto> findAll() {
         return groupDao.findAll()
@@ -84,12 +81,11 @@ public class GroupServiceImpl implements GroupService {
                 );
     }
 
-    @Transactional
+    @Override
     public List<GroupDto> findByName(String name) {
         return groupDao.findByName(name).stream().map(groupMapper::toDto).collect(toList());
     }
 
-    @Transactional
     @Override
     public GroupDto findByStudentId(Long studentId) {
         Student student = studentDao.findById(studentId).orElseThrow(
@@ -98,14 +94,12 @@ public class GroupServiceImpl implements GroupService {
         return groupMapper.toDto(student.getGroup());
     }
 
-    @Transactional
     @Override
     public Page<GroupDto> findPage(int pageNumber, int pageSize) {
         Pageable pageable = PageRequest.of(pageNumber, pageSize);
         return groupDao.findAll(pageable).map(groupMapper::toDto);
     }
 
-    @Transactional
     @Override
     public Page<GroupDto> findPageByTeacherId(Long teacherId, int pageNumber, int pageSize) {
         if (!teacherService.isExistsById(teacherId)) {

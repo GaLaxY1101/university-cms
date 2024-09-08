@@ -6,7 +6,6 @@ import com.foxminded.korniichyk.university.model.Lesson;
 import com.foxminded.korniichyk.university.service.contract.LessonService;
 import com.foxminded.korniichyk.university.service.exception.LessonNotFoundException;
 import com.foxminded.korniichyk.university.mapper.display.LessonMapper;
-import jakarta.transaction.Transactional;
 import lombok.extern.slf4j.Slf4j;
 import org.slf4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -14,12 +13,14 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
 import java.util.stream.Collectors;
 
 @Slf4j
 @Service
+@Transactional(readOnly = true)
 public class LessonServiceImpl implements LessonService {
 
 
@@ -32,7 +33,6 @@ public class LessonServiceImpl implements LessonService {
         this.lessonMapper = lessonMapper;
     }
 
-    @Transactional
     @Override
     public LessonDto findById(Long id) {
         return lessonDao.findById(id)
@@ -44,7 +44,6 @@ public class LessonServiceImpl implements LessonService {
                 );
     }
 
-    @Transactional
     @Override
     public List<LessonDto> findAll() {
         return lessonDao.findAll()

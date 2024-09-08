@@ -29,13 +29,13 @@ public class Group {
     @OneToMany(mappedBy = "group", cascade = CascadeType.ALL)
     private Set<Student> students = new HashSet<>();
 
-    @ManyToOne(fetch = FetchType.LAZY)
+    @ManyToOne
     @JoinColumn(name = "speciality_id",
             foreignKey = @ForeignKey(name = "fk_groups_speciality")
     )
     private Speciality speciality;
 
-    @ManyToMany(fetch = FetchType.LAZY)
+    @ManyToMany
     @JoinTable(
             name = "group_lesson",
             joinColumns = @JoinColumn(name = "group_id",

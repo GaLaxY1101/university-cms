@@ -6,19 +6,20 @@ import com.foxminded.korniichyk.university.model.LessonType;
 import com.foxminded.korniichyk.university.service.contract.LessonTypeService;
 import com.foxminded.korniichyk.university.service.exception.LessonTypeNotFoundException;
 import com.foxminded.korniichyk.university.mapper.display.LessonTypeMapper;
-import jakarta.transaction.Transactional;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
 import java.util.stream.Collectors;
 
 @Slf4j
 @Service
+@Transactional(readOnly = true)
 public class LessonTypeServiceImpl implements LessonTypeService {
 
     private final LessonTypeMapper lessonTypeMapper;
@@ -29,7 +30,6 @@ public class LessonTypeServiceImpl implements LessonTypeService {
         this.lessonTypeMapper = lessonTypeMapper;
     }
 
-    @Transactional
     @Override
     public LessonTypeDto findById(Long id) {
         return lessonTypeDao.findById(id)
@@ -37,7 +37,6 @@ public class LessonTypeServiceImpl implements LessonTypeService {
                 .orElseThrow(() -> new LessonTypeNotFoundException("Lesson type with id "+ id + "not found"));
     }
 
-    @Transactional
     @Override
     public List<LessonTypeDto> findAll() {
         return lessonTypeDao.findAll()

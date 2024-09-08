@@ -22,13 +22,13 @@ public class Student {
     @SequenceGenerator(name = "student_seq", sequenceName = "student_sequence", allocationSize = 1)
     private Long id;
 
-    @OneToOne(fetch = FetchType.LAZY, cascade = CascadeType.ALL)
+    @OneToOne(cascade = CascadeType.ALL)
     @JoinColumn(name = "user_id",
             foreignKey = @ForeignKey(name = "fk_students_user")
     )
     private User user;
 
-    @ManyToOne(fetch = FetchType.LAZY)
+    @ManyToOne
     @JoinColumn(name = "group_id",
             foreignKey = @ForeignKey(name = "fk_students_group")
     )
