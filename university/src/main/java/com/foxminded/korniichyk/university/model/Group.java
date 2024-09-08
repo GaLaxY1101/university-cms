@@ -19,7 +19,8 @@ import java.util.Set;
 )
 public class Group {
     @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "group_seq")
+    @SequenceGenerator(name = "group_seq", sequenceName = "group_sequence", allocationSize = 1)
     private Long id;
 
     @Column(nullable = false)

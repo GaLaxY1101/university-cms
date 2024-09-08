@@ -17,7 +17,8 @@ import java.util.Set;
 public class Lesson {
 
     @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "lesson_seq")
+    @SequenceGenerator(name = "lesson_seq", sequenceName = "lesson_sequence", allocationSize = 1)
     private Long id;
 
     @ManyToOne(fetch = FetchType.LAZY)

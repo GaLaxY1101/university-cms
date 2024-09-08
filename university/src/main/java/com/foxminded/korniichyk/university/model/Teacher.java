@@ -20,7 +20,8 @@ import java.util.Set;
 public class Teacher {
 
     @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "teacher_seq")
+    @SequenceGenerator(name = "teacher_seq", sequenceName = "teacher_sequence", allocationSize = 1)
     private Long id;
 
 

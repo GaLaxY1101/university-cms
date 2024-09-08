@@ -19,7 +19,8 @@ import lombok.ToString;
 public class Admin {
 
     @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "admin_seq")
+    @SequenceGenerator(name = "admin_seq", sequenceName = "admin_sequence", allocationSize = 1)
     private int id;
 
     @OneToOne(cascade = CascadeType.ALL)

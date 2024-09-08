@@ -24,7 +24,8 @@ import java.util.Set;
 public class Speciality {
 
     @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "speciality_seq")
+    @SequenceGenerator(name = "speciality_seq", sequenceName = "speciality_sequence", allocationSize = 1)
     private Long id;
 
     @Column(nullable = false)

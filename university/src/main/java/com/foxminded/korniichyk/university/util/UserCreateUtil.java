@@ -65,7 +65,7 @@ public class UserCreateUtil implements ApplicationRunner {
     }
 
     private void createStudent() {
-        if(userDao.findByEmail("student@gmail.com") == null) {
+        if(!userService.isExistsByEmail("student@gmail.com")) {
             User user = new User();
             user.setFirstName("Pavel");
             user.setLastName("Honcharevskiy");
@@ -92,7 +92,7 @@ public class UserCreateUtil implements ApplicationRunner {
     }
 
     public void createAdmin() {
-        if (userDao.findByEmail("admin@gmail.com") == null) {
+        if (!userService.isExistsByEmail("admin@gmail.com")) {
             User user = new User();
             user.setFirstName("Illia");
             user.setLastName("Korniichyk");
@@ -121,7 +121,7 @@ public class UserCreateUtil implements ApplicationRunner {
     }
 
     public void createTeacher() {
-        if (userDao.findByEmail("teacher@gmail.com") == null) {
+        if (userService.isExistsByEmail("teacher@gmail.com")) {
             User user = new User();
             user.setFirstName("Oleg");
             user.setLastName("Shtifzon");
