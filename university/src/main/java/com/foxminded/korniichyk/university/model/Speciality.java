@@ -28,13 +28,13 @@ public class Speciality {
     @SequenceGenerator(name = "speciality_seq", sequenceName = "speciality_sequence", allocationSize = 1)
     private Long id;
 
-    @Column(nullable = false)
+    @Column
     private String name;
 
     @Column(columnDefinition = "TEXT")
     private String description;
 
-    @Column(nullable = false)
+    @Column
     private Integer code;
 
     @OneToMany(mappedBy = "speciality", cascade = CascadeType.ALL)

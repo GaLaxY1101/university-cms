@@ -37,24 +37,24 @@ create table if not exists lessons
 
 create table if not exists roles
 (
-    id   bigint       not null
+    id   bigint not null
         constraint roles_pkey
             primary key,
-    name varchar(255) not null
+    name varchar(255)
         constraint uk_roles_name
             unique
 );
 
 create table if not exists specialities
 (
-    id          bigint       not null
+    id          bigint not null
         constraint specialities_pkey
             primary key,
-    code        integer      not null
+    code        integer
         constraint uk_specialities_code
             unique,
     description text,
-    name        varchar(255) not null
+    name        varchar(255)
         constraint uk_specialities_name
             unique
 );
@@ -97,13 +97,13 @@ create table if not exists users
         constraint users_pkey
             primary key,
     date_of_birth date         not null,
-    email         varchar(255) not null
+    email         varchar(255)
         constraint uk_users_email
             unique,
     first_name    varchar(255) not null,
     last_name     varchar(255) not null,
     password      varchar(255),
-    phone_number  varchar(255) not null
+    phone_number  varchar(255)
         constraint uk_users_phonenumber
             unique
 );
@@ -188,6 +188,8 @@ create index if not exists idx_users_email
 
 create index if not exists idx_users_phonenumber
     on users (phone_number);
+
+
 
 
 

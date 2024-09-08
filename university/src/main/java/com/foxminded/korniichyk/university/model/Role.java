@@ -26,7 +26,7 @@ public class Role {
     @SequenceGenerator(name = "role_seq", sequenceName = "role_sequence", allocationSize = 1)
     private Long id;
 
-    @Column(nullable = false, unique = true)
+    @Column
     private String name;
 
     @ManyToMany(mappedBy = "roles")
