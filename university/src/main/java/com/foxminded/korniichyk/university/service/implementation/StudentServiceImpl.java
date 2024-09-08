@@ -12,6 +12,7 @@ import com.foxminded.korniichyk.university.model.Group;
 import com.foxminded.korniichyk.university.model.Role;
 import com.foxminded.korniichyk.university.model.Student;
 import com.foxminded.korniichyk.university.model.User;
+import com.foxminded.korniichyk.university.security.CustomUserDetails;
 import com.foxminded.korniichyk.university.service.contract.GroupService;
 import com.foxminded.korniichyk.university.service.contract.RoleService;
 import com.foxminded.korniichyk.university.service.contract.StudentService;
@@ -26,6 +27,8 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
+import org.springframework.security.core.Authentication;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
 
 import java.util.Collections;
@@ -204,6 +207,18 @@ public class StudentServiceImpl implements StudentService {
         student.getUser().setLastName(studentUpdateDto.getUser().getLastName());
         student.getUser().setDateOfBirth(studentUpdateDto.getUser().getDateOfBirth());
         student.getUser().setPhoneNumber(studentUpdateDto.getUser().getPhoneNumber());
+    }
+
+    @Transactional
+    @Override
+    public Student getCurrentStudent() {
+        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+        CustomUserDetails userDetails = (CustomUserDetails) authentication.getPrincipal();
+        Long userId = userDetails.getUser().getId();
+        Long studentId = findByUserId(userId).getId();
+        return studentDao.findById(studentId).orElseThrow(
+                () -> new StudentNotFoundException("Student with id " + studentId + "not found")
+        );
     }
 
 

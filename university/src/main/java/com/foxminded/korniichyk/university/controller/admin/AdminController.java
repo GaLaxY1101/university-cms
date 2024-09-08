@@ -46,12 +46,6 @@ public class AdminController {
 
     private final TeacherService teacherService;
 
-    private final StudentUpdateMapper studentUpdateMapper;
-
-    private final AdminUpdateMapper adminUpdateMapper;
-
-    private final TeacherUpdateMapper teacherUpdateMapper;
-
     private final UserService userService;
 
     public AdminController(AdminService adminService,
@@ -75,9 +69,6 @@ public class AdminController {
         this.specialityService = specialityService;
         this.studentService = studentService;
         this.teacherService = teacherService;
-        this.studentUpdateMapper = studentUpdateMapper;
-        this.adminUpdateMapper = adminUpdateMapper;
-        this.teacherUpdateMapper = teacherUpdateMapper;
         this.userService = userService;
     }
 
@@ -440,13 +431,13 @@ public class AdminController {
         String phoneNumberAfterUpdate = studentUpdateDto.getUser().getPhoneNumber();
 
 
-        if ((!emailBeforeUpdate.equals(emailAfterUpdate)) && (userService.isEmailRegistered(emailAfterUpdate))) {
+        if ((!emailBeforeUpdate.equals(emailAfterUpdate)) && (userService.isExistsByEmail(emailAfterUpdate))) {
             bindingResult.rejectValue("user.email", "error.email", "This email already registered");
             model.addAttribute("groups", groupService.findAll());
             return "admin/edit/edit-student";
         }
 
-        if ((!phoneNumberBeforeUpdate.equals(phoneNumberAfterUpdate)) && (userService.isPhoneNumberRegistered(phoneNumberAfterUpdate))) {
+        if ((!phoneNumberBeforeUpdate.equals(phoneNumberAfterUpdate)) && (userService.isExistsByPhoneNumber(phoneNumberAfterUpdate))) {
             bindingResult.rejectValue("user.phoneNumber", "error.phoneNumber", "This phone number already registered");
             model.addAttribute("groups", groupService.findAll());
             return "admin/edit/edit-student";
@@ -502,12 +493,12 @@ public class AdminController {
         String phoneNumberAfterUpdate = adminUpdateDto.getUser().getPhoneNumber();
 
 
-        if ((!emailBeforeUpdate.equals(emailAfterUpdate)) && (userService.isEmailRegistered(emailAfterUpdate))) {
+        if ((!emailBeforeUpdate.equals(emailAfterUpdate)) && (userService.isExistsByEmail(emailAfterUpdate))) {
             bindingResult.rejectValue("user.email", "error.email", "This email already registered");
             return "admin/edit/edit-admin";
         }
 
-        if ((!phoneNumberBeforeUpdate.equals(phoneNumberAfterUpdate)) && (userService.isPhoneNumberRegistered(phoneNumberAfterUpdate))) {
+        if ((!phoneNumberBeforeUpdate.equals(phoneNumberAfterUpdate)) && (userService.isExistsByPhoneNumber(phoneNumberAfterUpdate))) {
             bindingResult.rejectValue("user.phoneNumber", "error.phoneNumber", "This phone number already registered");
             return "admin/edit/edit-admin";
         }
@@ -559,13 +550,13 @@ public class AdminController {
         String phoneNumberAfterUpdate = teacherUpdateDto.getUser().getPhoneNumber();
 
 
-        if ((!emailBeforeUpdate.equals(emailAfterUpdate)) && (userService.isEmailRegistered(emailAfterUpdate))) {
+        if ((!emailBeforeUpdate.equals(emailAfterUpdate)) && (userService.isExistsByEmail(emailAfterUpdate))) {
             bindingResult.rejectValue("user.email", "error.email", "This email already registered");
             model.addAttribute("disciplines", disciplineService.findAll());
             return "admin/edit/edit-teacher";
         }
 
-        if ((!phoneNumberBeforeUpdate.equals(phoneNumberAfterUpdate)) && (userService.isPhoneNumberRegistered(phoneNumberAfterUpdate))) {
+        if ((!phoneNumberBeforeUpdate.equals(phoneNumberAfterUpdate)) && (userService.isExistsByPhoneNumber(phoneNumberAfterUpdate))) {
             bindingResult.rejectValue("user.phoneNumber", "error.phoneNumber", "This phone number already registered");
             model.addAttribute("disciplines", disciplineService.findAll());
             return "admin/edit/edit-teacher";

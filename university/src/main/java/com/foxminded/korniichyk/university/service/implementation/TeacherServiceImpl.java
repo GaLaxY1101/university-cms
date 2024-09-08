@@ -11,6 +11,7 @@ import com.foxminded.korniichyk.university.mapper.display.RoleMapper;
 import com.foxminded.korniichyk.university.mapper.display.TeacherMapper;
 import com.foxminded.korniichyk.university.mapper.update.TeacherUpdateMapper;
 import com.foxminded.korniichyk.university.model.*;
+import com.foxminded.korniichyk.university.security.CustomUserDetails;
 import com.foxminded.korniichyk.university.service.contract.DisciplineService;
 import com.foxminded.korniichyk.university.service.contract.RoleService;
 import com.foxminded.korniichyk.university.service.contract.TeacherService;
@@ -22,6 +23,8 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
+import org.springframework.security.core.Authentication;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
 
 import java.util.Collections;
@@ -119,7 +122,6 @@ public class TeacherServiceImpl implements TeacherService {
         }
         teacher.getDisciplines().add(discipline);
         discipline.getTeachers().add(teacher);
-        teacherDao.save(teacher);
 
     }
 
@@ -234,6 +236,22 @@ public class TeacherServiceImpl implements TeacherService {
         teacher.getUser().setDateOfBirth(teacherUpdateDto.getUser().getDateOfBirth());
         teacher.getUser().setPhoneNumber(teacherUpdateDto.getUser().getPhoneNumber());
 
+    }
+
+    @Override
+    public Teacher getCurrentTeacher() {
+        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+        CustomUserDetails userDetails = (CustomUserDetails) authentication.getPrincipal();
+        Long userId = userDetails.getUser().getId();
+        Long teacherId = findByUserId(userId).getId();
+        return teacherDao.findById(teacherId).orElseThrow(
+                () -> new StudentNotFoundException("Teacher with id " + teacherId + "not found")
+        );
+    }
+
+    @Override
+    public boolean isExistsById(Long id) {
+        return teacherDao.existsById(id);
     }
 
 }

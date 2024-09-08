@@ -19,4 +19,5 @@ public interface StudentService extends CrudService<Student, StudentDto> {
     Student registerStudent(StudentRegistrationDto studentRegistrationDto);
     StudentUpdateDto getStudentUpdateDto(Long id);
     void update(StudentUpdateDto studentUpdateDto);
+    Student getCurrentStudent();
 }

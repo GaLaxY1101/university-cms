@@ -18,4 +18,6 @@ public interface GroupDao extends JpaRepository<Group, Long> {
             "JOIN l.teachers t " +
             "WHERE t.id = :teacherId")
     List<Group> findByTeacherId(Long teacherId);
+
+    boolean existsById(Long id);
 }

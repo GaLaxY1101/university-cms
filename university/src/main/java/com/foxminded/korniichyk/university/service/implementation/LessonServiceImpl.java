@@ -7,6 +7,7 @@ import com.foxminded.korniichyk.university.service.contract.LessonService;
 import com.foxminded.korniichyk.university.service.exception.LessonNotFoundException;
 import com.foxminded.korniichyk.university.mapper.display.LessonMapper;
 import jakarta.transaction.Transactional;
+import lombok.extern.slf4j.Slf4j;
 import org.slf4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
@@ -17,11 +18,11 @@ import org.springframework.stereotype.Service;
 import java.util.List;
 import java.util.stream.Collectors;
 
+@Slf4j
 @Service
 public class LessonServiceImpl implements LessonService {
 
 
-    private static final Logger log = org.slf4j.LoggerFactory.getLogger(LessonServiceImpl.class);
 
     LessonDao lessonDao;
     LessonMapper lessonMapper;

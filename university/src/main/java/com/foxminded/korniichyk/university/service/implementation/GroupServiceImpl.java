@@ -7,6 +7,7 @@ import com.foxminded.korniichyk.university.dto.display.GroupDto;
 import com.foxminded.korniichyk.university.model.Group;
 import com.foxminded.korniichyk.university.model.Student;
 import com.foxminded.korniichyk.university.service.contract.GroupService;
+import com.foxminded.korniichyk.university.service.contract.TeacherService;
 import com.foxminded.korniichyk.university.service.exception.GroupNotFoundException;
 import com.foxminded.korniichyk.university.service.exception.StudentNotFoundException;
 import com.foxminded.korniichyk.university.service.exception.TeacherNotFoundException;
@@ -32,17 +33,16 @@ public class GroupServiceImpl implements GroupService {
     private final GroupDao groupDao;
     private final GroupMapper groupMapper;
     private final StudentDao studentDao;
-    private final TeacherDao teacherDao;
-
+    private final TeacherService teacherService;
     public GroupServiceImpl(GroupDao groupDao,
                             GroupMapper groupMapper,
                             StudentDao studentDao,
-                            TeacherDao teacherDao
+                            TeacherService teacherService
     ) {
         this.groupDao = groupDao;
         this.groupMapper = groupMapper;
         this.studentDao = studentDao;
-        this.teacherDao = teacherDao;
+        this.teacherService = teacherService;
     }
 
     @Transactional
@@ -108,11 +108,11 @@ public class GroupServiceImpl implements GroupService {
     @Transactional
     @Override
     public Page<GroupDto> findPageByTeacherId(Long teacherId, int pageNumber, int pageSize) {
-        if (teacherDao.findById(teacherId).isEmpty()) {
+        if (!teacherService.isExistsById(teacherId)) {
             throw new TeacherNotFoundException("Teacher with id " + teacherId + " not found");
         }
 
-        var groups = groupDao.findByTeacherId(teacherId)
+        List<GroupDto> groups = groupDao.findByTeacherId(teacherId)
                 .stream()
                 .map(groupMapper::toDto)
                 .toList();
@@ -122,5 +122,10 @@ public class GroupServiceImpl implements GroupService {
         int end = Math.min((start + pageable.getPageSize()), groups.size());
 
         return new PageImpl<>(groups.subList(start, end), pageable, groups.size());
+    }
+
+    @Override
+    public boolean isExistsById(Long id) {
+        return groupDao.existsById(id);
     }
 }

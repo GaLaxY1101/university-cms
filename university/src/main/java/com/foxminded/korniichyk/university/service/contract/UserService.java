@@ -9,9 +9,8 @@ public interface UserService extends CrudService<User, UserDto> {
 
     User findByEmail(String username);
 
-    boolean isEmailRegistered(String email);
-
-    boolean isPhoneNumberRegistered(String phoneNumber);
-
     User registerUser(UserRegistrationDto userRegistrationDto);
+
+    boolean isExistsByEmail(String email);
+    boolean isExistsByPhoneNumber(String phoneNumber);
 }

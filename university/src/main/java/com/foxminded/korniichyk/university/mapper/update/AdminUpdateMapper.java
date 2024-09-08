@@ -10,10 +10,8 @@ import org.mapstruct.Mappings;
 
 public interface AdminUpdateMapper {
 
-    @Mapping(target = "user", source = "user")
     Admin toEntity(AdminUpdateDto adminUpdateDto);
 
-    @Mapping(target = "user", source = "user")
     AdminUpdateDto toDto(Admin admin);
 
 }

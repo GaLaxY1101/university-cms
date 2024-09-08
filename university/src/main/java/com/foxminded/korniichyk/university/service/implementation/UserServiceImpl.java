@@ -83,26 +83,20 @@ public class UserServiceImpl implements UserService {
     @Transactional
     public User findByEmail(String email) {
         User user = userDao.findByEmail(email);
-        if (user == null) throw new UserNotFoundException("User with email " + email + " not found");
+        if (user == null) {
+            throw new UserNotFoundException("User with email " + email + " not found");
+        }
         return user;
-    }
-
-    public boolean isEmailRegistered(String email) {
-        return userDao.findByEmail(email) != null;
-    }
-
-    public boolean isPhoneNumberRegistered(String phoneNumber) {
-        return userDao.findByPhoneNumber(phoneNumber) != null;
     }
 
     @Override
     @Transactional
     public User registerUser(UserRegistrationDto userRegistrationDto) {
-        if (isEmailRegistered(userRegistrationDto.getEmail())) {
+        if (isExistsByEmail(userRegistrationDto.getEmail())) {
             throw new EmailAlreadyExistsException("This email already registered");
         }
 
-        if (isPhoneNumberRegistered(userRegistrationDto.getPhoneNumber())) {
+        if (isExistsByPhoneNumber(userRegistrationDto.getPhoneNumber())) {
             throw new PhoneNumberAlreadyExistsException("This phone number already registered");
         }
 
@@ -114,5 +108,15 @@ public class UserServiceImpl implements UserService {
 
         save(user);
         return user;
+    }
+
+    @Override
+    public boolean isExistsByEmail(String email) {
+        return userDao.existsByEmail(email);
+    }
+
+    @Override
+    public boolean isExistsByPhoneNumber(String phoneNumber) {
+        return userDao.existsByPhoneNumber(phoneNumber);
     }
 }

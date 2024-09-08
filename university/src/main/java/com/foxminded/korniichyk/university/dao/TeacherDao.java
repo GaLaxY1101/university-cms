@@ -10,4 +10,5 @@ public interface TeacherDao extends JpaRepository<Teacher, Long> {
 
     Teacher findByUserId(Long userId);
 
+    boolean existsById(Long id);
 }

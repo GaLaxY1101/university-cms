@@ -2,6 +2,7 @@ package com.foxminded.korniichyk.university.controller;
 
 import com.foxminded.korniichyk.university.dto.display.GroupDto;
 import com.foxminded.korniichyk.university.dto.display.StudentDto;
+import com.foxminded.korniichyk.university.model.Student;
 import com.foxminded.korniichyk.university.security.CustomUserDetails;
 import com.foxminded.korniichyk.university.service.contract.GroupService;
 import com.foxminded.korniichyk.university.service.contract.StudentService;
@@ -60,10 +61,8 @@ public class StudentController {
             @RequestParam(defaultValue = "5") int size,
             Model model) {
 
-        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
-        CustomUserDetails userDetails = (CustomUserDetails) authentication.getPrincipal();
-        Long userId = userDetails.getUser().getId();
-        Long studentId = studentService.findByUserId(userId).getId();
+        Student currentStudent = studentService.getCurrentStudent();
+        Long studentId = currentStudent.getId();
 
         GroupDto group = groupService.findByStudentId(studentId);
 
