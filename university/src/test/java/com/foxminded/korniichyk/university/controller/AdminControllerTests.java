@@ -15,7 +15,6 @@ import com.foxminded.korniichyk.university.mapper.update.AdminUpdateMapper;
 import com.foxminded.korniichyk.university.mapper.update.StudentUpdateMapper;
 import com.foxminded.korniichyk.university.mapper.update.TeacherUpdateMapper;
 import com.foxminded.korniichyk.university.mapper.update.UserUpdateMapper;
-import com.foxminded.korniichyk.university.model.Student;
 import com.foxminded.korniichyk.university.security.CustomUserDetailsService;
 import com.foxminded.korniichyk.university.security.SecurityConfig;
 import com.foxminded.korniichyk.university.service.contract.*;
@@ -32,8 +31,6 @@ import org.springframework.data.domain.PageRequest;
 import org.springframework.security.test.context.support.WithMockUser;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.ResultActions;
-import org.springframework.test.web.servlet.request.MockMvcRequestBuilders;
-import org.springframework.validation.BindingResult;
 
 import java.time.LocalDate;
 import java.util.Collections;
@@ -1032,7 +1029,7 @@ class AdminControllerTests {
                 .andExpect(redirectedUrl("/administrators/admins"))
                 .andExpect(flash().attribute("successMessage", "Admin deleted successfully"));
 
-        verify(adminService, times(1)).delete(adminId);
+        verify(adminService, times(1)).deleteById(adminId);
     }
 
     @Test
@@ -1040,7 +1037,7 @@ class AdminControllerTests {
     void deleteAdmin_AdminNotFound_shouldAddErrorMessage() throws Exception {
         // Arrange
         Long adminId = 1L;
-        doThrow(new AdminNotFoundException("Admin not found")).when(adminService).delete(adminId);
+        doThrow(new AdminNotFoundException("Admin not found")).when(adminService).deleteById(adminId);
 
         // Act & Assert
         mockMvc.perform(post("/administrators/admins/delete/{id}", adminId)
@@ -1051,7 +1048,7 @@ class AdminControllerTests {
                 .andExpect(flash().attribute("errorMessage", "Admin not found"));
 
         // Verify that the service method was called
-        verify(adminService).delete(adminId);
+        verify(adminService).deleteById(adminId);
     }
 
 
@@ -1067,14 +1064,14 @@ class AdminControllerTests {
                 .andExpect(redirectedUrl("/administrators/students"))
                 .andExpect(flash().attribute("successMessage", "Student deleted successfully"));
 
-        verify(studentService, times(1)).delete(studentId);
+        verify(studentService, times(1)).deleteById(studentId);
     }
 
     @Test
     @WithMockCustomUser(email = "admin@gmail.com", roles = "ROLE_ADMIN")
     void deleteStudent_StudentNotFound_shouldAddErrorMessage() throws Exception {
         Long studentId = 1L;
-        doThrow(new StudentNotFoundException("Student not found")).when(studentService).delete(studentId);
+        doThrow(new StudentNotFoundException("Student not found")).when(studentService).deleteById(studentId);
 
         mockMvc.perform(post("/administrators/students/delete/{id}", studentId)
                         .param("_method", "delete")
@@ -1083,7 +1080,7 @@ class AdminControllerTests {
                 .andExpect(redirectedUrl("/administrators/students"))
                 .andExpect(flash().attribute("errorMessage", "Student not found"));
 
-        verify(studentService).delete(studentId);
+        verify(studentService).deleteById(studentId);
     }
 
     @Test
@@ -1101,14 +1098,14 @@ class AdminControllerTests {
                 .andExpect(flash().attribute("successMessage", "Teacher deleted successfully"));
 
         // Assert
-        verify(teacherService, times(1)).delete(teacherId);
+        verify(teacherService, times(1)).deleteById(teacherId);
     }
 
     @Test
     @WithMockCustomUser(email = "admin@gmail.com", roles = "ROLE_ADMIN")
     void deleteTeacher_TeacherNotFound_ShouldAddErrorMessage() throws Exception {
         Long teacherId = 1L;
-        doThrow(new TeacherNotFoundException("Teacher not found")).when(teacherService).delete(teacherId);
+        doThrow(new TeacherNotFoundException("Teacher not found")).when(teacherService).deleteById(teacherId);
 
         mockMvc.perform(post("/administrators/teachers/delete/{id}", teacherId)
                         .param("_method", "delete")
@@ -1117,7 +1114,7 @@ class AdminControllerTests {
                 .andExpect(redirectedUrl("/administrators/teachers"))
                 .andExpect(flash().attribute("errorMessage", "Teacher not found"));
 
-        verify(teacherService).delete(teacherId);
+        verify(teacherService).deleteById(teacherId);
     }
 
     @Test

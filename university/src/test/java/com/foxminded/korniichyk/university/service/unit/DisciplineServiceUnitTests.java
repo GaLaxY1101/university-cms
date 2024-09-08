@@ -62,7 +62,7 @@ public class DisciplineServiceUnitTests {
 
         when(disciplineDao.findById(anyLong())).thenReturn(Optional.of(discipline));
 
-        disciplineService.delete(disciplineId);
+        disciplineService.deleteById(disciplineId);
 
         verify(disciplineDao).findById(disciplineId);
         verify(disciplineDao).delete(discipline);
@@ -71,7 +71,7 @@ public class DisciplineServiceUnitTests {
     @Test
     void delete_shouldThrowDisciplineNotFoundException_whenDisciplineNotFound() {
         when(disciplineDao.findById(anyLong())).thenReturn(Optional.empty());
-        assertThrows(DisciplineNotFoundException.class, () -> disciplineService.delete(1L));
+        assertThrows(DisciplineNotFoundException.class, () -> disciplineService.deleteById(1L));
     }
 
 }

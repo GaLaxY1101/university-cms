@@ -51,7 +51,6 @@ public class GroupServiceImpl implements GroupService {
                 .orElseThrow(() -> new GroupNotFoundException("Teacher with id " + id + " not found"));
     }
 
-    @Override
     public List<GroupDto> findAll() {
         return groupDao.findAll()
                 .stream()
@@ -68,7 +67,7 @@ public class GroupServiceImpl implements GroupService {
 
     @Transactional
     @Override
-    public void delete(Long id) {
+    public void deleteById(Long id) {
         groupDao.findById(id)
                 .ifPresentOrElse(
                         group -> {

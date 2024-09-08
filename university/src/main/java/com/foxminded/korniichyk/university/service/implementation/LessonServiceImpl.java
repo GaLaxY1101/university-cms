@@ -44,14 +44,6 @@ public class LessonServiceImpl implements LessonService {
                 );
     }
 
-    @Override
-    public List<LessonDto> findAll() {
-        return lessonDao.findAll()
-                .stream()
-                .map(lessonMapper::toDto)
-                .collect(Collectors.toList());
-    }
-
     @Transactional
     @Override
     public void save(Lesson lesson) {
@@ -61,7 +53,7 @@ public class LessonServiceImpl implements LessonService {
 
     @Transactional
     @Override
-    public void delete(Long id) {
+    public void deleteById(Long id) {
         lessonDao.findById(id)
                 .ifPresentOrElse(
                         lesson -> {

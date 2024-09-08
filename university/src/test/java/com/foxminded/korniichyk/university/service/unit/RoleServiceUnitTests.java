@@ -52,7 +52,7 @@ public class RoleServiceUnitTests {
     void delete_shouldDeleteRole_ifExists() {
         when(roleDao.findById(anyLong())).thenReturn(Optional.of(new Role()));
 
-        roleService.delete(1L);
+        roleService.deleteById(1L);
 
         verify(roleDao).findById(anyLong());
         verify(roleDao).delete(any(Role.class));
@@ -61,7 +61,7 @@ public class RoleServiceUnitTests {
     @Test
     void delete_shouldThrowRoleNotFoundException_whenRoleNotFound() {
         when(roleDao.findById(anyLong())).thenReturn(Optional.empty());
-        assertThrows(RoleNotFoundException.class, () -> roleService.delete(1L));
+        assertThrows(RoleNotFoundException.class, () -> roleService.deleteById(1L));
     }
 
     @Test

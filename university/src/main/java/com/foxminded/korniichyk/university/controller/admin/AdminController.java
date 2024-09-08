@@ -13,7 +13,6 @@ import com.foxminded.korniichyk.university.mapper.update.TeacherUpdateMapper;
 import com.foxminded.korniichyk.university.service.contract.*;
 import com.foxminded.korniichyk.university.service.exception.*;
 import jakarta.validation.Valid;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
@@ -22,9 +21,6 @@ import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 import java.util.List;
-import java.util.Objects;
-
-import static org.springframework.data.jpa.domain.AbstractPersistable_.id;
 
 @Controller
 @RequestMapping("/administrators")
@@ -360,7 +356,7 @@ public class AdminController {
             RedirectAttributes redirectAttributes
     ) {
         try {
-            adminService.delete(adminId);
+            adminService.deleteById(adminId);
             redirectAttributes.addFlashAttribute("successMessage", "Admin deleted successfully");
         } catch (AdminNotFoundException ex) {
             redirectAttributes.addFlashAttribute("errorMessage", ex.getMessage());
@@ -375,7 +371,7 @@ public class AdminController {
             RedirectAttributes redirectAttributes
     ) {
         try {
-            studentService.delete(studentId);
+            studentService.deleteById(studentId);
             redirectAttributes.addFlashAttribute("successMessage", "Student deleted successfully");
         } catch (StudentNotFoundException ex) {
             redirectAttributes.addFlashAttribute("errorMessage", ex.getMessage());
@@ -389,7 +385,7 @@ public class AdminController {
             RedirectAttributes redirectAttributes
     ) {
         try {
-            teacherService.delete(teacherId);
+            teacherService.deleteById(teacherId);
             redirectAttributes.addFlashAttribute("successMessage", "Teacher deleted successfully");
         } catch (TeacherNotFoundException ex) {
             redirectAttributes.addFlashAttribute("errorMessage", ex.getMessage());

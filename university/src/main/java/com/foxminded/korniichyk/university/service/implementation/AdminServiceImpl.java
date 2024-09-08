@@ -58,14 +58,6 @@ public class AdminServiceImpl implements AdminService {
                 );
     }
 
-    @Override
-    public List<AdminDto> findAll() {
-        return adminDao.findAll()
-                .stream()
-                .map(adminMapper::toDto)
-                .collect(toList());
-    }
-
     @Transactional
     @Override
     public void save(Admin admin) {
@@ -75,7 +67,7 @@ public class AdminServiceImpl implements AdminService {
 
     @Transactional
     @Override
-    public void delete(Long id) {
+    public void deleteById(Long id) {
         adminDao.findById(id)
                 .ifPresentOrElse(
                         admin -> {

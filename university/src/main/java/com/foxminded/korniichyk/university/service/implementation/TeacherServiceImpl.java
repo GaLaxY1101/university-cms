@@ -76,14 +76,6 @@ public class TeacherServiceImpl implements TeacherService {
                 .orElseThrow(() -> new TeacherNotFoundException("Teacher with id: " + id + " not found"));
     }
 
-    @Override
-    public List<TeacherDto> findAll() {
-        return teacherDao.findAll()
-                .stream()
-                .map(teacherMapper::toDto)
-                .collect(toList());
-    }
-
     @Transactional
     @Override
     public void save(Teacher teacher) {
@@ -93,7 +85,7 @@ public class TeacherServiceImpl implements TeacherService {
 
     @Transactional
     @Override
-    public void delete(Long id) {
+    public void deleteById(Long id) {
         teacherDao.findById(id)
                 .ifPresentOrElse(
                         teacher -> {

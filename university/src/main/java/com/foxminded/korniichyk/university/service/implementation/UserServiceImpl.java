@@ -50,11 +50,6 @@ public class UserServiceImpl implements UserService {
                 .orElseThrow(() -> new UserNotFoundException("User with id " + id + " not found"));
     }
 
-    @Override
-    public List<UserDto> findAll() {
-        return userDao.findAll().stream().map(userMapper::toDto).collect(Collectors.toList());
-    }
-
     @Transactional
     @Override
     public void save(User user) {
@@ -64,7 +59,7 @@ public class UserServiceImpl implements UserService {
 
     @Transactional
     @Override
-    public void delete(Long id) {
+    public void deleteById(Long id) {
         userDao.findById(id).ifPresentOrElse(user -> {
             userDao.delete(user);
             log.info("{} deleted", user);

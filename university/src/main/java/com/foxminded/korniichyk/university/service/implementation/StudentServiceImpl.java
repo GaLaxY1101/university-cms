@@ -68,14 +68,6 @@ public class StudentServiceImpl implements StudentService {
                 .orElseThrow(() -> new StudentNotFoundException("Student with id: " + id + "not found"));
     }
 
-    @Override
-    public List<StudentDto> findAll() {
-        return studentDao.findAll()
-                .stream()
-                .map(studentMapper::toDto)
-                .collect(Collectors.toList());
-    }
-
     @Transactional
     @Override
     public void save(Student student) {
@@ -85,7 +77,7 @@ public class StudentServiceImpl implements StudentService {
 
     @Transactional
     @Override
-    public void delete(Long id) {
+    public void deleteById(Long id) {
         studentDao.findById(id)
                 .ifPresentOrElse(
                         student -> {

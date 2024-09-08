@@ -61,7 +61,7 @@ public class AdminServiceUnitTests {
 
         when(adminDao.findById(anyLong())).thenReturn(Optional.of(admin));
 
-        adminService.delete(adminId);
+        adminService.deleteById(adminId);
 
         verify(adminDao).findById(adminId);
         verify(adminDao).delete(admin);
@@ -70,6 +70,6 @@ public class AdminServiceUnitTests {
     @Test
     void delete_shouldThrowAdminNotFoundException_whenAdminNotFound() {
         when(adminDao.findById(anyLong())).thenReturn(Optional.empty());
-        assertThrows(AdminNotFoundException.class, () -> adminService.delete(1L));
+        assertThrows(AdminNotFoundException.class, () -> adminService.deleteById(1L));
     }
 }

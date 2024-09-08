@@ -37,14 +37,6 @@ public class LessonTypeServiceImpl implements LessonTypeService {
                 .orElseThrow(() -> new LessonTypeNotFoundException("Lesson type with id "+ id + "not found"));
     }
 
-    @Override
-    public List<LessonTypeDto> findAll() {
-        return lessonTypeDao.findAll()
-                .stream()
-                .map(lessonTypeMapper::toDto)
-                .collect(Collectors.toList());
-    }
-
     @Transactional
     @Override
     public void save(LessonType lessonType) {
@@ -54,7 +46,7 @@ public class LessonTypeServiceImpl implements LessonTypeService {
 
     @Transactional
     @Override
-    public void delete(Long id) {
+    public void deleteById(Long id) {
         var lessonType = lessonTypeDao.findById(id)
                 .orElseThrow(() -> new LessonTypeNotFoundException("Lesson type with id "+ id + "not found"));
 

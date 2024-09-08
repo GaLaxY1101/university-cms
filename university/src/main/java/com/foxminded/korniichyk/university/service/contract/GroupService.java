@@ -15,5 +15,7 @@ public interface GroupService extends CrudService<Group, GroupDto> {
 
     Page<GroupDto> findPageByTeacherId(Long teacherId, int pageNumber, int pageSize);
 
+    List<GroupDto> findAll();
+
     boolean isExistsById(Long id);
 }

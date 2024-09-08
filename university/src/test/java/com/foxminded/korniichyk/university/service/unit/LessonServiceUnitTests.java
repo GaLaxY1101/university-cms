@@ -65,7 +65,7 @@ public class LessonServiceUnitTests {
 
         when(lessonDao.findById(anyLong())).thenReturn(Optional.of(lesson));
 
-        lessonService.delete(lessonId);
+        lessonService.deleteById(lessonId);
 
         verify(lessonDao).findById(lessonId);
         verify(lessonDao).delete(lesson);
@@ -77,7 +77,7 @@ public class LessonServiceUnitTests {
 
         when(lessonDao.findById(anyLong())).thenReturn(Optional.empty());
 
-        assertThrows(LessonNotFoundException.class, () -> lessonService.delete(lessonId));
+        assertThrows(LessonNotFoundException.class, () -> lessonService.deleteById(lessonId));
     }
 
 }

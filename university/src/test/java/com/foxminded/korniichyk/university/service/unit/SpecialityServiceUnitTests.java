@@ -52,7 +52,7 @@ public class SpecialityServiceUnitTests {
     void delete_shouldDeleteSpeciality_ifExists() {
         when(specialityDao.findById(anyLong())).thenReturn(Optional.of(new Speciality()));
 
-        specialityService.delete(1L);
+        specialityService.deleteById(1L);
 
         verify(specialityDao).findById(anyLong());
         verify(specialityDao).delete(any(Speciality.class));
@@ -61,6 +61,6 @@ public class SpecialityServiceUnitTests {
     @Test
     void delete_shouldThrowSpecialityNotFoundException_whenSpecialityNotFound() {
         when(specialityDao.findById(anyLong())).thenReturn(Optional.empty());
-        assertThrows(SpecialityNotFoundException.class, () -> specialityService.delete(1L));
+        assertThrows(SpecialityNotFoundException.class, () -> specialityService.deleteById(1L));
     }
 }

@@ -65,7 +65,7 @@ public class TeacherServiceUnitTests {
         when(teacherDao.findById(anyLong())).thenReturn(Optional.of(new Teacher()));
         doNothing().when(teacherDao).delete(any(Teacher.class));
 
-        teacherService.delete(1L);
+        teacherService.deleteById(1L);
 
         verify(teacherDao, times(1)).delete(any(Teacher.class));
     }
@@ -73,7 +73,7 @@ public class TeacherServiceUnitTests {
     @Test
     void delete_shouldThrowTeacherNotFoundException_whenTeacherDoesNotExist() {
         when(teacherDao.findById(anyLong())).thenReturn(Optional.empty());
-        assertThrows(TeacherNotFoundException.class, () -> teacherService.delete(1L));
+        assertThrows(TeacherNotFoundException.class, () -> teacherService.deleteById(1L));
     }
 
 

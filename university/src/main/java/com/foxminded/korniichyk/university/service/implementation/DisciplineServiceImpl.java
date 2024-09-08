@@ -59,7 +59,7 @@ public class DisciplineServiceImpl implements DisciplineService {
 
     @Transactional
     @Override
-    public void delete(Long id) {
+    public void deleteById(Long id) {
         disciplineDao.findById(id)
                 .ifPresentOrElse(
                         discipline -> {

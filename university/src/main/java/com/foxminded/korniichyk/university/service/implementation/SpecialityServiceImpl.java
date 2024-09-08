@@ -37,14 +37,6 @@ public class SpecialityServiceImpl implements SpecialityService {
                 .orElseThrow(() -> new SpecialityNotFoundException("Speciality with id " + id + " not found"));
     }
 
-    @Override
-    public List<SpecialityDto> findAll() {
-        return specialityDao.findAll()
-                .stream()
-                .map(specialityMapper::toDto)
-                .collect(Collectors.toList());
-    }
-
     @Transactional
     @Override
     public void save(Speciality speciality) {
@@ -54,7 +46,7 @@ public class SpecialityServiceImpl implements SpecialityService {
 
     @Transactional
     @Override
-    public void delete(Long id) {
+    public void deleteById(Long id) {
         specialityDao.findById(id)
                 .ifPresentOrElse(
                         speciality -> {

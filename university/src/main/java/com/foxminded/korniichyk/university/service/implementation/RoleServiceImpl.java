@@ -37,13 +37,6 @@ public class RoleServiceImpl implements RoleService {
     }
 
     @Override
-    public List<RoleDto> findAll() {
-        return roleDao.findAll().stream()
-                .map(roleMapper::toDto)
-                .collect(Collectors.toList());
-    }
-
-    @Override
     public Role findByName(String name) {
         Role role = roleDao.findByName(name);
         if (role == null) {
@@ -61,7 +54,7 @@ public class RoleServiceImpl implements RoleService {
 
     @Transactional
     @Override
-    public void delete(Long id){
+    public void deleteById(Long id){
         var role = roleDao.findById(id)
                 .orElseThrow(() -> new RoleNotFoundException("Role with id "+ id + "not found"));
         roleDao.delete(role);

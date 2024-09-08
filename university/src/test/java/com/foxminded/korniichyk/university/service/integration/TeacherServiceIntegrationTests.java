@@ -46,14 +46,14 @@ public class TeacherServiceIntegrationTests {
     void deleteTeacher_shouldDeleteTeacher_whenTeacherExists() {
         var teacherId = insertTeacher();
 
-        teacherService.delete(teacherId);
+        teacherService.deleteById(teacherId);
         assertEquals(0, teacherService.findAll().size());
 
     }
 
     @Test
     void deleteTeacher_shouldThrowTeacherNotFoundException_whenTeacherDoesNotExist() {
-        assertThrows(TeacherNotFoundException.class, () -> teacherService.delete(1L));
+        assertThrows(TeacherNotFoundException.class, () -> teacherService.deleteById(1L));
     }
 
     @Test

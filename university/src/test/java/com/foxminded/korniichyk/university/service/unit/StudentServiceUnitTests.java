@@ -81,7 +81,7 @@ public class StudentServiceUnitTests {
     void delete_shouldDeleteStudentIfPresent() {
         when(studentDao.findById(anyLong())).thenReturn(Optional.of(new Student()));
 
-        studentService.delete(1L);
+        studentService.deleteById(1L);
 
         verify(studentDao, times(1)).findById(anyLong());
         verify(studentDao, times(1)).delete(any(Student.class));
@@ -91,7 +91,7 @@ public class StudentServiceUnitTests {
     void delete_shouldThrowStudentNotFoundException_whenStudentDoesNotExist() {
         when(studentDao.findById(anyLong())).thenReturn(Optional.empty());
 
-        assertThrows(StudentNotFoundException.class, () -> studentService.delete(1L));
+        assertThrows(StudentNotFoundException.class, () -> studentService.deleteById(1L));
         verify(studentDao, times(1)).findById(anyLong());
         verify(studentDao, times(0)).delete(any(Student.class));
     }

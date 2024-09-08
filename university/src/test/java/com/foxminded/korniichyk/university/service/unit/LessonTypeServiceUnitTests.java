@@ -52,7 +52,7 @@ public class LessonTypeServiceUnitTests {
     void delete_shouldDeleteLessonType_ifExists() {
         when(lessonTypeDao.findById(anyLong())).thenReturn(Optional.of(new LessonType()));
 
-        lessonTypeService.delete(1L);
+        lessonTypeService.deleteById(1L);
 
         verify(lessonTypeDao).findById(anyLong());
         verify(lessonTypeDao).delete(any(LessonType.class));
@@ -61,7 +61,7 @@ public class LessonTypeServiceUnitTests {
     @Test
     void delete_shouldThrowLessonTypeNotFoundException_whenLessonTypeNotFound() {
         when(lessonTypeDao.findById(anyLong())).thenReturn(Optional.empty());
-        assertThrows(LessonTypeNotFoundException.class, () -> lessonTypeService.delete(1L));
+        assertThrows(LessonTypeNotFoundException.class, () -> lessonTypeService.deleteById(1L));
     }
 
     @Test

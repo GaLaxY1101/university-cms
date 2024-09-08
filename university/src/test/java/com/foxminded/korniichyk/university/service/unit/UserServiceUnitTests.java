@@ -74,7 +74,7 @@ public class UserServiceUnitTests {
     void delete_shouldDeleteUser_whenUserExists() {
         when(userDao.findById(anyLong())).thenReturn(Optional.of(new User()));
         doNothing().when(userDao).delete(any(User.class));
-        userService.delete(1L);
+        userService.deleteById(1L);
 
         verify(userDao, times(1)).delete(any(User.class));
     }
@@ -82,7 +82,7 @@ public class UserServiceUnitTests {
     @Test
     void delete_shouldThrowUserNotFoundExceptionIfUserDoesNotExist() {
         when(userDao.findById(anyLong())).thenReturn(Optional.empty());
-        assertThrows(UserNotFoundException.class, () -> userService.delete(anyLong()));
+        assertThrows(UserNotFoundException.class, () -> userService.deleteById(anyLong()));
     }
 
     @Test

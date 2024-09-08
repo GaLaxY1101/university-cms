@@ -69,7 +69,7 @@ public class GroupServiceUnitTests {
 
         when(groupDao.findById(anyLong())).thenReturn(Optional.of(group));
 
-        groupService.delete(groupId);
+        groupService.deleteById(groupId);
 
         verify(groupDao).findById(groupId);
         verify(groupDao).delete(group);
@@ -78,7 +78,7 @@ public class GroupServiceUnitTests {
     @Test
     void delete_shouldThrowGroupNotFoundException_whenGroupNotFound() {
         when(groupDao.findById(anyLong())).thenReturn(Optional.empty());
-        assertThrows(GroupNotFoundException.class, () -> groupService.delete(1L));
+        assertThrows(GroupNotFoundException.class, () -> groupService.deleteById(1L));
     }
 
     @Test
