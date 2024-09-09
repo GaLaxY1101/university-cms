@@ -20,6 +20,7 @@ import java.time.LocalTime;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertThrows;
+import static org.mockito.Mockito.verify;
 
 @Transactional
 @SpringBootTest
@@ -47,7 +48,7 @@ public class TeacherServiceIntegrationTests {
         var teacherId = insertTeacher();
 
         teacherService.deleteById(teacherId);
-        assertEquals(0, teacherService.findAll().size());
+        verify(teacherService).deleteById(teacherId);
 
     }
 

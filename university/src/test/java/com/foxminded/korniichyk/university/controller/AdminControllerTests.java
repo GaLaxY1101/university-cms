@@ -1215,6 +1215,18 @@ class AdminControllerTests {
     @WithMockCustomUser(email = "admin@gmail.com", roles = "ROLE_ADMIN")
     void editAdmin_Success() throws Exception {
 
+
+        AdminDto adminDto = new AdminDto();
+        UserDto userDto = new UserDto();
+        userDto.setId(1L);
+        userDto.setPhoneNumber("0999999999");
+        userDto.setEmail("email@gmail.com");
+        adminDto.setUser(userDto);
+
+        AdminUpdateDto adminUpdateDto = new AdminUpdateDto();
+
+        when(adminService.findById(anyLong())).thenReturn(adminDto);
+
         mockMvc.perform(post("/administrators/admins/edit")
                         .flashAttr("adminUpdateDto", new AdminUpdateDto())
                         .with(csrf()))

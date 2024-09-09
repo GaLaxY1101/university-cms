@@ -39,7 +39,7 @@ public class UserServiceUnitTests {
         when(userMapper.toDto(any(User.class))).thenReturn(new UserDto());
         userService.findById(anyLong());
 
-        verify(userDao, times(1)).findById(anyLong());
+        verify(userDao).findById(anyLong());
     }
 
     @Test
@@ -49,25 +49,6 @@ public class UserServiceUnitTests {
         assertThrows(UserNotFoundException.class, () -> userService.findById(anyLong()));
     }
 
-
-    @Test
-    void findAll_shouldReturnUsers() {
-        when(userDao.findAll()).thenReturn(List.of(new User(), new User()));
-        when(userMapper.toDto(any(User.class))).thenReturn(new UserDto());
-
-        assertEquals(2, userService.findAll().size());
-
-        verify(userDao, times(1)).findAll();
-    }
-
-    @Test
-    void findAll_shouldReturnEmptyList_whenNoUsers() {
-        when(userDao.findAll()).thenReturn(Collections.emptyList());
-
-        assertEquals(0, userService.findAll().size());
-
-        verify(userDao, times(1)).findAll();
-    }
 
 
     @Test

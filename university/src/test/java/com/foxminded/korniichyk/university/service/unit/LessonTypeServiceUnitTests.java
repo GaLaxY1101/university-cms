@@ -73,11 +73,5 @@ public class LessonTypeServiceUnitTests {
         verify(lessonTypeDao).save(lessonType);
     }
 
-    @Test
-    void findAll_shouldReturnListOfLessonTypes() {
-        lessonTypeService.findAll();
-
-        verify(lessonTypeDao).findAll();
-    }
 
 }

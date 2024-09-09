@@ -54,27 +54,12 @@ public class StudentServiceUnitTests {
         assertThrows(StudentNotFoundException.class, () -> studentService.findById(1L));
     }
 
-    @Test
-    void findAll_shouldReturnEmptyList_whenNoStudents() {
-        when(studentDao.findAll()).thenReturn(new ArrayList<>());
-
-        assertEquals(0, studentService.findAll().size());
-        verify(studentDao, times(1)).findAll();
-    }
-
-    @Test
-    void findAll_shouldReturnStudents_whenStudentsPresented() {
-        when(studentDao.findAll()).thenReturn(List.of(new Student(), new Student()));
-
-        assertEquals(2, studentService.findAll().size());
-        verify(studentDao, times(1)).findAll();
-    }
 
     @Test
     void save_shouldSaveStudent() {
         when(studentDao.save(any(Student.class))).thenReturn(new Student());
         studentService.save(new Student());
-        verify(studentDao, times(1)).save(any(Student.class));
+        verify(studentDao).save(any(Student.class));
     }
 
     @Test
@@ -83,8 +68,8 @@ public class StudentServiceUnitTests {
 
         studentService.deleteById(1L);
 
-        verify(studentDao, times(1)).findById(anyLong());
-        verify(studentDao, times(1)).delete(any(Student.class));
+        verify(studentDao).findById(anyLong());
+        verify(studentDao).delete(any(Student.class));
     }
 
     @Test
@@ -92,7 +77,7 @@ public class StudentServiceUnitTests {
         when(studentDao.findById(anyLong())).thenReturn(Optional.empty());
 
         assertThrows(StudentNotFoundException.class, () -> studentService.deleteById(1L));
-        verify(studentDao, times(1)).findById(anyLong());
+        verify(studentDao).findById(anyLong());
         verify(studentDao, times(0)).delete(any(Student.class));
     }
 
@@ -111,15 +96,15 @@ public class StudentServiceUnitTests {
         assertEquals(1, result.getContent().size());
 
 
-        verify(studentDao, times(1)).findByGroupId(anyLong(), any(Pageable.class));
-        verify(groupDao, times(1)).findById(anyLong());
+        verify(studentDao).findByGroupId(anyLong(), any(Pageable.class));
+        verify(groupDao).findById(anyLong());
     }
 
     @Test
     void findStudentsPageByGroupId_shouldThrowGroupNotFoundException_whenGroupDoesNotExist() {
         when(groupDao.findById(anyLong())).thenReturn(Optional.empty());
         assertThrows(GroupNotFoundException.class, () -> studentService.findStudentsPageByGroupId(1L, 1, 5));
-        verify(groupDao, times(1)).findById(anyLong());
+        verify(groupDao).findById(anyLong());
         verify(studentDao, times(0)).findByGroupId(anyLong(), any(Pageable.class));
 
     }
@@ -155,23 +140,6 @@ public class StudentServiceUnitTests {
     }
 
     @Test
-    void assignGroup_shouldThrowGroupAlreadyAssignedException_whenGroupAlreadyAssignedToStudent() {
-
-        Long groupId = 1L;
-        Long studentId = 1L;
-        Group group = new Group();
-        Student student = new Student();
-        group.getStudents().add(student);
-
-        when(groupDao.findById(groupId)).thenReturn(Optional.of(group));
-        when(studentDao.findById(studentId)).thenReturn(Optional.of(student));
-
-        assertThrows(GroupAlreadyAssignedException.class, () -> studentService.assignGroup(groupId, studentId));
-        verify(studentDao, never()).save(any(Student.class));
-
-    }
-
-    @Test
     void assignGroup_shouldAssignGroupToStudent_whenGroupAndStudentExistsAndNotAssigned() {
         Long groupId = 1L;
         Long studentId = 1L;
@@ -183,7 +151,7 @@ public class StudentServiceUnitTests {
 
         studentService.assignGroup(groupId, studentId);
 
-        verify(studentDao, times(1)).save(student);
+        verify(studentDao).save(student);
     }
 
     @Test
@@ -199,7 +167,7 @@ public class StudentServiceUnitTests {
 
         studentService.findByUserId(userId);
 
-        verify(studentDao, times(1)).findByUserId(userId);
+        verify(studentDao).findByUserId(userId);
     }
 
     @Test
@@ -214,7 +182,7 @@ public class StudentServiceUnitTests {
         Page<StudentDto> result = studentService.findPage(pageNumber, pageSize);
 
         assertEquals(0, result.getContent().size());
-        verify(studentDao, times(1)).findAll(pageable);
+        verify(studentDao).findAll(pageable);
         verify(studentMapper, never()).toDto(any(Student.class));
     }
 

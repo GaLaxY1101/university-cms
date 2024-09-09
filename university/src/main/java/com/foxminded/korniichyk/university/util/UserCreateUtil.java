@@ -121,7 +121,7 @@ public class UserCreateUtil implements ApplicationRunner {
     }
 
     public void createTeacher() {
-        if (userService.isExistsByEmail("teacher@gmail.com")) {
+        if (!userService.isExistsByEmail("teacher@gmail.com")) {
             User user = new User();
             user.setFirstName("Oleg");
             user.setLastName("Shtifzon");

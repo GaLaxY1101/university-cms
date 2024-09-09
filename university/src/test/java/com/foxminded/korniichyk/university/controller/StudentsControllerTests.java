@@ -5,6 +5,7 @@ import com.foxminded.korniichyk.university.dto.display.GroupDto;
 import com.foxminded.korniichyk.university.dto.display.SpecialityDto;
 import com.foxminded.korniichyk.university.dto.display.StudentDto;
 import com.foxminded.korniichyk.university.dto.display.UserDto;
+import com.foxminded.korniichyk.university.model.Student;
 import com.foxminded.korniichyk.university.security.CustomUserDetailsService;
 import com.foxminded.korniichyk.university.security.SecurityConfig;
 import com.foxminded.korniichyk.university.service.contract.GroupService;
@@ -152,11 +153,14 @@ public class StudentsControllerTests {
         groupDto.setSpeciality(specialityDto);
         groupDto.setStudents(Set.of(studentDto));
 
+        Student student = new Student();
+        student.setId(1L);
+
         when(studentService.findByUserId(anyLong())).thenReturn(currentUserStudent);
         when(groupService.findByStudentId(anyLong())).thenReturn(groupDto);
         when(studentService.findStudentsPageByGroupId(anyLong(), anyInt(), anyInt()))
                 .thenReturn(new PageImpl<>(singletonList(studentDto)));
-
+        when(studentService.getCurrentStudent()).thenReturn(student);
         ResultActions result = mockMvc.perform(get("/students/my-group")
                 .param("page", "0")
                 .param("size", "5"));

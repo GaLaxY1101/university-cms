@@ -110,9 +110,7 @@ public class TeacherServiceImpl implements TeacherService {
         if (teacher.getDisciplines().contains(discipline)) {
             throw new DisciplineAlreadyAssignedException(teacher + " already has " + discipline);
         }
-        teacher.getDisciplines().add(discipline);
-        discipline.getTeachers().add(teacher);
-
+        teacher.addDiscipline(discipline);
     }
 
     @Transactional

@@ -55,4 +55,7 @@ public class Teacher {
     )
     private Set<Lesson> lessons = new HashSet<>();
 
+    public void addDiscipline(Discipline discipline) {
+        disciplines.add(discipline);
+    }
 }

@@ -195,42 +195,31 @@ create index if not exists idx_users_phonenumber
 
 create sequence admin_sequence;
 
-alter sequence admin_sequence owner to postgres;
-
 create sequence discipline_sequence;
 
-alter sequence discipline_sequence owner to postgres;
 
 create sequence group_sequence;
 
-alter sequence group_sequence owner to postgres;
 
 create sequence lesson_sequence;
 
-alter sequence lesson_sequence owner to postgres;
 
 create sequence lesson_type_sequence;
 
-alter sequence lesson_type_sequence owner to postgres;
 
 create sequence role_sequence;
 
-alter sequence role_sequence owner to postgres;
 
 create sequence speciality_sequence;
 
-alter sequence speciality_sequence owner to postgres;
 
 create sequence student_sequence;
 
-alter sequence student_sequence owner to postgres;
 
 create sequence teacher_sequence;
 
-alter sequence teacher_sequence owner to postgres;
 
 create sequence user_sequence;
 
-alter sequence user_sequence owner to postgres;
 
 

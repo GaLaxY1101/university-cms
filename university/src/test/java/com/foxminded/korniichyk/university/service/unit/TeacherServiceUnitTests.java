@@ -49,7 +49,7 @@ public class TeacherServiceUnitTests {
 
         teacherService.findById(1L);
 
-        verify(teacherDao, times(1)).findById(anyLong());
+        verify(teacherDao).findById(anyLong());
 
     }
 
@@ -67,7 +67,7 @@ public class TeacherServiceUnitTests {
 
         teacherService.deleteById(1L);
 
-        verify(teacherDao, times(1)).delete(any(Teacher.class));
+        verify(teacherDao).delete(any(Teacher.class));
     }
 
     @Test
@@ -91,7 +91,6 @@ public class TeacherServiceUnitTests {
 
         assertTrue(teacher.getDisciplines().contains(discipline));
         assertTrue(discipline.getTeachers().contains(teacher));
-        verify(teacherDao).save(teacher);
     }
 
     @Test

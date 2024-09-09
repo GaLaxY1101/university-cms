@@ -93,6 +93,8 @@ public class GroupServiceImpl implements GroupService {
         return groupMapper.toDto(student.getGroup());
     }
 
+
+
     @Override
     public Page<GroupDto> findPage(int pageNumber, int pageSize) {
         Pageable pageable = PageRequest.of(pageNumber, pageSize);
@@ -105,17 +107,35 @@ public class GroupServiceImpl implements GroupService {
             throw new TeacherNotFoundException("Teacher with id " + teacherId + " not found");
         }
 
-        List<GroupDto> groups = groupDao.findByTeacherId(teacherId)
+        Pageable pageable = PageRequest.of(pageNumber, pageSize);
+        Page<Group> groupPage = groupDao.findByTeacherId(teacherId, pageable);
+
+        List<GroupDto> groups = groupPage.getContent()
                 .stream()
                 .map(groupMapper::toDto)
                 .toList();
 
-        Pageable pageable = PageRequest.of(pageNumber, pageSize);
-        int start = (int) pageable.getOffset();
-        int end = Math.min((start + pageable.getPageSize()), groups.size());
+        return new PageImpl<GroupDto>(groups, pageable, groups.size());
 
-        return new PageImpl<>(groups.subList(start, end), pageable, groups.size());
     }
+
+//    @Override
+//    public Page<GroupDto> findPageByTeacherId(Long teacherId, int pageNumber, int pageSize) {
+//        if (!teacherService.isExistsById(teacherId)) {
+//            throw new TeacherNotFoundException("Teacher with id " + teacherId + " not found");
+//        }
+//
+//        List<GroupDto> groups = groupDao.findByTeacherId(teacherId)
+//                .stream()
+//                .map(groupMapper::toDto)
+//                .toList();
+//
+//        Pageable pageable = PageRequest.of(pageNumber, pageSize);
+//        int start = (int) pageable.getOffset();
+//        int end = Math.min((start + pageable.getPageSize()), groups.size());
+//
+//        return new PageImpl<>(groups.subList(start, end), pageable, groups.size());
+//    }
 
     @Override
     public boolean isExistsById(Long id) {
