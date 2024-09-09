@@ -58,4 +58,16 @@ public class Teacher {
     public void addDiscipline(Discipline discipline) {
         disciplines.add(discipline);
     }
+
+    public void removeDiscipline(Discipline discipline) {
+        disciplines.remove(discipline);
+    }
+
+    public void addLesson(Lesson lesson) {
+        lessons.add(lesson);
+    }
+
+    public void removeLesson(Lesson lesson) {
+        lessons.remove(lesson);
+    }
 }
