@@ -27,6 +27,7 @@ import org.springframework.transaction.annotation.Transactional;
 
 import java.util.Collections;
 import java.util.Set;
+import java.util.stream.Collectors;
 
 @Transactional(readOnly = true)
 @Service
@@ -99,7 +100,6 @@ public class TeacherServiceImpl implements TeacherService {
     }
 
 
-
     @Override
     public Page<TeacherDto> findPage(int pageNumber, int pageSize) {
         Pageable pageable = PageRequest.of(pageNumber, pageSize);
@@ -140,9 +140,16 @@ public class TeacherServiceImpl implements TeacherService {
                 () -> new TeacherNotFoundException("Teacher with id: " + teacherId + " not found")
         );
 
-        Set<Discipline> disciplines = disciplineService.findAllByIdIn(teacherUpdateDto.getDisciplineIds());
+        Set<Long> existingDisciplineIds = teacher.getDisciplines()
+                .stream()
+                .map(discipline -> discipline.getId())
+                .collect(Collectors.toSet());
 
-        teacher.setDisciplines(disciplines);
+        if (!existingDisciplineIds.equals(existingDisciplineIds)) {
+            Set<Discipline> disciplines = disciplineService.findAllByIdIn(teacherUpdateDto.getDisciplineIds());
+            teacher.setDisciplines(disciplines);
+        }
+
         teacher.getUser().setEmail(teacherUpdateDto.getUser().getEmail());
         teacher.getUser().setFirstName(teacherUpdateDto.getUser().getFirstName());
         teacher.getUser().setLastName(teacherUpdateDto.getUser().getLastName());
