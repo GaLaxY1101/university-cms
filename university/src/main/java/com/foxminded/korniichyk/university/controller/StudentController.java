@@ -2,6 +2,8 @@ package com.foxminded.korniichyk.university.controller;
 
 import com.foxminded.korniichyk.university.dto.display.GroupDto;
 import com.foxminded.korniichyk.university.dto.display.StudentDto;
+import com.foxminded.korniichyk.university.mapper.display.GroupMapper;
+import com.foxminded.korniichyk.university.model.Group;
 import com.foxminded.korniichyk.university.model.Student;
 import com.foxminded.korniichyk.university.security.CustomUserDetails;
 import com.foxminded.korniichyk.university.service.contract.GroupService;
@@ -27,12 +29,13 @@ public class StudentController {
 
     private final StudentService studentService;
 
-    private final GroupService groupService;
+    private final GroupMapper groupMapper;
 
     public StudentController(StudentService studentService,
-                             GroupService groupService) {
+                             GroupService groupService,
+                             GroupMapper groupMapper) {
         this.studentService = studentService;
-        this.groupService = groupService;
+        this.groupMapper = groupMapper;
     }
 
 
@@ -63,17 +66,14 @@ public class StudentController {
             Model model) {
 
         Student currentStudent = studentService.getCurrentStudent();
-        Long studentId = currentStudent.getId();
-
-        GroupDto group = groupService.findByStudentId(studentId);
-        Long groupId = group.getId();
+        Group group = currentStudent.getGroup();
 
         Pageable pageable = PageRequest.of(page, size);
-        Page<StudentDto> studentPage = studentService.findByGroupIdExcludingByStudentId(groupId, studentId, pageable);
+        Page<StudentDto> studentPage = studentService.findByGroupIdExcludingByStudentId(group.getId(), currentStudent.getId(), pageable);
         List<StudentDto> students = studentPage.getContent();
 
         model.addAttribute("students", students);
-        model.addAttribute("group", group);
+        model.addAttribute("group", groupMapper.toDto(group));
         model.addAttribute("currentPage", studentPage.getNumber());
         model.addAttribute("totalPages", studentPage.getTotalPages());
         model.addAttribute("totalElements", studentPage.getTotalElements());
