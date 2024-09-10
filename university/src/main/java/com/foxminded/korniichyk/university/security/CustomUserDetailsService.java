@@ -29,7 +29,7 @@ public class CustomUserDetailsService implements UserDetailsService {
     public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
 
         User user = userService.findByEmail(username);
-        Hibernate.initialize(user.getRoles());
+        Hibernate.initialize(user.getRole());
         return new CustomUserDetails(user);
     }
 }

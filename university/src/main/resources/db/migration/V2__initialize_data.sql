@@ -1,8 +1,3 @@
--- Insert roles into the roles table
-INSERT INTO roles (id, name)
-VALUES (nextval('role_sequence'), 'ROLE_TEACHER'),
-       (nextval('role_sequence'), 'ROLE_ADMIN'),
-       (nextval('role_sequence'), 'ROLE_STUDENT');
 
 -- Insert into specialities
 INSERT INTO specialities (id, code, description, name)
@@ -277,11 +272,6 @@ VALUES (1, 1),
        (7, 6),
        (8, 7),
        (8, 8);
-
--- Insert into user_role
-INSERT INTO user_role (user_id, role_id)
-VALUES (1, 1),
-       (2, 1);
 
 -- Assign teachers to disciplines
 INSERT INTO teacher_discipline (teacher_id, discipline_id)

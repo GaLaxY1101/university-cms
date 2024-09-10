@@ -25,8 +25,6 @@ public class UserCreateUtil implements ApplicationRunner {
 
     private final PasswordEncoder passwordEncoder;
 
-    private final RoleService roleService;
-
     private final UserDao userDao;
 
     private final GroupDao groupDao;
@@ -39,7 +37,6 @@ public class UserCreateUtil implements ApplicationRunner {
     public UserCreateUtil(UserService userService,
                           AdminService adminService,
                           PasswordEncoder passwordEncoder,
-                          RoleService roleService,
                           UserDao userDao,
                           GroupDao groupDao,
                           StudentService studentService,
@@ -48,7 +45,6 @@ public class UserCreateUtil implements ApplicationRunner {
         this.userService = userService;
         this.adminService = adminService;
         this.passwordEncoder = passwordEncoder;
-        this.roleService = roleService;
         this.userDao = userDao;
         this.groupDao = groupDao;
         this.studentService = studentService;
@@ -76,11 +72,7 @@ public class UserCreateUtil implements ApplicationRunner {
             String encodedPassword = passwordEncoder.encode("student");
             user.setPassword(encodedPassword);
 
-            Role studentRole = roleService.findByName("ROLE_STUDENT");
-            if (studentRole == null) {
-                throw new IllegalStateException("Student role not found in the database");
-            }
-            user.setRoles(Set.of(studentRole));
+            user.setRole(Role.ROLE_STUDENT);
 
             userService.save(user);
 
@@ -103,11 +95,8 @@ public class UserCreateUtil implements ApplicationRunner {
             String encodedPassword = passwordEncoder.encode("admin");
             user.setPassword(encodedPassword);
 
-            Role adminRole = roleService.findByName("ROLE_ADMIN");
-            if (adminRole == null) {
-                throw new IllegalStateException("Admin role not found in the database");
-            }
-            user.setRoles(Set.of(adminRole));
+
+            user.setRole(Role.ROLE_ADMIN);
 
             userService.save(user);
 
@@ -132,11 +121,7 @@ public class UserCreateUtil implements ApplicationRunner {
             String encodedPassword = passwordEncoder.encode("teacher");
             user.setPassword(encodedPassword);
 
-            Role teacherRole = roleService.findByName("ROLE_TEACHER");
-            if (teacherRole == null) {
-                throw new IllegalStateException("Teacher role not found in the database");
-            }
-            user.setRoles(Set.of(teacherRole));
+            user.setRole(Role.ROLE_TEACHER);
 
             userService.save(user);
 

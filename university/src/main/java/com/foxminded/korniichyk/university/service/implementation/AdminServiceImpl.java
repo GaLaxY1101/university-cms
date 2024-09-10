@@ -10,7 +10,6 @@ import com.foxminded.korniichyk.university.model.Admin;
 import com.foxminded.korniichyk.university.model.Role;
 import com.foxminded.korniichyk.university.model.User;
 import com.foxminded.korniichyk.university.service.contract.AdminService;
-import com.foxminded.korniichyk.university.service.contract.RoleService;
 import com.foxminded.korniichyk.university.service.contract.UserService;
 import com.foxminded.korniichyk.university.service.exception.AdminNotFoundException;
 import org.springframework.transaction.annotation.Transactional;
@@ -20,10 +19,7 @@ import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
-import java.util.List;
-
 import static java.util.Collections.singleton;
-import static java.util.stream.Collectors.toList;
 
 @Service
 @Slf4j
@@ -34,18 +30,15 @@ public class AdminServiceImpl implements AdminService {
     private final AdminDao adminDao;
     private final AdminMapper adminMapper;
     private final UserService userService;
-    private final RoleService roleService;
     private final AdminUpdateMapper adminUpdateMapper;
 
     public AdminServiceImpl(AdminDao adminDao,
                             AdminMapper adminMapper,
                             UserService userService,
-                            RoleService roleService,
                             AdminUpdateMapper adminUpdateMapper) {
         this.adminDao = adminDao;
         this.adminMapper = adminMapper;
         this.userService = userService;
-        this.roleService = roleService;
         this.adminUpdateMapper = adminUpdateMapper;
     }
 
@@ -90,8 +83,8 @@ public class AdminServiceImpl implements AdminService {
     @Override
     public void registerAdmin(AdminRegistrationDto adminRegistrationDto) {
 
-        Role adminRole = roleService.findByName("ROLE_ADMIN");
-        adminRegistrationDto.getUser().setRoles(singleton(adminRole));
+
+        adminRegistrationDto.getUser().setRole(Role.ROLE_ADMIN);
 
         User user = userService.registerUser(adminRegistrationDto.getUser());
 

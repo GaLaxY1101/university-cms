@@ -13,7 +13,6 @@ import com.foxminded.korniichyk.university.mapper.update.TeacherUpdateMapper;
 import com.foxminded.korniichyk.university.model.*;
 import com.foxminded.korniichyk.university.security.CustomUserDetails;
 import com.foxminded.korniichyk.university.service.contract.DisciplineService;
-import com.foxminded.korniichyk.university.service.contract.RoleService;
 import com.foxminded.korniichyk.university.service.contract.TeacherService;
 import com.foxminded.korniichyk.university.service.contract.UserService;
 import com.foxminded.korniichyk.university.service.exception.*;
@@ -27,10 +26,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.Collections;
-import java.util.List;
 import java.util.Set;
-
-import static java.util.stream.Collectors.toList;
 
 @Transactional(readOnly = true)
 @Service
@@ -45,7 +41,6 @@ public class TeacherServiceImpl implements TeacherService {
     private final UserDao userDao;
     private final UserService userService;
     private final TeacherMapper teacherMapper;
-    private final RoleService roleService;
     private final TeacherUpdateMapper teacherUpdateMapper;
 
     public TeacherServiceImpl(TeacherDao teacherDao,
@@ -54,7 +49,6 @@ public class TeacherServiceImpl implements TeacherService {
                               LessonDao lessonDao, DisciplineService disciplineService,
                               UserDao userDao,
                               UserService userService,
-                              RoleService roleService,
                               RoleMapper roleMapper,
                               TeacherUpdateMapper teacherUpdateMapper
     ) {
@@ -65,7 +59,6 @@ public class TeacherServiceImpl implements TeacherService {
         this.disciplineService = disciplineService;
         this.userDao = userDao;
         this.userService = userService;
-        this.roleService = roleService;
         this.teacherUpdateMapper = teacherUpdateMapper;
     }
 
@@ -117,9 +110,9 @@ public class TeacherServiceImpl implements TeacherService {
     @Override
     public Teacher registerTeacher(TeacherRegistrationDto teacherRegistrationDto) {
 
-        Role teacherRole = roleService.findByName("ROLE_TEACHER");
+        Role teacherRole = Role.ROLE_TEACHER;
 
-        teacherRegistrationDto.getUser().setRoles(Collections.singleton(teacherRole));
+        teacherRegistrationDto.getUser().setRole(teacherRole);
 
         Teacher teacher = new Teacher();
 

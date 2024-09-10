@@ -1,10 +1,8 @@
 package com.foxminded.korniichyk.university.service.unit;
 
-import com.foxminded.korniichyk.university.dao.RoleDao;
 import com.foxminded.korniichyk.university.dto.display.RoleDto;
 import com.foxminded.korniichyk.university.model.Role;
 import com.foxminded.korniichyk.university.service.exception.RoleNotFoundException;
-import com.foxminded.korniichyk.university.service.implementation.RoleServiceImpl;
 import com.foxminded.korniichyk.university.mapper.display.RoleMapper;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;

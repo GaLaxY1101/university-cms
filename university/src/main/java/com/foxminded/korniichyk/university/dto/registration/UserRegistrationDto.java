@@ -35,7 +35,7 @@ public class UserRegistrationDto {
 
     private String confirmPassword;
 
-    private Set<Role> roles = new HashSet<>();
+    private Role role;
 
     @AssertTrue(message = "Passwords must match")
     public boolean isPasswordConfirmed() {

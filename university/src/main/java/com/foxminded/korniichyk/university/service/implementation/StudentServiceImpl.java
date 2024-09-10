@@ -13,7 +13,6 @@ import com.foxminded.korniichyk.university.model.Student;
 import com.foxminded.korniichyk.university.model.User;
 import com.foxminded.korniichyk.university.security.CustomUserDetails;
 import com.foxminded.korniichyk.university.service.contract.GroupService;
-import com.foxminded.korniichyk.university.service.contract.RoleService;
 import com.foxminded.korniichyk.university.service.contract.StudentService;
 import com.foxminded.korniichyk.university.service.contract.UserService;
 import com.foxminded.korniichyk.university.service.exception.GroupNotFoundException;
@@ -41,7 +40,6 @@ public class StudentServiceImpl implements StudentService {
     private final StudentDao studentDao;
     private final StudentMapper studentMapper;
     private final UserService userService;
-    private final RoleService roleService;
     private final StudentUpdateMapper studentUpdateMapper;
     private final GroupService groupService;
 
@@ -49,14 +47,12 @@ public class StudentServiceImpl implements StudentService {
                               StudentMapper studentMapper,
                               GroupDao groupDao,
                               UserService userService,
-                              RoleService roleService,
                               RoleMapper roleMapper,
                               StudentUpdateMapper studentUpdateMapper, GroupService groupService) {
         this.studentDao = studentDao;
         this.studentMapper = studentMapper;
         this.groupDao = groupDao;
         this.userService = userService;
-        this.roleService = roleService;
         this.groupService = groupService;
         this.studentUpdateMapper = studentUpdateMapper;
     }
@@ -149,9 +145,9 @@ public class StudentServiceImpl implements StudentService {
     @Transactional
     @Override
     public Student registerStudent(StudentRegistrationDto studentRegistrationDto) {
-        Role studentRole = roleService.findByName("ROLE_STUDENT");
+        Role studentRole = Role.ROLE_STUDENT;
 
-        studentRegistrationDto.getUser().setRoles(Collections.singleton(studentRole));
+        studentRegistrationDto.getUser().setRole(studentRole);
 
         Student student = new Student();
         User user = userService.registerUser(studentRegistrationDto.getUser());

@@ -49,17 +49,8 @@ public class User {
     @DateTimeFormat(pattern = "yyyy-MM-dd")
     private LocalDate dateOfBirth;
 
-    @ManyToMany
-    @JoinTable(
-            name = "user_role",
-            joinColumns = @JoinColumn(name = "user_id",
-                    foreignKey = @ForeignKey(name = "fk_user_role_user_id")
-            ),
-            inverseJoinColumns = @JoinColumn(name = "role_id",
-                    foreignKey = @ForeignKey(name = "fk_user_role_role_id")
-            )
-    )
-    private Set<Role> roles = new HashSet<>();
+    @Enumerated(EnumType.STRING)
+    private Role role;
 
     private String password;
 }
