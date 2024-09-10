@@ -4,7 +4,7 @@ create table if not exists disciplines
         constraint disciplines_pkey
             primary key,
     description text         not null,
-    name        varchar(255) not null
+    name        text not null
 );
 
 create index if not exists idx_disciplines_name
@@ -15,7 +15,7 @@ create table if not exists lesson_types
     id   bigint       not null
         constraint lesson_types_pkey
             primary key,
-    name varchar(255) not null
+    name text not null
 );
 
 create table if not exists lessons
@@ -40,7 +40,7 @@ create table if not exists roles
     id   bigint not null
         constraint roles_pkey
             primary key,
-    name varchar(255)
+    name text
         constraint uk_roles_name
             unique
 );
@@ -54,7 +54,7 @@ create table if not exists specialities
         constraint uk_specialities_code
             unique,
     description text,
-    name        varchar(255)
+    name        text
         constraint uk_specialities_name
             unique
 );
@@ -64,7 +64,7 @@ create table if not exists groups
     id            bigint       not null
         constraint groups_pkey
             primary key,
-    name          varchar(255) not null,
+    name          text not null,
     speciality_id bigint
         constraint fk_groups_speciality
             references specialities
@@ -97,13 +97,13 @@ create table if not exists users
         constraint users_pkey
             primary key,
     date_of_birth date         not null,
-    email         varchar(255)
+    email         text
         constraint uk_users_email
             unique,
-    first_name    varchar(255) not null,
-    last_name     varchar(255) not null,
-    password      varchar(255),
-    phone_number  varchar(255)
+    first_name    text not null,
+    last_name     text not null,
+    password      text,
+    phone_number  text
         constraint uk_users_phonenumber
             unique
 );
