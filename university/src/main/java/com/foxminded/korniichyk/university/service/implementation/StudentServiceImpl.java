@@ -86,15 +86,7 @@ public class StudentServiceImpl implements StudentService {
                 );
     }
 
-    @Override
-    public Page<StudentDto> findStudentsPageByGroupId(Long groupId, int pageNumber, int pageSize) {
-        if (groupDao.findById(groupId).isEmpty()) {
-            throw new GroupNotFoundException("Group with id: " + groupId + "not found");
-        }
 
-        Pageable pageable = PageRequest.of(pageNumber, pageSize);
-        return studentDao.findByGroupId(groupId, pageable).map(studentMapper::toDto);
-    }
 
     @Override
     public List<StudentDto> findStudentsByGroupName(String groupName) {
@@ -197,6 +189,12 @@ public class StudentServiceImpl implements StudentService {
         return studentDao.findById(studentId).orElseThrow(
                 () -> new StudentNotFoundException("Student with id " + studentId + "not found")
         );
+    }
+
+    @Override
+    public Page<StudentDto> findByGroupIdExcludingByStudentId(Long groupId, Long studentId, Pageable pageable) {
+        return studentDao.findByGroupIdExcludingByStudentId(groupId, studentId, pageable)
+                .map(studentMapper::toDto);
     }
 
 

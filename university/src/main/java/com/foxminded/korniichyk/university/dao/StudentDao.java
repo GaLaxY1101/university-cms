@@ -4,6 +4,8 @@ import com.foxminded.korniichyk.university.model.Student;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.JpaRepository;
+import org.springframework.data.jpa.repository.Query;
+import org.springframework.data.repository.query.Param;
 import org.springframework.stereotype.Repository;
 
 import java.util.Optional;
@@ -12,5 +14,9 @@ import java.util.Optional;
 public interface StudentDao extends JpaRepository<Student, Long> {
 
     Optional<Student> findByUserId(Long userId);
-    Page<Student> findByGroupId(Long groupId, Pageable pageable);
+
+    @Query("SELECT s FROM Student s WHERE s.group.id= :groupId AND s.id != :studentId")
+    Page<Student> findByGroupIdExcludingByStudentId(@Param("groupId") Long groupId,
+                                                    @Param("studentId") Long studentId,
+                                                    Pageable pageable);
 }

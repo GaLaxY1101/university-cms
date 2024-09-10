@@ -8,6 +8,8 @@ import com.foxminded.korniichyk.university.service.contract.GroupService;
 import com.foxminded.korniichyk.university.service.contract.StudentService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Controller;
@@ -32,7 +34,6 @@ public class StudentController {
         this.studentService = studentService;
         this.groupService = groupService;
     }
-
 
 
     @GetMapping("/")
@@ -65,15 +66,13 @@ public class StudentController {
         Long studentId = currentStudent.getId();
 
         GroupDto group = groupService.findByStudentId(studentId);
+        Long groupId = group.getId();
 
-        Page<StudentDto> studentPage = studentService.findStudentsPageByGroupId(group.getId(), page, size);
+        Pageable pageable = PageRequest.of(page, size);
+        Page<StudentDto> studentPage = studentService.findByGroupIdExcludingByStudentId(groupId, studentId, pageable);
+        List<StudentDto> students = studentPage.getContent();
 
-        List<StudentDto> filteredStudents = studentPage.getContent()
-                .stream()
-                .filter(studentDto -> !studentDto.getId().equals(studentId))
-                .collect(Collectors.toList());
-
-        model.addAttribute("students", filteredStudents);
+        model.addAttribute("students", students);
         model.addAttribute("group", group);
         model.addAttribute("currentPage", studentPage.getNumber());
         model.addAttribute("totalPages", studentPage.getTotalPages());

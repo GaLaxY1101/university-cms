@@ -58,6 +58,14 @@ public class UserCreateUtil implements ApplicationRunner {
         createAdmin();
         createStudent();
         createTeacher();
+        test();
+    }
+
+    private void test() {
+        System.out.println("Invoking groupDao.findById(1)");
+        System.out.println("===================================");
+        groupDao.findById(1L);
+        System.out.println("Done");
     }
 
     private void createStudent() {

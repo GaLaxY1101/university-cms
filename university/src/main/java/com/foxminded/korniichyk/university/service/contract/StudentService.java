@@ -6,12 +6,13 @@ import com.foxminded.korniichyk.university.dto.update.StudentUpdateDto;
 import com.foxminded.korniichyk.university.mapper.update.StudentUpdateMapper;
 import com.foxminded.korniichyk.university.model.Student;
 import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.repository.query.Param;
 
 import java.util.List;
 
 public interface StudentService extends CrudService<Student, StudentDto> {
 
-    Page<StudentDto> findStudentsPageByGroupId(Long groupId, int pageNumber, int pageSize);
     List<StudentDto> findStudentsByGroupName(String groupName);
     void assignGroup(Long groupId, Long studentId);
     Page<StudentDto> findPage(int pageNumber, int pageSize);
@@ -20,4 +21,5 @@ public interface StudentService extends CrudService<Student, StudentDto> {
     StudentUpdateDto getStudentUpdateDto(Long id);
     void update(StudentUpdateDto studentUpdateDto);
     Student getCurrentStudent();
+    Page<StudentDto> findByGroupIdExcludingByStudentId(Long groupId, Long studentId, Pageable pageable);
 }
