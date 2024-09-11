@@ -4,8 +4,6 @@ import com.foxminded.korniichyk.university.dao.DisciplineDao;
 import com.foxminded.korniichyk.university.dao.LessonDao;
 import com.foxminded.korniichyk.university.dao.TeacherDao;
 import com.foxminded.korniichyk.university.dto.display.TeacherDto;
-import com.foxminded.korniichyk.university.model.Discipline;
-import com.foxminded.korniichyk.university.model.Lesson;
 import com.foxminded.korniichyk.university.model.Teacher;
 import com.foxminded.korniichyk.university.service.exception.*;
 import com.foxminded.korniichyk.university.service.implementation.TeacherServiceImpl;
@@ -24,7 +22,7 @@ import static org.mockito.ArgumentMatchers.anyLong;
 import static org.mockito.Mockito.*;
 
 @ExtendWith(MockitoExtension.class)
-public class TeacherServiceUnitTests {
+public class TeacherServiceTests {
 
 
     @InjectMocks

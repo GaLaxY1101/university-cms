@@ -12,6 +12,7 @@ import com.foxminded.korniichyk.university.model.User;
 import com.foxminded.korniichyk.university.service.contract.AdminService;
 import com.foxminded.korniichyk.university.service.contract.UserService;
 import com.foxminded.korniichyk.university.service.exception.AdminNotFoundException;
+import lombok.RequiredArgsConstructor;
 import org.springframework.transaction.annotation.Transactional;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.domain.Page;
@@ -23,6 +24,7 @@ import static java.util.Collections.singleton;
 
 @Service
 @Slf4j
+@RequiredArgsConstructor
 @Transactional(readOnly = true)
 public class AdminServiceImpl implements AdminService {
 
@@ -31,16 +33,6 @@ public class AdminServiceImpl implements AdminService {
     private final AdminMapper adminMapper;
     private final UserService userService;
     private final AdminUpdateMapper adminUpdateMapper;
-
-    public AdminServiceImpl(AdminDao adminDao,
-                            AdminMapper adminMapper,
-                            UserService userService,
-                            AdminUpdateMapper adminUpdateMapper) {
-        this.adminDao = adminDao;
-        this.adminMapper = adminMapper;
-        this.userService = userService;
-        this.adminUpdateMapper = adminUpdateMapper;
-    }
 
     @Override
     public AdminDto findById(Long id) {

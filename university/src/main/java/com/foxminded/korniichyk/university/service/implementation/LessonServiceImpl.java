@@ -6,6 +6,7 @@ import com.foxminded.korniichyk.university.model.Lesson;
 import com.foxminded.korniichyk.university.service.contract.LessonService;
 import com.foxminded.korniichyk.university.service.exception.LessonNotFoundException;
 import com.foxminded.korniichyk.university.mapper.display.LessonMapper;
+import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.slf4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -21,17 +22,14 @@ import java.util.stream.Collectors;
 @Slf4j
 @Service
 @Transactional(readOnly = true)
+@RequiredArgsConstructor
 public class LessonServiceImpl implements LessonService {
 
 
 
-    LessonDao lessonDao;
-    LessonMapper lessonMapper;
+    private final LessonDao lessonDao;
+    private final LessonMapper lessonMapper;
 
-    public LessonServiceImpl(LessonDao lessonDao, LessonMapper lessonMapper) {
-        this.lessonDao = lessonDao;
-        this.lessonMapper = lessonMapper;
-    }
 
     @Override
     public LessonDto findById(Long id) {

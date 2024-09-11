@@ -6,6 +6,7 @@ import com.foxminded.korniichyk.university.model.LessonType;
 import com.foxminded.korniichyk.university.service.contract.LessonTypeService;
 import com.foxminded.korniichyk.university.service.exception.LessonTypeNotFoundException;
 import com.foxminded.korniichyk.university.mapper.display.LessonTypeMapper;
+import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
@@ -20,15 +21,12 @@ import java.util.stream.Collectors;
 @Slf4j
 @Service
 @Transactional(readOnly = true)
+@RequiredArgsConstructor
 public class LessonTypeServiceImpl implements LessonTypeService {
 
     private final LessonTypeMapper lessonTypeMapper;
     private final LessonTypeDao lessonTypeDao;
 
-    public LessonTypeServiceImpl(LessonTypeDao lessonTypeDao, LessonTypeMapper lessonTypeMapper) {
-        this.lessonTypeDao = lessonTypeDao;
-        this.lessonTypeMapper = lessonTypeMapper;
-    }
 
     @Override
     public LessonTypeDto findById(Long id) {

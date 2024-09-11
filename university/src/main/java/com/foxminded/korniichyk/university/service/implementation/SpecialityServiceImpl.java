@@ -6,6 +6,8 @@ import com.foxminded.korniichyk.university.model.Speciality;
 import com.foxminded.korniichyk.university.service.contract.SpecialityService;
 import com.foxminded.korniichyk.university.service.exception.SpecialityNotFoundException;
 import com.foxminded.korniichyk.university.mapper.display.SpecialityMapper;
+import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.slf4j.Logger;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
@@ -18,17 +20,12 @@ import java.util.stream.Collectors;
 
 @Service
 @Transactional(readOnly = true)
+@Slf4j
+@RequiredArgsConstructor
 public class SpecialityServiceImpl implements SpecialityService {
 
-    private static final Logger log = org.slf4j.LoggerFactory.getLogger(SpecialityServiceImpl.class);
-
-    SpecialityDao specialityDao;
-    SpecialityMapper specialityMapper;
-
-    public SpecialityServiceImpl(SpecialityDao specialityDao, SpecialityMapper specialityMapper) {
-        this.specialityDao = specialityDao;
-        this.specialityMapper = specialityMapper;
-    }
+    private final SpecialityDao specialityDao;
+    private final SpecialityMapper specialityMapper;
 
     @Override
     public SpecialityDto findById(Long id) {

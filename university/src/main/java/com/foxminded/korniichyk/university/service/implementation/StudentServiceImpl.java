@@ -17,6 +17,8 @@ import com.foxminded.korniichyk.university.service.contract.StudentService;
 import com.foxminded.korniichyk.university.service.contract.UserService;
 import com.foxminded.korniichyk.university.service.exception.GroupNotFoundException;
 import com.foxminded.korniichyk.university.service.exception.StudentNotFoundException;
+import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.slf4j.Logger;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
@@ -32,9 +34,10 @@ import java.util.stream.Collectors;
 
 @Transactional(readOnly = true)
 @Service
+@Slf4j
+@RequiredArgsConstructor
 public class StudentServiceImpl implements StudentService {
 
-    private static final Logger log = org.slf4j.LoggerFactory.getLogger(StudentServiceImpl.class);
     private final GroupDao groupDao;
 
     private final StudentDao studentDao;
@@ -42,20 +45,6 @@ public class StudentServiceImpl implements StudentService {
     private final UserService userService;
     private final StudentUpdateMapper studentUpdateMapper;
     private final GroupService groupService;
-
-    public StudentServiceImpl(StudentDao studentDao,
-                              StudentMapper studentMapper,
-                              GroupDao groupDao,
-                              UserService userService,
-                              RoleMapper roleMapper,
-                              StudentUpdateMapper studentUpdateMapper, GroupService groupService) {
-        this.studentDao = studentDao;
-        this.studentMapper = studentMapper;
-        this.groupDao = groupDao;
-        this.userService = userService;
-        this.groupService = groupService;
-        this.studentUpdateMapper = studentUpdateMapper;
-    }
 
     @Override
     public StudentDto findById(Long id) {

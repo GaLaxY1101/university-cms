@@ -1,4 +1,4 @@
-package com.foxminded.korniichyk.university.service.integration;
+package com.foxminded.korniichyk.university.service.api;
 
 import com.foxminded.korniichyk.university.TestContainerConfig;
 import com.foxminded.korniichyk.university.dao.TeacherDao;
@@ -16,7 +16,6 @@ import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.jdbc.Sql;
 
 import java.time.LocalDate;
-import java.time.LocalTime;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertThrows;
@@ -26,7 +25,7 @@ import static org.mockito.Mockito.verify;
 @SpringBootTest
 @ContextConfiguration(classes = {TestContainerConfig.class})
 @Sql(scripts = {"/db/scripts/clean_tables.sql"}, executionPhase = Sql.ExecutionPhase.BEFORE_TEST_METHOD)
-public class TeacherServiceIntegrationTests {
+public class TeacherServiceApiTests {
 
     @Autowired
     private TeacherService teacherService;

@@ -6,7 +6,6 @@ import com.foxminded.korniichyk.university.dao.StudentDao;
 import com.foxminded.korniichyk.university.dto.display.StudentDto;
 import com.foxminded.korniichyk.university.model.Group;
 import com.foxminded.korniichyk.university.model.Student;
-import com.foxminded.korniichyk.university.service.exception.GroupAlreadyAssignedException;
 import com.foxminded.korniichyk.university.service.exception.GroupNotFoundException;
 import com.foxminded.korniichyk.university.service.exception.StudentNotFoundException;
 import com.foxminded.korniichyk.university.service.implementation.StudentServiceImpl;
@@ -27,7 +26,7 @@ import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.Mockito.*;
 
 @ExtendWith(MockitoExtension.class)
-public class StudentServiceUnitTests {
+public class StudentServiceTests {
 
     @Mock
     private StudentDao studentDao;

@@ -10,6 +10,8 @@ import com.foxminded.korniichyk.university.service.contract.UserService;
 import com.foxminded.korniichyk.university.service.exception.EmailAlreadyExistsException;
 import com.foxminded.korniichyk.university.service.exception.PhoneNumberAlreadyExistsException;
 import com.foxminded.korniichyk.university.service.exception.UserNotFoundException;
+import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.data.domain.Page;
@@ -26,22 +28,15 @@ import java.util.stream.Collectors;
 
 @Service
 @Transactional(readOnly = true)
+@RequiredArgsConstructor
+@Slf4j
 public class UserServiceImpl implements UserService {
 
-    private static final Logger log = LoggerFactory.getLogger(UserServiceImpl.class);
 
     private final UserDao userDao;
     private final UserMapper userMapper;
     private final UserRegistrationMapper userRegistrationMapper;
 
-    public UserServiceImpl(UserDao userDao,
-                           UserMapper userMapper,
-                           UserRegistrationMapper userRegistrationMapper
-    ) {
-        this.userDao = userDao;
-        this.userMapper = userMapper;
-        this.userRegistrationMapper = userRegistrationMapper;
-    }
 
     @Override
     public UserDto findById(Long id) {

@@ -4,6 +4,7 @@ import com.foxminded.korniichyk.university.model.User;
 import com.foxminded.korniichyk.university.service.contract.UserService;
 import jakarta.transaction.Transactional;
 import lombok.NoArgsConstructor;
+import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.hibernate.Hibernate;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -12,17 +13,12 @@ import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.stereotype.Service;
 
-@NoArgsConstructor
+@RequiredArgsConstructor
 @Service
 @Slf4j
 public class CustomUserDetailsService implements UserDetailsService {
 
-    private UserService userService;
-
-    @Autowired
-    public CustomUserDetailsService(UserService userService) {
-        this.userService = userService;
-    }
+    private final UserService userService;
 
     @Transactional
     @Override

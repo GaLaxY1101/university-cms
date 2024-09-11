@@ -11,6 +11,7 @@ import com.foxminded.korniichyk.university.service.exception.GroupNotFoundExcept
 import com.foxminded.korniichyk.university.service.exception.StudentNotFoundException;
 import com.foxminded.korniichyk.university.service.exception.TeacherNotFoundException;
 import com.foxminded.korniichyk.university.mapper.display.GroupMapper;
+import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageImpl;
@@ -26,6 +27,7 @@ import static java.util.stream.Collectors.toList;
 @Slf4j
 @Service
 @Transactional(readOnly = true)
+@RequiredArgsConstructor
 public class GroupServiceImpl implements GroupService {
 
 
@@ -33,16 +35,6 @@ public class GroupServiceImpl implements GroupService {
     private final GroupMapper groupMapper;
     private final StudentDao studentDao;
     private final TeacherService teacherService;
-    public GroupServiceImpl(GroupDao groupDao,
-                            GroupMapper groupMapper,
-                            StudentDao studentDao,
-                            TeacherService teacherService
-    ) {
-        this.groupDao = groupDao;
-        this.groupMapper = groupMapper;
-        this.studentDao = studentDao;
-        this.teacherService = teacherService;
-    }
 
     @Override
     public GroupDto findById(Long id) {
@@ -118,24 +110,6 @@ public class GroupServiceImpl implements GroupService {
         return new PageImpl<GroupDto>(groups, pageable, groups.size());
 
     }
-
-//    @Override
-//    public Page<GroupDto> findPageByTeacherId(Long teacherId, int pageNumber, int pageSize) {
-//        if (!teacherService.isExistsById(teacherId)) {
-//            throw new TeacherNotFoundException("Teacher with id " + teacherId + " not found");
-//        }
-//
-//        List<GroupDto> groups = groupDao.findByTeacherId(teacherId)
-//                .stream()
-//                .map(groupMapper::toDto)
-//                .toList();
-//
-//        Pageable pageable = PageRequest.of(pageNumber, pageSize);
-//        int start = (int) pageable.getOffset();
-//        int end = Math.min((start + pageable.getPageSize()), groups.size());
-//
-//        return new PageImpl<>(groups.subList(start, end), pageable, groups.size());
-//    }
 
     @Override
     public boolean isExistsById(Long id) {

@@ -16,7 +16,7 @@ public interface StudentDao extends JpaRepository<Student, Long> {
     Optional<Student> findByUserId(Long userId);
 
     @Query("SELECT s FROM Student s WHERE s.group.id= :groupId AND s.id != :studentId")
-    Page<Student> findByGroupIdExcludingByStudentId(@Param("groupId") Long groupId,
-                                                    @Param("studentId") Long studentId,
+    Page<Student> findByGroupIdExcludingByStudentId(Long groupId,
+                                                    Long studentId,
                                                     Pageable pageable);
 }

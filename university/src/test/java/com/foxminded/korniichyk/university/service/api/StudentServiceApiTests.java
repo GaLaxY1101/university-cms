@@ -1,4 +1,4 @@
-package com.foxminded.korniichyk.university.service.integration;
+package com.foxminded.korniichyk.university.service.api;
 
 import com.foxminded.korniichyk.university.TestContainerConfig;
 import com.foxminded.korniichyk.university.dto.display.StudentDto;
@@ -27,7 +27,7 @@ import static org.junit.jupiter.api.Assertions.assertThrows;
 @SpringBootTest
 @ContextConfiguration(classes = {TestContainerConfig.class})
 @Sql(scripts = {"/db/scripts/clean_tables.sql"}, executionPhase = Sql.ExecutionPhase.BEFORE_TEST_METHOD)
-public class StudentServiceIntegrationTests {
+public class StudentServiceApiTests {
 
 
     @Autowired

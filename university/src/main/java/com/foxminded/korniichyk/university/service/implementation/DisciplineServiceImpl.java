@@ -7,6 +7,8 @@ import com.foxminded.korniichyk.university.model.Discipline;
 import com.foxminded.korniichyk.university.service.contract.DisciplineService;
 import com.foxminded.korniichyk.university.service.exception.DisciplineNotFoundException;
 import com.foxminded.korniichyk.university.mapper.display.DisciplineMapper;
+import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.slf4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
@@ -21,18 +23,13 @@ import java.util.stream.Collectors;
 
 @Service
 @Transactional(readOnly = true)
+@RequiredArgsConstructor
+@Slf4j
 public class DisciplineServiceImpl implements DisciplineService {
 
+    private final DisciplineDao disciplineDao;
+    private final DisciplineMapper disciplineMapper;
 
-    private static final Logger log = org.slf4j.LoggerFactory.getLogger(DisciplineServiceImpl.class);
-
-    DisciplineDao disciplineDao;
-    DisciplineMapper disciplineMapper;
-
-    public DisciplineServiceImpl(DisciplineDao disciplineDao, DisciplineMapper disciplineMapper) {
-        this.disciplineDao = disciplineDao;
-        this.disciplineMapper = disciplineMapper;
-    }
 
     @Override
     public DisciplineDto findById(Long id) {

@@ -6,6 +6,7 @@ import com.foxminded.korniichyk.university.dao.UserDao;
 import com.foxminded.korniichyk.university.model.*;
 import com.foxminded.korniichyk.university.service.contract.*;
 import jakarta.transaction.Transactional;
+import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.ApplicationArguments;
 import org.springframework.boot.ApplicationRunner;
@@ -16,40 +17,19 @@ import java.time.LocalDate;
 import java.util.Set;
 
 @Component
+@RequiredArgsConstructor
 public class UserCreateUtil implements ApplicationRunner {
 
 
     private final UserService userService;
-
     private final AdminService adminService;
-
     private final PasswordEncoder passwordEncoder;
-
     private final UserDao userDao;
-
     private final GroupDao groupDao;
-
     private final StudentService studentService;
-
     private final TeacherService teacherService;
 
 
-    public UserCreateUtil(UserService userService,
-                          AdminService adminService,
-                          PasswordEncoder passwordEncoder,
-                          UserDao userDao,
-                          GroupDao groupDao,
-                          StudentService studentService,
-                          TeacherService teacherService
-    ) {
-        this.userService = userService;
-        this.adminService = adminService;
-        this.passwordEncoder = passwordEncoder;
-        this.userDao = userDao;
-        this.groupDao = groupDao;
-        this.studentService = studentService;
-        this.teacherService = teacherService;
-    }
 
 
     @Transactional

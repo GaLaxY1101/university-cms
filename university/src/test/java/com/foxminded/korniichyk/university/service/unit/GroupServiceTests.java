@@ -26,7 +26,7 @@ import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
 @ExtendWith(MockitoExtension.class)
-public class GroupServiceUnitTests {
+public class GroupServiceTests {
 
     @InjectMocks
     private GroupServiceImpl groupService;

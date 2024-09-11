@@ -16,6 +16,8 @@ import com.foxminded.korniichyk.university.service.contract.DisciplineService;
 import com.foxminded.korniichyk.university.service.contract.TeacherService;
 import com.foxminded.korniichyk.university.service.contract.UserService;
 import com.foxminded.korniichyk.university.service.exception.*;
+import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.slf4j.Logger;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
@@ -31,9 +33,10 @@ import java.util.stream.Collectors;
 
 @Transactional(readOnly = true)
 @Service
+@RequiredArgsConstructor
+@Slf4j
 public class TeacherServiceImpl implements TeacherService {
 
-    private static final Logger log = org.slf4j.LoggerFactory.getLogger(TeacherServiceImpl.class);
 
     private final LessonDao lessonDao;
     private final TeacherDao teacherDao;
@@ -43,25 +46,6 @@ public class TeacherServiceImpl implements TeacherService {
     private final UserService userService;
     private final TeacherMapper teacherMapper;
     private final TeacherUpdateMapper teacherUpdateMapper;
-
-    public TeacherServiceImpl(TeacherDao teacherDao,
-                              TeacherMapper teacherMapper,
-                              DisciplineDao disciplineDao,
-                              LessonDao lessonDao, DisciplineService disciplineService,
-                              UserDao userDao,
-                              UserService userService,
-                              RoleMapper roleMapper,
-                              TeacherUpdateMapper teacherUpdateMapper
-    ) {
-        this.teacherDao = teacherDao;
-        this.teacherMapper = teacherMapper;
-        this.disciplineDao = disciplineDao;
-        this.lessonDao = lessonDao;
-        this.disciplineService = disciplineService;
-        this.userDao = userDao;
-        this.userService = userService;
-        this.teacherUpdateMapper = teacherUpdateMapper;
-    }
 
     @Override
     public TeacherDto findById(Long id) {

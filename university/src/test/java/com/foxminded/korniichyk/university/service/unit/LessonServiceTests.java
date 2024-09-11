@@ -22,7 +22,7 @@ import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
 @ExtendWith(MockitoExtension.class)
-public class LessonServiceUnitTests {
+public class LessonServiceTests {
 
     @InjectMocks
     private LessonServiceImpl lessonService;
