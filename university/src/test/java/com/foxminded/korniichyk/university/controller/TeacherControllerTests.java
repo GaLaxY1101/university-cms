@@ -109,8 +109,9 @@ public class TeacherControllerTests {
         groupDto.setStudents(Set.of(new StudentDto()));
 
         currentUserTeacher.setUser(user);
-        when(teacherService.findByUserId(anyLong())).thenReturn(currentUserTeacher);
-        when(groupService.findPageByTeacherId(anyLong(), anyInt(), anyInt())).thenReturn(new PageImpl<>(Collections.singletonList(groupDto)));
+        when(teacherService.getCurrentTeacher()).thenReturn(currentUserTeacher);
+        when(groupService.findPageByTeacherId(anyLong(), anyInt(), anyInt()))
+                .thenReturn(new PageImpl<>(Collections.singletonList(groupDto)));
 
 
         ResultActions result = mockMvc.perform(get("/teachers/my-groups")

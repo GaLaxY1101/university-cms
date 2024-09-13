@@ -54,8 +54,7 @@ public class TeacherController {
             Model model
     ) {
         Teacher teacher = teacherService.getCurrentTeacher();
-        Long userId = teacher.getUser().getId();
-        Long teacherId = teacherService.findByUserId(userId).getId();
+        Long teacherId = teacher.getId();
 
         Page<GroupDto> groupsPage  = groupService.findPageByTeacherId(teacherId, page, size);
 
