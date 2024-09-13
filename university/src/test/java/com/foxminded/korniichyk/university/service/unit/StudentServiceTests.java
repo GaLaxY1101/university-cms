@@ -6,6 +6,7 @@ import com.foxminded.korniichyk.university.dao.StudentDao;
 import com.foxminded.korniichyk.university.dto.display.StudentDto;
 import com.foxminded.korniichyk.university.model.Group;
 import com.foxminded.korniichyk.university.model.Student;
+import com.foxminded.korniichyk.university.service.contract.GroupService;
 import com.foxminded.korniichyk.university.service.exception.GroupNotFoundException;
 import com.foxminded.korniichyk.university.service.exception.StudentNotFoundException;
 import com.foxminded.korniichyk.university.service.implementation.StudentServiceImpl;
@@ -36,6 +37,9 @@ public class StudentServiceTests {
 
     @Mock
     private StudentMapper studentMapper;
+
+    @Mock
+    private GroupService groupService;
 
     @InjectMocks
     private StudentServiceImpl studentService;
@@ -81,30 +85,31 @@ public class StudentServiceTests {
     }
 
     @Test
-    void findStudentsPageByGroupId_shouldReturnStudentsPage_whenNonEmptyGroupExists() {
+    void findByGroupIdExcludingByStudentId_shouldReturnStudentsPage_whenNonEmptyGroupExists() {
 
         Pageable pageable = PageRequest.of(1, 5);
 
-        when(groupDao.findById(anyLong())).thenReturn(Optional.of(new Group()));
-        when(studentDao.findByGroupId(1L, pageable))
-                .thenReturn(new PageImpl<>(Collections.singletonList(new Student())));
-        when(studentMapper.toDto(new Student())).thenReturn(new StudentDto());
+        when(groupService.isExistsById(anyLong())).thenReturn(true);
+        when(studentService.isExistsById(anyLong())).thenReturn(true);
+        when(studentDao.findByGroupIdExcludingByStudentId(1L, 1L, pageable))
+                .thenReturn(new PageImpl<Student>(List.of(new Student())));
+        when(studentMapper.toDto(any(Student.class))).thenReturn(new StudentDto());
 
-        Page<StudentDto> result = studentService.findStudentsPageByGroupId(1L, 1, 5);
+
+        Page<StudentDto> result = studentService.findByGroupIdExcludingByStudentId(1L, 1L, pageable);
         assertEquals(1, result.getContent().size());
-        assertEquals(1, result.getContent().size());
 
 
-        verify(studentDao).findByGroupId(anyLong(), any(Pageable.class));
-        verify(groupDao).findById(anyLong());
+        verify(studentDao).findByGroupIdExcludingByStudentId(anyLong(), anyLong(), any(Pageable.class));
+        verify(groupService).isExistsById(anyLong());
     }
 
     @Test
-    void findStudentsPageByGroupId_shouldThrowGroupNotFoundException_whenGroupDoesNotExist() {
-        when(groupDao.findById(anyLong())).thenReturn(Optional.empty());
-        assertThrows(GroupNotFoundException.class, () -> studentService.findStudentsPageByGroupId(1L, 1, 5));
-        verify(groupDao).findById(anyLong());
-        verify(studentDao, times(0)).findByGroupId(anyLong(), any(Pageable.class));
+    void findByGroupIdExcludingByStudentId_shouldThrowGroupNotFoundException_whenGroupDoesNotExist() {
+        when(groupService.isExistsById(anyLong())).thenReturn(false);
+        assertThrows(GroupNotFoundException.class, () -> studentService.findByGroupIdExcludingByStudentId(1L, 1L, any(Pageable.class)));
+        verify(groupService).isExistsById(anyLong());
+        verify(studentDao, times(0)).findByGroupIdExcludingByStudentId(anyLong(), anyLong(), any(Pageable.class));
 
     }
 

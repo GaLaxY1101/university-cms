@@ -15,6 +15,8 @@ import com.foxminded.korniichyk.university.mapper.update.AdminUpdateMapper;
 import com.foxminded.korniichyk.university.mapper.update.StudentUpdateMapper;
 import com.foxminded.korniichyk.university.mapper.update.TeacherUpdateMapper;
 import com.foxminded.korniichyk.university.mapper.update.UserUpdateMapper;
+import com.foxminded.korniichyk.university.model.Student;
+import com.foxminded.korniichyk.university.model.User;
 import com.foxminded.korniichyk.university.security.CustomUserDetailsService;
 import com.foxminded.korniichyk.university.security.SecurityConfig;
 import com.foxminded.korniichyk.university.service.contract.*;
@@ -473,7 +475,7 @@ class AdminControllerTests {
 
 
     @Test
-    @WithMockCustomUser(email = "student@gmail.com", roles = "ROLE_ADMIN")
+    @WithMockCustomUser(email = "student@gmail.com")
     void createStudent_shouldRedirect_whenValidationSuccess() throws Exception {
 
         StudentRegistrationDto studentRegistrationDto = new StudentRegistrationDto();
@@ -505,7 +507,7 @@ class AdminControllerTests {
 
 
     @Test
-    @WithMockCustomUser(email = "student@gmail.com", roles = "ROLE_ADMIN")
+    @WithMockCustomUser(email = "student@gmail.com")
     void createStudent_shouldReturnFormOnValidationErrors_whenPasswordsDontMatch() throws Exception {
         StudentRegistrationDto studentRegistrationDto = new StudentRegistrationDto();
 
@@ -543,7 +545,7 @@ class AdminControllerTests {
     }
 
     @Test
-    @WithMockCustomUser(email = "student@gmail.com", roles = "ROLE_ADMIN")
+    @WithMockCustomUser(email = "student@gmail.com")
     void createStudent_shouldReturnFormOnValidationErrors_whenAllFieldsNotBlanked() throws Exception {
         StudentRegistrationDto studentRegistrationDto = new StudentRegistrationDto();
 
@@ -585,7 +587,7 @@ class AdminControllerTests {
     }
 
     @Test
-    @WithMockCustomUser(email = "student@gmail.com", roles = "ROLE_ADMIN")
+    @WithMockCustomUser(email = "student@gmail.com")
     void createStudent_shouldReturnFormOnValidationErrors_whenBlankedEmailAlreadyExists() throws Exception {
         StudentRegistrationDto studentRegistrationDto = new StudentRegistrationDto();
 
@@ -627,7 +629,7 @@ class AdminControllerTests {
     }
 
     @Test
-    @WithMockCustomUser(email = "student@gmail.com", roles = "ROLE_ADMIN")
+    @WithMockCustomUser(email = "student@gmail.com")
     void createStudent_shouldReturnFormOnValidationErrors_whenBlankedPhoneNumberAlreadyExists() throws Exception {
         StudentRegistrationDto studentRegistrationDto = new StudentRegistrationDto();
 
@@ -670,7 +672,7 @@ class AdminControllerTests {
 
 
     @Test
-    @WithMockCustomUser(email = "student@gmail.com", roles = "ROLE_ADMIN")
+    @WithMockCustomUser(email = "student@gmail.com")
     void createTeacher_shouldRedirect_whenValidationSuccess() throws Exception {
 
         TeacherRegistrationDto teacherRegistrationDto = new TeacherRegistrationDto();
@@ -701,7 +703,7 @@ class AdminControllerTests {
     }
 
     @Test
-    @WithMockCustomUser(email = "student@gmail.com", roles = "ROLE_ADMIN")
+    @WithMockCustomUser(email = "student@gmail.com")
     void createTeacher_shouldReturnFormOnValidationErrors_whenPasswordsDontMatch() throws Exception {
         TeacherRegistrationDto teacherRegistrationDto = new TeacherRegistrationDto();
 
@@ -739,7 +741,7 @@ class AdminControllerTests {
     }
 
     @Test
-    @WithMockCustomUser(email = "student@gmail.com", roles = "ROLE_ADMIN")
+    @WithMockCustomUser(email = "student@gmail.com")
     void createTeacher_shouldReturnFormOnValidationErrors_whenAllFieldsNotBlanked() throws Exception {
         TeacherRegistrationDto teacherRegistrationDto = new TeacherRegistrationDto();
 
@@ -780,7 +782,7 @@ class AdminControllerTests {
     }
 
     @Test
-    @WithMockCustomUser(email = "student@gmail.com", roles = "ROLE_ADMIN")
+    @WithMockCustomUser(email = "student@gmail.com")
     void createTeacher_shouldReturnFormOnValidationErrors_whenBlankedEmailAlreadyExists() throws Exception {
         TeacherRegistrationDto teacherRegistrationDto = new TeacherRegistrationDto();
 
@@ -820,7 +822,7 @@ class AdminControllerTests {
     }
 
     @Test
-    @WithMockCustomUser(email = "student@gmail.com", roles = "ROLE_ADMIN")
+    @WithMockCustomUser(email = "student@gmail.com")
     void createTeacher_shouldReturnFormOnValidationErrors_whenBlankedPhoneNumberAlreadyExists() throws Exception {
         TeacherRegistrationDto teacherRegistrationDto = new TeacherRegistrationDto();
 
@@ -860,7 +862,7 @@ class AdminControllerTests {
     }
 
     @Test
-    @WithMockCustomUser(email = "student@gmail.com", roles = "ROLE_ADMIN")
+    @WithMockCustomUser(email = "student@gmail.com")
     void createAdmin_shouldRedirect_whenValidationSuccess() throws Exception {
 
         AdminRegistrationDto adminRegistrationDto = new AdminRegistrationDto();
@@ -890,7 +892,7 @@ class AdminControllerTests {
     }
 
     @Test
-    @WithMockCustomUser(email = "student@gmail.com", roles = "ROLE_ADMIN")
+    @WithMockCustomUser(email = "student@gmail.com")
     void createAdmin_shouldReturnFormOnValidationErrors_whenPasswordsDontMatch() throws Exception {
         AdminRegistrationDto adminRegistrationDto = new AdminRegistrationDto();
 
@@ -918,7 +920,7 @@ class AdminControllerTests {
     }
 
     @Test
-    @WithMockCustomUser(email = "student@gmail.com", roles = "ROLE_ADMIN")
+    @WithMockCustomUser(email = "student@gmail.com")
     void createAdmin_shouldReturnFormOnValidationErrors_whenAllFieldsNotBlanked() throws Exception {
         AdminRegistrationDto adminRegistrationDto = new AdminRegistrationDto();
 
@@ -951,7 +953,7 @@ class AdminControllerTests {
     }
 
     @Test
-    @WithMockCustomUser(email = "student@gmail.com", roles = "ROLE_ADMIN")
+    @WithMockCustomUser(email = "student@gmail.com")
     void createAdmin_shouldReturnFormOnValidationErrors_whenBlankedEmailAlreadyExists() throws Exception {
         AdminRegistrationDto adminRegistrationDto = new AdminRegistrationDto();
 
@@ -983,7 +985,7 @@ class AdminControllerTests {
     }
 
     @Test
-    @WithMockCustomUser(email = "student@gmail.com", roles = "ROLE_ADMIN")
+    @WithMockCustomUser(email = "student@gmail.com")
     void createAdmin_shouldReturnFormOnValidationErrors_whenBlankedPhoneNumberAlreadyExists() throws Exception {
         AdminRegistrationDto adminRegistrationDto = new AdminRegistrationDto();
 
@@ -1017,7 +1019,7 @@ class AdminControllerTests {
 
     //DELETE FEATURE TESTS
     @Test
-    @WithMockCustomUser(email = "admin@gmail.com", roles = "ROLE_ADMIN")
+    @WithMockCustomUser(email = "admin@gmail.com")
     void deleteAdmin_shouldRedirectWithSuccessMessage_whenAdminDeletedSuccessfully() throws Exception {
         Long adminId = 1L;
 
@@ -1033,7 +1035,7 @@ class AdminControllerTests {
     }
 
     @Test
-    @WithMockCustomUser(email = "admin@gmail.com", roles = "ROLE_ADMIN")
+    @WithMockCustomUser(email = "admin@gmail.com")
     void deleteAdmin_AdminNotFound_shouldAddErrorMessage() throws Exception {
         // Arrange
         Long adminId = 1L;
@@ -1053,7 +1055,7 @@ class AdminControllerTests {
 
 
     @Test
-    @WithMockCustomUser(email = "admin@gmail.com", roles = "ROLE_ADMIN")
+    @WithMockCustomUser(email = "admin@gmail.com")
     void deleteStudent_shouldRedirectWithSuccessMessage_whenStudentDeletedSuccessfully() throws Exception {
         Long studentId = 1L;
 
@@ -1068,7 +1070,7 @@ class AdminControllerTests {
     }
 
     @Test
-    @WithMockCustomUser(email = "admin@gmail.com", roles = "ROLE_ADMIN")
+    @WithMockCustomUser(email = "admin@gmail.com")
     void deleteStudent_StudentNotFound_shouldAddErrorMessage() throws Exception {
         Long studentId = 1L;
         doThrow(new StudentNotFoundException("Student not found")).when(studentService).deleteById(studentId);
@@ -1084,7 +1086,7 @@ class AdminControllerTests {
     }
 
     @Test
-    @WithMockCustomUser(email = "admin@gmail.com", roles = "ROLE_ADMIN")
+    @WithMockCustomUser(email = "admin@gmail.com")
     void deleteTeacher_shouldRedirectWithSuccessMessage_whenTeacherDeletedSuccessfully() throws Exception {
         // Arrange
         Long teacherId = 1L;
@@ -1102,7 +1104,7 @@ class AdminControllerTests {
     }
 
     @Test
-    @WithMockCustomUser(email = "admin@gmail.com", roles = "ROLE_ADMIN")
+    @WithMockCustomUser(email = "admin@gmail.com")
     void deleteTeacher_TeacherNotFound_ShouldAddErrorMessage() throws Exception {
         Long teacherId = 1L;
         doThrow(new TeacherNotFoundException("Teacher not found")).when(teacherService).deleteById(teacherId);
@@ -1118,7 +1120,7 @@ class AdminControllerTests {
     }
 
     @Test
-    @WithMockCustomUser(email = "admin@gmail.com", roles = "ROLE_ADMIN")
+    @WithMockCustomUser(email = "admin@gmail.com")
     void showTeacherEditPage_success() throws Exception {
 
         TeacherUpdateDto teacherUpdateDto = new TeacherUpdateDto();
@@ -1133,7 +1135,7 @@ class AdminControllerTests {
     }
 
     @Test
-    @WithMockCustomUser(email = "admin@gmail.com", roles = "ROLE_ADMIN")
+    @WithMockCustomUser(email = "admin@gmail.com")
     void showTeacherEditPage_errorMessageShouldBePresented_whenTeacherNotFound() throws Exception {
         when(teacherService.getTeacherUpdateDto(anyLong())).thenThrow(new TeacherNotFoundException("Teacher not found"));
 
@@ -1144,12 +1146,43 @@ class AdminControllerTests {
     }
 
     @Test
-    @WithMockCustomUser(email = "admin@gmail.com", roles = "ROLE_ADMIN")
+    @WithMockCustomUser(email = "admin@gmail.com")
     void editTeacher_Success() throws Exception {
+        TeacherDto teacherDto = new TeacherDto();
+        teacherDto.setId(1L);
+
+        UserDto userDto = new UserDto();
+        userDto.setEmail("email@gmail.com");
+        userDto.setPhoneNumber("0999999999");
+        userDto.setFirstName("test");
+        userDto.setLastName("test");
+        userDto.setDateOfBirth(LocalDate.of(2000,2,2));
+        userDto.setId(1L);
+
+        teacherDto.setUser(userDto);
+
+
+        TeacherUpdateDto teacherUpdateDto = new TeacherUpdateDto();
+        teacherUpdateDto.setId(1L);
+
+        UserUpdateDto userUpdateDto = new UserUpdateDto();
+        userUpdateDto.setEmail("email@gmail.com");
+        userUpdateDto.setPhoneNumber("0999999999");
+        userUpdateDto.setFirstName("test");
+        userUpdateDto.setLastName("test");
+        userUpdateDto.setDateOfBirth(LocalDate.of(2000,2,2));
+        userUpdateDto.setId(1L);
+
+
+        teacherUpdateDto.setUser(userUpdateDto);
+
+        when(teacherService.isExistsById(anyLong())).thenReturn(false);
+        when(teacherService.isExistsById(anyLong())).thenReturn(true);
+        when(teacherService.findById(anyLong())).thenReturn(teacherDto);
         when(disciplineService.findAll()).thenReturn(Collections.emptyList());
 
         mockMvc.perform(post("/administrators/teachers/edit")
-                        .flashAttr("teacherUpdateDto", new TeacherUpdateDto())
+                        .flashAttr("teacherUpdateDto", teacherUpdateDto)
                         .with(csrf()))
                 .andExpect(status().is3xxRedirection())
                 .andExpect(redirectedUrl("/administrators/teachers"))
@@ -1159,19 +1192,36 @@ class AdminControllerTests {
     @Test
     @WithMockUser(username = "admin", roles = "ADMIN")
     void editTeacher_ValidationErrors() throws Exception {
-        // Given
-        UserUpdateDto invalidUserUpdateDto = new UserUpdateDto();
+        TeacherDto teacherDto = new TeacherDto();
+        UserDto userDto = new UserDto();
+        userDto.setId(1L);
+        userDto.setPhoneNumber("0999999999");
+        userDto.setEmail("email@gmail.com");
+        teacherDto.setUser(userDto);
 
+        UserUpdateDto userUpdateDto = new UserUpdateDto();
+        userUpdateDto.setEmail("email@gmail.com");
+        userUpdateDto.setPhoneNumber("0999999999");
+        userUpdateDto.setFirstName("test");
+        userUpdateDto.setLastName("test");
+        userUpdateDto.setDateOfBirth(LocalDate.of(2000,2,2));
+        userUpdateDto.setId(1L);
+
+
+        UserUpdateDto invalidUserUpdateDto = new UserUpdateDto();
         invalidUserUpdateDto.setEmail("invalid-email");
+        invalidUserUpdateDto.setId(1L);
 
 
         TeacherUpdateDto invalidTeacherUpdateDto = new TeacherUpdateDto();
         invalidTeacherUpdateDto.setUser(invalidUserUpdateDto);
+        invalidTeacherUpdateDto.setId(1L);
 
-        // Mock service methods
+        when(teacherService.findById(anyLong())).thenReturn(teacherDto);
+        when(userService.isExistsByPhoneNumber(any(String.class))).thenReturn(false);
+        when(userService.isExistsByEmail(any(String.class))).thenReturn(false);
         when(disciplineService.findAll()).thenReturn(Collections.emptyList());
 
-        // When & Then
         mockMvc.perform(post("/administrators/teachers/edit")
                         .flashAttr("teacherUpdateDto", invalidTeacherUpdateDto)
                         .with(csrf()))
@@ -1187,7 +1237,7 @@ class AdminControllerTests {
     }
 
     @Test
-    @WithMockCustomUser(email = "admin@gmail.com", roles = "ROLE_ADMIN")
+    @WithMockCustomUser(email = "admin@gmail.com")
     void showAdminEditPage_success() throws Exception {
 
         AdminUpdateDto adminUpdateDto = new AdminUpdateDto();
@@ -1201,7 +1251,7 @@ class AdminControllerTests {
     }
 
     @Test
-    @WithMockCustomUser(email = "admin@gmail.com", roles = "ROLE_ADMIN")
+    @WithMockCustomUser(email = "admin@gmail.com")
     void showAdminEditPage_errorMessageShouldBePresented_whenAdminNotFound() throws Exception {
         when(adminService.getAdminUpdateDto(anyLong())).thenThrow(new AdminNotFoundException("Admin not found"));
 
@@ -1212,9 +1262,8 @@ class AdminControllerTests {
     }
 
     @Test
-    @WithMockCustomUser(email = "admin@gmail.com", roles = "ROLE_ADMIN")
+    @WithMockCustomUser(email = "admin@gmail.com")
     void editAdmin_Success() throws Exception {
-
 
         AdminDto adminDto = new AdminDto();
         UserDto userDto = new UserDto();
@@ -1224,29 +1273,56 @@ class AdminControllerTests {
         adminDto.setUser(userDto);
 
         AdminUpdateDto adminUpdateDto = new AdminUpdateDto();
+        adminUpdateDto.setId(1L);
+
+        UserUpdateDto userUpdateDto = new UserUpdateDto();
+        userUpdateDto.setEmail("email@gmail.com");
+        userUpdateDto.setPhoneNumber("0999999999");
+        userUpdateDto.setFirstName("test");
+        userUpdateDto.setLastName("test");
+        userUpdateDto.setDateOfBirth(LocalDate.of(2000,2,2));
+        userUpdateDto.setId(1L);
+
+
+        adminUpdateDto.setUser(userUpdateDto);
 
         when(adminService.findById(anyLong())).thenReturn(adminDto);
+        when(userService.isExistsByEmail(anyString())).thenReturn(false);
+        when(userService.isExistsByPhoneNumber(anyString())).thenReturn(false);
 
         mockMvc.perform(post("/administrators/admins/edit")
-                        .flashAttr("adminUpdateDto", new AdminUpdateDto())
+                        .flashAttr("adminUpdateDto", adminUpdateDto)
                         .with(csrf()))
                 .andExpect(status().is3xxRedirection())
                 .andExpect(redirectedUrl("/administrators/admins"))
                 .andExpect(flash().attributeExists("successMessage"));
     }
 
+
     @Test
     @WithMockUser(username = "admin", roles = "ADMIN")
     void editAdmin_ValidationErrors() throws Exception {
-        UserUpdateDto invalidUserUpdateDto = new UserUpdateDto();
+        AdminDto adminDto = new AdminDto();
+        adminDto.setId(1L);
 
+
+        UserDto userDto = new UserDto();
+        userDto.setId(1L);
+        userDto.setEmail("email@gmail.com");
+        userDto.setPhoneNumber("0997777876");
+        adminDto.setUser(userDto);
+
+        UserUpdateDto invalidUserUpdateDto = new UserUpdateDto();
+        invalidUserUpdateDto.setId(1L);
         invalidUserUpdateDto.setEmail("invalid-email");
 
-
         AdminUpdateDto invalidAdminUpdateDto = new AdminUpdateDto();
+        invalidAdminUpdateDto.setId(1L);
         invalidAdminUpdateDto.setUser(invalidUserUpdateDto);
 
-        when(disciplineService.findAll()).thenReturn(Collections.emptyList());
+        when(userService.isExistsByEmail("email@gmail.com")).thenReturn(false);
+        when(userService.isExistsByPhoneNumber("0997777876")).thenReturn(false);
+        when(adminService.findById(anyLong())).thenReturn(adminDto);
 
         mockMvc.perform(post("/administrators/admins/edit")
                         .flashAttr("adminUpdateDto", invalidAdminUpdateDto)
@@ -1262,7 +1338,7 @@ class AdminControllerTests {
     }
 
     @Test
-    @WithMockCustomUser(email = "admin@gmail.com", roles = "ROLE_ADMIN")
+    @WithMockCustomUser(email = "admin@gmail.com")
     void showStudentEditPage_success() throws Exception {
 
         StudentUpdateDto studentUpdateDto = new StudentUpdateDto();
@@ -1276,7 +1352,7 @@ class AdminControllerTests {
     }
 
     @Test
-    @WithMockCustomUser(email = "admin@gmail.com", roles = "ROLE_ADMIN")
+    @WithMockCustomUser(email = "admin@gmail.com")
     void showStudentEditPage_errorMessageShouldBePresented_whenStudentNotFound() throws Exception {
         when(studentService.getStudentUpdateDto(anyLong())).thenThrow(new StudentNotFoundException("Student not found"));
         when(groupService.findAll()).thenReturn(Collections.emptyList());
@@ -1287,20 +1363,40 @@ class AdminControllerTests {
     }
 
     @Test
-    @WithMockCustomUser(email = "admin@gmail.com", roles = "ROLE_ADMIN")
+    @WithMockCustomUser(email = "admin@gmail.com")
     void editStudent_Success() throws Exception {
+        StudentDto studentDto = new StudentDto();
+        UserDto userDto = new UserDto();
+        userDto.setId(1L);
+        userDto.setPhoneNumber("0999999999");
+        userDto.setEmail("email@gmail.com");
+        studentDto.setUser(userDto);
+
         StudentUpdateDto studentUpdateDto = new StudentUpdateDto();
         studentUpdateDto.setId(1L);
-        studentUpdateDto.setGroupId(2L);
 
-        doNothing().when(studentService).save(any());
+        UserUpdateDto userUpdateDto = new UserUpdateDto();
+        userUpdateDto.setEmail("email@gmail.com");
+        userUpdateDto.setPhoneNumber("0999999999");
+        userUpdateDto.setFirstName("test");
+        userUpdateDto.setLastName("test");
+        userUpdateDto.setDateOfBirth(LocalDate.of(2000,2,2));
+        userUpdateDto.setId(1L);
+
+
+        studentUpdateDto.setUser(userUpdateDto);
+        studentUpdateDto.setGroupId(1L);
+
+        when(studentService.findById(anyLong())).thenReturn(studentDto);
+        when(userService.isExistsByEmail(anyString())).thenReturn(false);
+        when(userService.isExistsByPhoneNumber(anyString())).thenReturn(false);
+        doNothing().when(studentService).update(any());
         doNothing().when(studentService).assignGroup(anyLong(), anyLong());
 
-        // Perform the request
         mockMvc.perform(post("/administrators/students/edit")
                         .flashAttr("studentUpdateDto", studentUpdateDto)
                         .with(csrf()))
-                .andExpect(status().is3xxRedirection())  // Expect redirection
+                .andExpect(status().is3xxRedirection())
                 .andExpect(redirectedUrl("/administrators/students"))  // Expect the correct URL
                 .andExpect(flash().attributeExists("successMessage"));  // Check for success message
     }
@@ -1308,14 +1404,37 @@ class AdminControllerTests {
     @Test
     @WithMockUser(username = "admin", roles = "ADMIN")
     void editStudent_ValidationErrors() throws Exception {
-        UserUpdateDto invalidUserUpdateDto = new UserUpdateDto();
 
+        StudentDto studentDto = new StudentDto();
+        UserDto userDto = new UserDto();
+        userDto.setId(1L);
+        userDto.setPhoneNumber("0999999999");
+        userDto.setEmail("email@gmail.com");
+        studentDto.setUser(userDto);
+
+
+        UserUpdateDto userUpdateDto = new UserUpdateDto();
+        userUpdateDto.setEmail("email@gmail.com");
+        userUpdateDto.setPhoneNumber("0999999999");
+        userUpdateDto.setFirstName("test");
+        userUpdateDto.setLastName("test");
+        userUpdateDto.setDateOfBirth(LocalDate.of(2000,2,2));
+        userUpdateDto.setId(1L);
+
+
+
+        UserUpdateDto invalidUserUpdateDto = new UserUpdateDto();
         invalidUserUpdateDto.setEmail("invalid-email");
+        invalidUserUpdateDto.setId(1L);
 
 
         StudentUpdateDto invalidStudentUpdateDto = new StudentUpdateDto();
         invalidStudentUpdateDto.setUser(invalidUserUpdateDto);
+        invalidStudentUpdateDto.setId(1L);
 
+        when(studentService.findById(anyLong())).thenReturn(studentDto);
+        when(userService.isExistsByPhoneNumber(any(String.class))).thenReturn(false);
+        when(userService.isExistsByEmail(any(String.class))).thenReturn(false);
         when(groupService.findAll()).thenReturn(Collections.emptyList());
 
         mockMvc.perform(post("/administrators/students/edit")

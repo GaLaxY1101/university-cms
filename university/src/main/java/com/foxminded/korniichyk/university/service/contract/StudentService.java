@@ -22,4 +22,5 @@ public interface StudentService extends CrudService<Student, StudentDto> {
     void update(StudentUpdateDto studentUpdateDto);
     Student getCurrentStudent();
     Page<StudentDto> findByGroupIdExcludingByStudentId(Long groupId, Long studentId, Pageable pageable);
+    boolean isExistsById(Long id);
 }

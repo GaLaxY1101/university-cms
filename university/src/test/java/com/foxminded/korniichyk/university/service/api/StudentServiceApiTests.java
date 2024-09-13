@@ -16,6 +16,8 @@ import com.foxminded.korniichyk.university.service.exception.StudentNotFoundExce
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.jdbc.Sql;
 
@@ -63,8 +65,8 @@ public class StudentServiceApiTests {
         user.setPhoneNumber("122456789");
         user.setDateOfBirth(LocalDate.of(2000, 1, 1));
         userService.save(user);
-        student.setUser(user);
         studentService.save(student);
+        student.setUser(user);
 
         studentService.assignGroup(group.getId(), student.getId());
 
@@ -82,8 +84,8 @@ public class StudentServiceApiTests {
         user.setPhoneNumber("122456789");
         user.setDateOfBirth(LocalDate.of(2000, 1, 1));
         userService.save(user);
-        student.setUser(user);
         studentService.save(student);
+        student.setUser(user);
 
         assertThrows(GroupNotFoundException.class, () -> studentService.assignGroup(1L, student.getId()));
 
@@ -104,8 +106,9 @@ public class StudentServiceApiTests {
 
     }
 
+
     @Test
-    void assignGroup_shouldThrowGroupAlreadyAssignedException_whenGroupAlreadyAssigned() {
+    void findByGroupIdExcludingByStudentId_shouldReturnStudents_whenGroupHasStudents() {
         Speciality speciality = new Speciality();
         speciality.setCode(121);
         speciality.setName("Software engineering");
@@ -115,55 +118,46 @@ public class StudentServiceApiTests {
         group.setName("Group 1");
         groupService.save(group);
 
+        User user1 = new User();
+        user1.setFirstName("Max");
+        user1.setLastName("White");
+        user1.setEmail("max11@gmail.com");
+        user1.setPhoneNumber("122456789");
+        user1.setDateOfBirth(LocalDate.of(2000, 1, 1));
+        userService.save(user1);
 
-        Student student = new Student();
-        User user = new User();
-        user.setFirstName("Max");
-        user.setLastName("White");
-        user.setEmail("max11@gmail.com");
-        user.setPhoneNumber("122456789");
-        user.setDateOfBirth(LocalDate.of(2000, 1, 1));
-        userService.save(user);
-        student.setUser(user);
-        studentService.save(student);
+        User user2 = new User();
+        user2.setFirstName("Max2");
+        user2.setLastName("White2");
+        user2.setEmail("max112@gmail.com");
+        user2.setPhoneNumber("122456711");
+        user2.setDateOfBirth(LocalDate.of(2001, 1, 1));
+        userService.save(user2);
 
-        studentService.assignGroup(group.getId(), student.getId());
-        assertThrows(GroupAlreadyAssignedException.class, () -> studentService.assignGroup(group.getId(), student.getId()));
+        Student student1 = new Student();
+        studentService.save(student1);
+        student1.setUser(user1);
+
+
+        Student student2 = new Student();
+        studentService.save(student2);
+        student2.setUser(user2);
+
+
+        // Assign Students to Group
+        studentService.assignGroup(group.getId(), student1.getId());
+        studentService.assignGroup(group.getId(), student2.getId());
+
+        // Test the query
+        Pageable pageable = PageRequest.of(0, 10);
+        assertEquals(1, studentService.findByGroupIdExcludingByStudentId(group.getId(), student1.getId(), pageable).getContent().size());
     }
 
     @Test
-    void findStudentsByGroupId_shouldReturnStudents_whenGroupHasStudents() {
-        Speciality speciality = new Speciality();
-        speciality.setCode(121);
-        speciality.setName("Software engineering");
-        specialityService.save(speciality);
+    void findByGroupIdExcludingByStudentId_shouldThrowGroupNotFoundException_whenGroupDoesNotExist() {
 
-        Group group = new Group();
-        group.setName("Group 1");
-        groupService.save(group);
-
-
-        Student student = new Student();
-        User user = new User();
-        user.setFirstName("Max");
-        user.setLastName("White");
-        user.setEmail("max11@gmail.com");
-        user.setPhoneNumber("122456789");
-        user.setDateOfBirth(LocalDate.of(2000, 1, 1));
-        userService.save(user);
-        student.setUser(user);
-        studentService.save(student);
-
-        studentService.assignGroup(group.getId(), student.getId());
-
-        assertEquals(1, studentService.findStudentsPageByGroupId(group.getId(),0,10).getContent().size());
-
-    }
-
-    @Test
-    void findStudentsByGroupId_shouldThrowGroupNotFoundException_whenGroupDoesNotExist() {
-
-        assertThrows(GroupNotFoundException.class, () -> studentService.findStudentsPageByGroupId(1L,1,10));
+        Pageable pageable = PageRequest.of(1, 10);
+        assertThrows(GroupNotFoundException.class, () -> studentService.findByGroupIdExcludingByStudentId(1L, 1L, pageable));
     }
 
     @Test
@@ -186,8 +180,9 @@ public class StudentServiceApiTests {
         user.setPhoneNumber("122456789");
         user.setDateOfBirth(LocalDate.of(2000, 1, 1));
         userService.save(user);
-        student.setUser(user);
         studentService.save(student);
+        student.setUser(user);
+
 
         studentService.assignGroup(group.getId(), student.getId());
 

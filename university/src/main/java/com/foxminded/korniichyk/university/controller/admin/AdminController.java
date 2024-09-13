@@ -452,7 +452,7 @@ public class AdminController {
             return "redirect:/administrators/students";
         } catch (StudentNotFoundException ex) {
             redirectAttributes.addFlashAttribute("errorMessage", ex.getMessage());
-            return "redirect:/administrators/students" + studentUpdateDto.getId();  // Redirect back to the edit page
+            return "redirect:/administrators/students" + studentUpdateDto.getId();
         }
     }
 
@@ -496,6 +496,11 @@ public class AdminController {
 
         if ((!phoneNumberBeforeUpdate.equals(phoneNumberAfterUpdate)) && (userService.isExistsByPhoneNumber(phoneNumberAfterUpdate))) {
             bindingResult.rejectValue("user.phoneNumber", "error.phoneNumber", "This phone number already registered");
+            return "admin/edit/edit-admin";
+        }
+
+        if (bindingResult.hasErrors()) {
+            model.addAttribute("adminUpdateDto", adminUpdateDto);
             return "admin/edit/edit-admin";
         }
 

@@ -13,6 +13,8 @@ import java.util.Optional;
 @Repository
 public interface StudentDao extends JpaRepository<Student, Long> {
 
+    boolean existsById(Long id);
+
     Optional<Student> findByUserId(Long userId);
 
     @Query("SELECT s FROM Student s WHERE s.group.id= :groupId AND s.id != :studentId")

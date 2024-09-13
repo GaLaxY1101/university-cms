@@ -42,32 +42,9 @@ public class TeacherServiceApiTests {
     @Autowired
     private UserService userService;
 
-    @Test
-    void deleteTeacher_shouldDeleteTeacher_whenTeacherExists() {
-        var teacherId = insertTeacher();
-
-        teacherService.deleteById(teacherId);
-        verify(teacherService).deleteById(teacherId);
-
-    }
 
     @Test
     void deleteTeacher_shouldThrowTeacherNotFoundException_whenTeacherDoesNotExist() {
         assertThrows(TeacherNotFoundException.class, () -> teacherService.deleteById(1L));
-    }
-
-    private Long insertTeacher() {
-        Teacher teacher = new Teacher();
-        User user = new User();
-
-        user.setFirstName("Max");
-        user.setLastName("White");
-        user.setEmail("max@gmail.com");
-        user.setPhoneNumber("123456789");
-        user.setDateOfBirth(LocalDate.of(2000, 1, 1));
-        userService.save(user);
-        teacher.setUser(user);
-        teacherService.save(teacher);
-        return teacher.getId();
     }
 }

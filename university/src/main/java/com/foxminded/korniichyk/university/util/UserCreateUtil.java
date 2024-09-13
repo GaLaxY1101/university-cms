@@ -35,9 +35,9 @@ public class UserCreateUtil implements ApplicationRunner {
     @Transactional
     @Override
     public void run(ApplicationArguments args) throws Exception {
-        createAdmin();
-        createStudent();
-        createTeacher();
+//        createAdmin();
+//        createStudent();
+//        createTeacher();
     }
 
     private void createStudent() {

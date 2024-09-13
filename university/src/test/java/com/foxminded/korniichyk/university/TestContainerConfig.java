@@ -17,8 +17,8 @@ public class TestContainerConfig {
     @Container
     public static PostgreSQLContainer<?> postgreSQLContainer = new PostgreSQLContainer<>("postgres:latest")
             .withDatabaseName("university-test")
-            .withUsername("test")
-            .withPassword("test");
+            .withUsername("postgres")
+            .withPassword("postgres");
 
     static {
         postgreSQLContainer.start();
@@ -38,7 +38,7 @@ public class TestContainerConfig {
     public Flyway flyway(DataSource dataSource) {
         return Flyway.configure()
                 .dataSource(dataSource)
-                .locations("classpath:db/migration")
+                .locations("classpath:db/migration-test")
                 .load();
     }
 }

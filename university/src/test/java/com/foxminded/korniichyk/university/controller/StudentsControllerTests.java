@@ -5,6 +5,10 @@ import com.foxminded.korniichyk.university.dto.display.GroupDto;
 import com.foxminded.korniichyk.university.dto.display.SpecialityDto;
 import com.foxminded.korniichyk.university.dto.display.StudentDto;
 import com.foxminded.korniichyk.university.dto.display.UserDto;
+import com.foxminded.korniichyk.university.mapper.display.GroupMapper;
+import com.foxminded.korniichyk.university.model.Group;
+import com.foxminded.korniichyk.university.model.Role;
+import com.foxminded.korniichyk.university.model.Speciality;
 import com.foxminded.korniichyk.university.model.Student;
 import com.foxminded.korniichyk.university.security.CustomUserDetailsService;
 import com.foxminded.korniichyk.university.security.SecurityConfig;
@@ -19,6 +23,7 @@ import org.springframework.context.annotation.Import;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageImpl;
 import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
 import org.springframework.security.test.context.support.WithMockUser;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.ResultActions;
@@ -26,9 +31,11 @@ import org.springframework.test.web.servlet.ResultActions;
 import java.time.LocalDate;
 import java.util.Collections;
 import java.util.HashSet;
+import java.util.List;
 import java.util.Set;
 
 import static java.util.Collections.singletonList;
+import static net.bytebuddy.matcher.ElementMatchers.any;
 import static org.mockito.ArgumentMatchers.anyInt;
 import static org.mockito.ArgumentMatchers.anyLong;
 import static org.mockito.Mockito.when;
@@ -49,6 +56,9 @@ public class StudentsControllerTests {
 
     @MockBean
     private CustomUserDetailsService customUserDetailsService;
+
+    @MockBean
+    private GroupMapper groupMapper;
 
     @Test
     @WithMockUser(username = "user@gmail.com", roles = {"ADMIN","TEACHER"})
@@ -124,7 +134,7 @@ public class StudentsControllerTests {
     }
 
     @Test
-    @WithMockCustomUser(email = "student@gmail.com", roles = "ROLE_STUDENT")
+    @WithMockCustomUser(email = "student@gmail.com", role = Role.ROLE_STUDENT)
     void myGroup_shouldReturnCorrectViewWithAttributes() throws Exception {
 
         SpecialityDto specialityDto = new SpecialityDto();
@@ -133,49 +143,47 @@ public class StudentsControllerTests {
         specialityDto.setDescription("");
         specialityDto.setId(1L);
 
-
-        StudentDto currentUserStudent = new StudentDto();
-        currentUserStudent.setId(1L);
-
-
         UserDto user = new UserDto();
         user.setFirstName("John");
         user.setLastName("Smith");
-        user.setDateOfBirth(LocalDate.of(2000,1,1));
+        user.setDateOfBirth(LocalDate.of(2000, 1, 1));
 
         StudentDto studentDto = new StudentDto();
         studentDto.setId(2L);
         studentDto.setUser(user);
 
-
         GroupDto groupDto = new GroupDto();
         groupDto.setId(1L);
+        groupDto.setName("Group Name");
         groupDto.setSpeciality(specialityDto);
         groupDto.setStudents(Set.of(studentDto));
 
         Student student = new Student();
         student.setId(1L);
+        Group group = new Group();
+        group.setId(1L);
+        student.setGroup(group);
 
-        when(studentService.findByUserId(anyLong())).thenReturn(currentUserStudent);
-        when(groupService.findByStudentId(anyLong())).thenReturn(groupDto);
-        when(studentService.findStudentsPageByGroupId(anyLong(), anyInt(), anyInt()))
-                .thenReturn(new PageImpl<>(singletonList(studentDto)));
+        Pageable pageable = PageRequest.of(1,5);
+
         when(studentService.getCurrentStudent()).thenReturn(student);
-        ResultActions result = mockMvc.perform(get("/students/my-group")
-                .param("page", "0")
-                .param("size", "5"));
+        when(studentService.findByGroupIdExcludingByStudentId(1L, 1L, pageable ))
+                .thenReturn(new PageImpl<>(List.of(studentDto)));
+        when(groupMapper.toDto(group)).thenReturn(groupDto);
 
-        result.andExpect(status().isOk())
+        mockMvc.perform(get("/students/my-group")
+                        .param("page", "1")
+                        .param("size", "5"))
+                .andExpect(status().isOk())
                 .andExpect(view().name("/student/my-group"))
                 .andExpect(model().attributeExists("students"))
-                .andExpect(model().attributeExists("group"))
-                .andExpect(model().attributeExists("currentPage"))
-                .andExpect(model().attributeExists("totalPages"))
-                .andExpect(model().attribute("students", singletonList(studentDto)))
                 .andExpect(model().attribute("group", groupDto))
                 .andExpect(model().attribute("currentPage", 0))
-                .andExpect(model().attribute("totalPages", 1));
+                .andExpect(model().attribute("totalPages", 1))
+                .andExpect(model().attribute("totalElements", 1L));
     }
+
+
 
     @Test
     @WithMockUser(roles = {"ADMIN", "TEACHER"})

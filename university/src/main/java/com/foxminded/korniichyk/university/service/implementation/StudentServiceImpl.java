@@ -76,7 +76,6 @@ public class StudentServiceImpl implements StudentService {
     }
 
 
-
     @Override
     public List<StudentDto> findStudentsByGroupName(String groupName) {
         var group = groupDao.findByName(groupName)
@@ -182,8 +181,22 @@ public class StudentServiceImpl implements StudentService {
 
     @Override
     public Page<StudentDto> findByGroupIdExcludingByStudentId(Long groupId, Long studentId, Pageable pageable) {
+
+        if (!groupService.isExistsById(groupId)) {
+            throw new GroupNotFoundException("Group with id " + groupId + " not found");
+        }
+
+        if (!isExistsById(studentId)) {
+            throw new StudentNotFoundException("Student with id " + studentId + "not found");
+        }
+
         return studentDao.findByGroupIdExcludingByStudentId(groupId, studentId, pageable)
                 .map(studentMapper::toDto);
+    }
+
+    @Override
+    public boolean isExistsById(Long id) {
+        return studentDao.existsById(id);
     }
 
 

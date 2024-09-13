@@ -2,6 +2,7 @@ package com.foxminded.korniichyk.university.controller;
 
 import com.foxminded.korniichyk.university.annotation.WithMockCustomUser;
 import com.foxminded.korniichyk.university.dto.display.*;
+import com.foxminded.korniichyk.university.model.Role;
 import com.foxminded.korniichyk.university.model.Teacher;
 import com.foxminded.korniichyk.university.model.User;
 import com.foxminded.korniichyk.university.security.CustomUserDetailsService;
@@ -83,7 +84,7 @@ public class TeacherControllerTests {
 
 
     @Test
-    @WithMockCustomUser(email = "email@gmail.com", roles = "ROLE_TEACHER")
+    @WithMockCustomUser(email = "email@gmail.com", role = Role.ROLE_TEACHER)
     void myGroups_shouldReturnCorrectViewWithAttributes() throws Exception {
 
         Teacher currentUserTeacher = new Teacher();

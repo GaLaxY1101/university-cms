@@ -4,7 +4,7 @@ create table if not exists disciplines
         constraint disciplines_pkey
             primary key,
     description text         not null,
-    name        varchar(255) not null
+    name        text not null
 );
 
 create index if not exists idx_disciplines_name
@@ -15,7 +15,7 @@ create table if not exists lesson_types
     id   bigint       not null
         constraint lesson_types_pkey
             primary key,
-    name varchar(255) not null
+    name text not null
 );
 
 create table if not exists lessons
@@ -35,16 +35,6 @@ create table if not exists lessons
             references lesson_types
 );
 
-create table if not exists roles
-(
-    id   bigint not null
-        constraint roles_pkey
-            primary key,
-    name varchar(255)
-        constraint uk_roles_name
-            unique
-);
-
 create table if not exists specialities
 (
     id          bigint not null
@@ -54,7 +44,7 @@ create table if not exists specialities
         constraint uk_specialities_code
             unique,
     description text,
-    name        varchar(255)
+    name        text
         constraint uk_specialities_name
             unique
 );
@@ -64,7 +54,7 @@ create table if not exists groups
     id            bigint       not null
         constraint groups_pkey
             primary key,
-    name          varchar(255) not null,
+    name          text not null,
     speciality_id bigint
         constraint fk_groups_speciality
             references specialities
@@ -97,15 +87,19 @@ create table if not exists users
         constraint users_pkey
             primary key,
     date_of_birth date         not null,
-    email         varchar(255)
+    email         text
         constraint uk_users_email
             unique,
-    first_name    varchar(255) not null,
-    last_name     varchar(255) not null,
-    password      varchar(255),
-    phone_number  varchar(255)
+    first_name    text not null,
+    last_name     text not null,
+    password      text,
+    phone_number  text
         constraint uk_users_phonenumber
-            unique
+            unique,
+    role          text
+        constraint users_role_check
+            check ((role)::text = ANY
+                   ((ARRAY ['ROLE_ADMIN'::character varying, 'ROLE_STUDENT'::character varying, 'ROLE_TEACHER'::character varying])::text[]))
 );
 
 create table if not exists admins
@@ -171,18 +165,6 @@ create table if not exists teacher_lesson
         primary key (teacher_id, lesson_id)
 );
 
-create table if not exists user_role
-(
-    user_id bigint not null
-        constraint fk_user_role_user_id
-            references users,
-    role_id bigint not null
-        constraint fk_user_role_role_id
-            references roles,
-    constraint user_role_pkey
-        primary key (user_id, role_id)
-);
-
 create index if not exists idx_users_email
     on users (email);
 
@@ -193,33 +175,42 @@ create index if not exists idx_users_phonenumber
 
 
 
+
+
 create sequence admin_sequence;
+
+alter sequence admin_sequence owner to postgres;
 
 create sequence discipline_sequence;
 
+alter sequence discipline_sequence owner to postgres;
 
 create sequence group_sequence;
 
+alter sequence group_sequence owner to postgres;
 
 create sequence lesson_sequence;
 
+alter sequence lesson_sequence owner to postgres;
 
 create sequence lesson_type_sequence;
 
-
-create sequence role_sequence;
-
+alter sequence lesson_type_sequence owner to postgres;
 
 create sequence speciality_sequence;
 
+alter sequence speciality_sequence owner to postgres;
 
 create sequence student_sequence;
 
+alter sequence student_sequence owner to postgres;
 
 create sequence teacher_sequence;
 
+alter sequence teacher_sequence owner to postgres;
 
 create sequence user_sequence;
 
+alter sequence user_sequence owner to postgres;
 
 

@@ -12,6 +12,7 @@ import org.springframework.security.test.context.support.WithSecurityContextFact
 
 import java.util.Arrays;
 import java.util.Collection;
+import java.util.Collections;
 import java.util.Set;
 import java.util.stream.Collectors;
 
@@ -26,20 +27,13 @@ public class WithMockCustomUserSecurityContextFactory implements WithSecurityCon
         user.setEmail(customUser.email());
         user.setPassword("password");
 
-        Set<Role> roles = Arrays.stream(customUser.roles())
-                .map(roleName -> {
-                    Role role = new Role();
-                    role.setName(roleName);
-                    return role;
-                })
-                .collect(Collectors.toSet());
-        user.setRoles(roles);
+
+
+        user.setRole(customUser.role());
 
         CustomUserDetails userDetails = new CustomUserDetails(user);
 
-        Collection<SimpleGrantedAuthority> authorities = Arrays.stream(customUser.roles())
-                .map(SimpleGrantedAuthority::new)
-                .collect(Collectors.toList());
+        Collection<SimpleGrantedAuthority> authorities = Collections.singleton(new SimpleGrantedAuthority(customUser.role().toString()));
 
         UsernamePasswordAuthenticationToken authentication = new UsernamePasswordAuthenticationToken(
                 userDetails,
