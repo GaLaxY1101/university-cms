@@ -1,7 +1,12 @@
 package com.foxminded.korniichyk.university.controller;
 
 import com.foxminded.korniichyk.university.annotation.WithMockCustomUser;
-import com.foxminded.korniichyk.university.dto.display.*;
+import com.foxminded.korniichyk.university.dto.display.DisciplineDto;
+import com.foxminded.korniichyk.university.dto.display.GroupDto;
+import com.foxminded.korniichyk.university.dto.display.SpecialityDto;
+import com.foxminded.korniichyk.university.dto.display.StudentDto;
+import com.foxminded.korniichyk.university.dto.display.TeacherDto;
+import com.foxminded.korniichyk.university.dto.display.UserDto;
 import com.foxminded.korniichyk.university.model.Role;
 import com.foxminded.korniichyk.university.model.Teacher;
 import com.foxminded.korniichyk.university.model.User;
@@ -31,7 +36,9 @@ import static org.mockito.ArgumentMatchers.anyInt;
 import static org.mockito.ArgumentMatchers.anyLong;
 import static org.mockito.Mockito.when;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
-import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.model;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.view;
 
 @AutoConfigureMockMvc
 @Import(SecurityConfig.class)

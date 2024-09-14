@@ -1,6 +1,5 @@
 package com.foxminded.korniichyk.university.security;
 
-import com.foxminded.korniichyk.university.model.Role;
 import com.foxminded.korniichyk.university.model.User;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;

@@ -5,7 +5,7 @@ import com.foxminded.korniichyk.university.dao.LessonDao;
 import com.foxminded.korniichyk.university.dao.TeacherDao;
 import com.foxminded.korniichyk.university.dto.display.TeacherDto;
 import com.foxminded.korniichyk.university.model.Teacher;
-import com.foxminded.korniichyk.university.service.exception.*;
+import com.foxminded.korniichyk.university.service.exception.TeacherNotFoundException;
 import com.foxminded.korniichyk.university.service.implementation.TeacherServiceImpl;
 import com.foxminded.korniichyk.university.mapper.display.TeacherMapper;
 import org.junit.jupiter.api.Test;
@@ -16,10 +16,12 @@ import org.mockito.junit.jupiter.MockitoExtension;
 
 import java.util.Optional;
 
-import static org.junit.jupiter.api.Assertions.*;
+import static org.junit.Assert.assertThrows;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.anyLong;
-import static org.mockito.Mockito.*;
+import static org.mockito.Mockito.doNothing;
+import static org.mockito.Mockito.verify;
+import static org.mockito.Mockito.when;
 
 @ExtendWith(MockitoExtension.class)
 public class TeacherServiceTests {
