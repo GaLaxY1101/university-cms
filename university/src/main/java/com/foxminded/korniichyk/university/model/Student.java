@@ -33,7 +33,7 @@ public class Student {
 
     @Id
     @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "student_seq")
-    @SequenceGenerator(name = "student_seq", sequenceName = "student_sequence", allocationSize = 1)
+    @SequenceGenerator(name = "student_seq", sequenceName = "student_sequence", allocationSize = 50)
     private Long id;
 
     @OneToOne(cascade = CascadeType.ALL)

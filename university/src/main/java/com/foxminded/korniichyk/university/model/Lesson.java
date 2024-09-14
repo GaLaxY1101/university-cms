@@ -31,7 +31,7 @@ public class Lesson {
 
     @Id
     @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "lesson_seq")
-    @SequenceGenerator(name = "lesson_seq", sequenceName = "lesson_sequence", allocationSize = 1)
+    @SequenceGenerator(name = "lesson_seq", sequenceName = "lesson_sequence", allocationSize = 50)
     private Long id;
 
     @ManyToOne

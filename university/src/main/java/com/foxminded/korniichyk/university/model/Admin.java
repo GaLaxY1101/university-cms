@@ -30,7 +30,7 @@ public class Admin {
 
     @Id
     @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "admin_seq")
-    @SequenceGenerator(name = "admin_seq", sequenceName = "admin_sequence", allocationSize = 1)
+    @SequenceGenerator(name = "admin_seq", sequenceName = "admin_sequence", allocationSize = 50)
     private int id;
 
     @OneToOne(cascade = CascadeType.ALL)

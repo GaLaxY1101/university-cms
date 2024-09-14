@@ -38,7 +38,7 @@ public class Speciality {
 
     @Id
     @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "speciality_seq")
-    @SequenceGenerator(name = "speciality_seq", sequenceName = "speciality_sequence", allocationSize = 1)
+    @SequenceGenerator(name = "speciality_seq", sequenceName = "speciality_sequence", allocationSize = 50)
     private Long id;
 
     @Column

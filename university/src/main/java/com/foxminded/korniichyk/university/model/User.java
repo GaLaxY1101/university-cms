@@ -21,8 +21,8 @@ import jakarta.persistence.Table;
 
 @Data
 @NoArgsConstructor
-@EqualsAndHashCode(exclude = "roles")
-@ToString(exclude = "roles")
+@EqualsAndHashCode
+@ToString
 @Entity
 @Table(name = "users",
         uniqueConstraints = {
@@ -38,7 +38,7 @@ public class User {
 
     @Id
     @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "user_seq")
-    @SequenceGenerator(name = "user_seq", sequenceName = "user_sequence", allocationSize = 1)
+    @SequenceGenerator(name = "user_seq", sequenceName = "user_sequence", allocationSize = 50)
     private Long id;
 
     @Column(nullable = false)

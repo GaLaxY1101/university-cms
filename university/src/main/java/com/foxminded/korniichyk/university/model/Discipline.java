@@ -35,7 +35,7 @@ public class Discipline {
 
     @Id
     @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "discipline_seq")
-    @SequenceGenerator(name = "discipline_seq", sequenceName = "discipline_sequence", allocationSize = 1)
+    @SequenceGenerator(name = "discipline_seq", sequenceName = "discipline_sequence", allocationSize = 50)
     private Long id;
 
     @Column(nullable = false)
