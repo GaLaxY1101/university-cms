@@ -14,6 +14,7 @@ import com.foxminded.korniichyk.university.security.CustomUserDetailsService;
 import com.foxminded.korniichyk.university.security.SecurityConfig;
 import com.foxminded.korniichyk.university.service.contract.GroupService;
 import com.foxminded.korniichyk.university.service.contract.TeacherService;
+import com.foxminded.korniichyk.university.util.TestUtil;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
@@ -27,7 +28,6 @@ import org.springframework.security.test.context.support.WithMockUser;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.ResultActions;
 
-import java.time.LocalDate;
 import java.util.Collections;
 import java.util.Set;
 
@@ -62,11 +62,8 @@ public class TeacherControllerTests {
     void teachers_shouldReturnCorrectViewWithAttributes() throws Exception {
 
         TeacherDto teacher = new TeacherDto();
-        UserDto user = new UserDto();
-        user.setId(1L);
-        user.setFirstName("Joh");
-        user.setLastName("Smith");
-        user.setEmail("");
+        UserDto user = TestUtil.generateUserDto();
+
         teacher.setUser(user);
         teacher.setDisciplines(Set.of(new DisciplineDto()));
         Page<TeacherDto> page = new PageImpl<>(Collections.singletonList(teacher), PageRequest.of(0, 7), 1);
@@ -98,21 +95,12 @@ public class TeacherControllerTests {
         currentUserTeacher.setId(1L);
 
 
-        User user = new User();
-        user.setFirstName("John");
-        user.setLastName("Smith");
-        user.setDateOfBirth(LocalDate.of(2000, 1, 1));
+        User user = TestUtil.generateUser();
 
-        SpecialityDto specialityDto = new SpecialityDto();
-        specialityDto.setCode(121);
-        specialityDto.setName("Name");
-        specialityDto.setDescription("");
-        specialityDto.setId(1L);
+        SpecialityDto specialityDto = TestUtil.generateSpecialityDto();
 
-        GroupDto groupDto = new GroupDto();
-        groupDto.setId(1L);
+        GroupDto groupDto = TestUtil.generateGroupDto();
         groupDto.setSpeciality(specialityDto);
-        groupDto.setName("Name");
         groupDto.setStudents(Set.of(new StudentDto()));
 
         currentUserTeacher.setUser(user);

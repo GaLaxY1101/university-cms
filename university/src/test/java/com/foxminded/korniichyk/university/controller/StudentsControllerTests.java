@@ -8,12 +8,12 @@ import com.foxminded.korniichyk.university.dto.display.UserDto;
 import com.foxminded.korniichyk.university.mapper.display.GroupMapper;
 import com.foxminded.korniichyk.university.model.Group;
 import com.foxminded.korniichyk.university.model.Role;
-import com.foxminded.korniichyk.university.model.Speciality;
 import com.foxminded.korniichyk.university.model.Student;
 import com.foxminded.korniichyk.university.security.CustomUserDetailsService;
 import com.foxminded.korniichyk.university.security.SecurityConfig;
 import com.foxminded.korniichyk.university.service.contract.GroupService;
 import com.foxminded.korniichyk.university.service.contract.StudentService;
+import com.foxminded.korniichyk.university.util.TestUtil;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
@@ -28,7 +28,6 @@ import org.springframework.security.test.context.support.WithMockUser;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.ResultActions;
 
-import java.time.LocalDate;
 import java.util.Collections;
 import java.util.HashSet;
 import java.util.List;
@@ -64,17 +63,13 @@ public class StudentsControllerTests {
     @Test
     @WithMockUser(username = "user@gmail.com", roles = {"ADMIN","TEACHER"})
         void students_shouldReturnCorrectViewWithAttributes() throws Exception {
-        GroupDto group = new GroupDto();
-        group.setName("Group 1");
+        GroupDto group = TestUtil.generateGroupDto();
 
         StudentDto student = new StudentDto();
-        UserDto user = new UserDto();
-        user.setId(1L);
-        user.setFirstName("Joh");
-        user.setLastName("Smith");
+        UserDto user = TestUtil.generateUserDto();
         student.setGroupName("group 1");
-        user.setEmail("");
         student.setUser(user);
+
         Page<StudentDto> page = new PageImpl<>(Collections.singletonList(student), PageRequest.of(0, 7), 1);
 
         when(studentService.findPage(anyInt(),anyInt())).thenReturn(page);
@@ -99,8 +94,7 @@ public class StudentsControllerTests {
     @WithMockUser(username = "student@gmail.com", roles = {"STUDENT"})
     void groups_shouldReturnForbiddenForStudentRole() throws Exception {
 
-        // Mock the StudentService to return a Page object
-        Page<StudentDto> emptyPage = Page.empty(); // Or any appropriate mock page
+        Page<StudentDto> emptyPage = Page.empty();
         when(studentService.findPage(anyInt(), anyInt())).thenReturn(emptyPage);
 
         ResultActions result = mockMvc.perform(get("/students/")
@@ -114,12 +108,10 @@ public class StudentsControllerTests {
     @WithMockUser(username = "user@gmail.com", roles = {"ADMIN","TEACHER"})
     void myGroup_shouldReturnForbiddenForNonStudentRole() throws Exception {
 
-        SpecialityDto specialityDto = new SpecialityDto();
-        specialityDto.setCode(121);
-        specialityDto.setName("Name");
+        SpecialityDto specialityDto = TestUtil.generateSpecialityDto();
 
-        GroupDto group = new GroupDto();
-        group.setName("Group 1");
+        GroupDto group = TestUtil.generateGroupDto();
+
         group.setSpeciality(specialityDto);
         group.setStudents(new HashSet<StudentDto>());
         Page<GroupDto> page = new PageImpl<>(singletonList(group), PageRequest.of(0, 7), 1);
@@ -138,24 +130,14 @@ public class StudentsControllerTests {
     @WithMockCustomUser(email = "student@gmail.com", role = Role.ROLE_STUDENT)
     void myGroup_shouldReturnCorrectViewWithAttributes() throws Exception {
 
-        SpecialityDto specialityDto = new SpecialityDto();
-        specialityDto.setCode(121);
-        specialityDto.setName("Name");
-        specialityDto.setDescription("");
-        specialityDto.setId(1L);
+        SpecialityDto specialityDto = TestUtil.generateSpecialityDto();
 
-        UserDto user = new UserDto();
-        user.setFirstName("John");
-        user.setLastName("Smith");
-        user.setDateOfBirth(LocalDate.of(2000, 1, 1));
-
+        UserDto user = TestUtil.generateUserDto();
         StudentDto studentDto = new StudentDto();
         studentDto.setId(2L);
         studentDto.setUser(user);
 
-        GroupDto groupDto = new GroupDto();
-        groupDto.setId(1L);
-        groupDto.setName("Group Name");
+        GroupDto groupDto = TestUtil.generateGroupDto();
         groupDto.setSpeciality(specialityDto);
         groupDto.setStudents(Set.of(studentDto));
 

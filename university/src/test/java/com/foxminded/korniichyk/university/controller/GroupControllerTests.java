@@ -8,6 +8,7 @@ import com.foxminded.korniichyk.university.security.SecurityConfig;
 import com.foxminded.korniichyk.university.service.contract.GroupService;
 import com.foxminded.korniichyk.university.service.contract.StudentService;
 import com.foxminded.korniichyk.university.service.contract.TeacherService;
+import com.foxminded.korniichyk.university.util.TestUtil;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
@@ -54,13 +55,10 @@ public class GroupControllerTests {
     @Test
     @WithMockUser(username = "user@gmail.com", roles = {"ADMIN","TEACHER"})
     void groups_shouldReturnCorrectViewWithAttributes() throws Exception {
-        SpecialityDto specialityDto = new SpecialityDto();
-        specialityDto.setCode(121);
-        specialityDto.setName("Name");
+        SpecialityDto specialityDto = TestUtil.generateSpecialityDto();
 
 
-        GroupDto group = new GroupDto();
-        group.setName("Group 1");
+        GroupDto group = TestUtil.generateGroupDto();
         group.setSpeciality(specialityDto);
         group.setStudents(new HashSet<StudentDto>());
         Page<GroupDto> page = new PageImpl<>(singletonList(group), PageRequest.of(0, 7), 1);

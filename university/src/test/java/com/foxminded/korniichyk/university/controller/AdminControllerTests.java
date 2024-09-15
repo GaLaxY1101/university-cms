@@ -39,6 +39,7 @@ import com.foxminded.korniichyk.university.service.exception.EmailAlreadyExistsE
 import com.foxminded.korniichyk.university.service.exception.PhoneNumberAlreadyExistsException;
 import com.foxminded.korniichyk.university.service.exception.StudentNotFoundException;
 import com.foxminded.korniichyk.university.service.exception.TeacherNotFoundException;
+import com.foxminded.korniichyk.university.util.TestUtil;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
@@ -129,11 +130,7 @@ class AdminControllerTests {
     @Test
     @WithMockUser(username = "admin@gmail.com", roles = {"ADMIN"})
     void admins_shouldReturnCorrectViewWithAttributes() throws Exception {
-        UserDto userDto = new UserDto();
-        userDto.setId(1L);
-        userDto.setFirstName("Admin");
-        userDto.setLastName("User");
-        userDto.setEmail("admin@gmail.com");
+        UserDto userDto = TestUtil.generateUserDto();
 
         AdminDto adminDto = new AdminDto();
         adminDto.setUser(userDto);
@@ -168,10 +165,7 @@ class AdminControllerTests {
     @Test
     @WithMockUser(username = "user@gmail.com", roles = {"ADMIN"})
     void disciplines_shouldReturnCorrectViewWithAttributes() throws Exception {
-        DisciplineDto disciplineDto = new DisciplineDto();
-        disciplineDto.setId(1L);
-        disciplineDto.setName("");
-        disciplineDto.setDescription("");
+        DisciplineDto disciplineDto = TestUtil.generateDisciplineDto();
 
         Page<DisciplineDto> page = new PageImpl<>(Collections.singletonList(disciplineDto), PageRequest.of(0, 7), 1);
 
@@ -204,10 +198,7 @@ class AdminControllerTests {
     @Test
     @WithMockUser(username = "user@gmail.com", roles = {"ADMIN"})
     void specialities_shouldReturnCorrectViewWithAttributes() throws Exception {
-        SpecialityDto specialityDto = new SpecialityDto();
-        specialityDto.setId(1L);
-        specialityDto.setName("");
-        specialityDto.setDescription("");
+        SpecialityDto specialityDto = TestUtil.generateSpecialityDto();
 
         Page<SpecialityDto> page = new PageImpl<>(Collections.singletonList(specialityDto), PageRequest.of(0, 7), 1);
 
@@ -241,12 +232,9 @@ class AdminControllerTests {
     @Test
     @WithMockUser(username = "user@gmail.com", roles = {"ADMIN"})
     void groups_shouldReturnCorrectViewWithAttributes() throws Exception {
-        SpecialityDto specialityDto = new SpecialityDto();
-        specialityDto.setName("");
+        SpecialityDto specialityDto = TestUtil.generateSpecialityDto();
 
-        GroupDto groupDto = new GroupDto();
-        groupDto.setId(1L);
-        groupDto.setName("Group A");
+        GroupDto groupDto = TestUtil.generateGroupDto();
         groupDto.setStudents(Set.of(new StudentDto()));
         groupDto.setSpeciality(specialityDto);
 
@@ -316,12 +304,7 @@ class AdminControllerTests {
     @Test
     @WithMockUser(username = "user@gmail.com", roles = {"ADMIN"})
     void students_shouldReturnCorrectViewWithAttributes() throws Exception {
-        UserDto userDto = new UserDto();
-        userDto.setId(1L);
-        userDto.setFirstName("Admin");
-        userDto.setLastName("User");
-        userDto.setEmail("admin@gmail.com");
-
+        UserDto userDto = TestUtil.generateUserDto();
 
         StudentDto studentDto = new StudentDto();
         studentDto.setId(1L);
@@ -358,11 +341,8 @@ class AdminControllerTests {
     @Test
     @WithMockUser(username = "user@gmail.com", roles = {"ADMIN"})
     void teachers_shouldReturnCorrectViewWithAttributes() throws Exception {
-        UserDto userDto = new UserDto();
-        userDto.setId(1L);
-        userDto.setFirstName("Admin");
-        userDto.setLastName("User");
-        userDto.setEmail("admin@gmail.com");
+        UserDto userDto = TestUtil.generateUserDto();
+
 
         TeacherDto teacherDto = new TeacherDto();
         teacherDto.setId(1L);
@@ -400,8 +380,8 @@ class AdminControllerTests {
     @Test
     @WithMockUser(username = "user@gmail.com", roles = {"ADMIN"})
     void lessons_shouldReturnCorrectViewWithAttributes() throws Exception {
-        DisciplineDto disciplineDto = new DisciplineDto();
-        disciplineDto.setName("");
+        DisciplineDto disciplineDto = TestUtil.generateDisciplineDto();
+
 
         LessonTypeDto lessonTypeDto = new LessonTypeDto();
         lessonTypeDto.setName("");
@@ -509,14 +489,7 @@ class AdminControllerTests {
 
         StudentRegistrationDto studentRegistrationDto = new StudentRegistrationDto();
 
-        UserRegistrationDto userRegistrationDto = new UserRegistrationDto();
-        userRegistrationDto.setFirstName("Name");
-        userRegistrationDto.setLastName("LastName");
-        userRegistrationDto.setEmail("email@gmail.com");
-        userRegistrationDto.setPassword("password");
-        userRegistrationDto.setConfirmPassword("password");
-        userRegistrationDto.setPhoneNumber("0999999999");
-        userRegistrationDto.setDateOfBirth(LocalDate.of(2000, 1, 1));
+        UserRegistrationDto userRegistrationDto = TestUtil.generateValidUserRegistrationDto();
 
         studentRegistrationDto.setUser(userRegistrationDto);
         studentRegistrationDto.setGroupId(1L);
@@ -540,22 +513,15 @@ class AdminControllerTests {
     void createStudent_shouldReturnFormOnValidationErrors_whenPasswordsDontMatch() throws Exception {
         StudentRegistrationDto studentRegistrationDto = new StudentRegistrationDto();
 
-        UserRegistrationDto userRegistrationDto = new UserRegistrationDto();
-        userRegistrationDto.setFirstName("Name");
-        userRegistrationDto.setLastName("LastName");
-        userRegistrationDto.setEmail("email@gmail.com");
+        UserRegistrationDto userRegistrationDto = TestUtil.generateValidUserRegistrationDto();
         userRegistrationDto.setPassword("password");
-        userRegistrationDto.setConfirmPassword("anotherPassword");
-        userRegistrationDto.setPhoneNumber("0999999999");
-        userRegistrationDto.setDateOfBirth(LocalDate.of(2000, 1, 1));
+        userRegistrationDto.setConfirmPassword("another_password");
+
 
         studentRegistrationDto.setUser(userRegistrationDto);
         studentRegistrationDto.setGroupId(1L);
 
-        GroupDto groupDto = new GroupDto();
-        groupDto.setId(1L);
-        groupDto.setName("Name");
-
+        GroupDto groupDto = TestUtil.generateGroupDto();
 
         List<GroupDto> groups = Collections.singletonList(groupDto);
         when(groupService.findAll()).thenReturn(groups);
@@ -578,20 +544,11 @@ class AdminControllerTests {
     void createStudent_shouldReturnFormOnValidationErrors_whenAllFieldsNotBlanked() throws Exception {
         StudentRegistrationDto studentRegistrationDto = new StudentRegistrationDto();
 
-        UserRegistrationDto userRegistrationDto = new UserRegistrationDto();
-        userRegistrationDto.setFirstName("");
-        userRegistrationDto.setLastName("");
-        userRegistrationDto.setEmail("badEmail");
-        userRegistrationDto.setPassword("");
-        userRegistrationDto.setConfirmPassword("");
-        userRegistrationDto.setPhoneNumber("");
+        UserRegistrationDto userRegistrationDto = TestUtil.generateInvalidUserRegistrationDto();
 
         studentRegistrationDto.setUser(userRegistrationDto);
 
-        GroupDto groupDto = new GroupDto();
-        groupDto.setId(1L);
-        groupDto.setName("Name");
-
+        GroupDto groupDto = TestUtil.generateGroupDto();
 
         List<GroupDto> groups = Collections.singletonList(groupDto);
         when(groupService.findAll()).thenReturn(groups);
@@ -620,21 +577,13 @@ class AdminControllerTests {
     void createStudent_shouldReturnFormOnValidationErrors_whenBlankedEmailAlreadyExists() throws Exception {
         StudentRegistrationDto studentRegistrationDto = new StudentRegistrationDto();
 
-        UserRegistrationDto userRegistrationDto = new UserRegistrationDto();
-        userRegistrationDto.setFirstName("Name");
-        userRegistrationDto.setLastName("LastName");
-        userRegistrationDto.setEmail("existingEmail@gmail.com");
-        userRegistrationDto.setPassword("password");
-        userRegistrationDto.setConfirmPassword("password");
-        userRegistrationDto.setPhoneNumber("0999999999");
-        userRegistrationDto.setDateOfBirth(LocalDate.of(2000, 1, 1));
+        UserRegistrationDto userRegistrationDto = TestUtil.generateValidUserRegistrationDto();
+
 
         studentRegistrationDto.setUser(userRegistrationDto);
         studentRegistrationDto.setGroupId(1L);
 
-        GroupDto groupDto = new GroupDto();
-        groupDto.setId(1L);
-        groupDto.setName("Name");
+        GroupDto groupDto = TestUtil.generateGroupDto();
 
 
         List<GroupDto> groups = Collections.singletonList(groupDto);
@@ -662,14 +611,8 @@ class AdminControllerTests {
     void createStudent_shouldReturnFormOnValidationErrors_whenBlankedPhoneNumberAlreadyExists() throws Exception {
         StudentRegistrationDto studentRegistrationDto = new StudentRegistrationDto();
 
-        UserRegistrationDto userRegistrationDto = new UserRegistrationDto();
-        userRegistrationDto.setFirstName("Name");
-        userRegistrationDto.setLastName("LastName");
-        userRegistrationDto.setEmail("email@gmail.com");
-        userRegistrationDto.setPassword("password");
-        userRegistrationDto.setConfirmPassword("password");
-        userRegistrationDto.setPhoneNumber("0999999999");
-        userRegistrationDto.setDateOfBirth(LocalDate.of(2000, 1, 1));
+        UserRegistrationDto userRegistrationDto = TestUtil.generateValidUserRegistrationDto();
+
 
         studentRegistrationDto.setUser(userRegistrationDto);
         studentRegistrationDto.setGroupId(1L);
@@ -706,14 +649,8 @@ class AdminControllerTests {
 
         TeacherRegistrationDto teacherRegistrationDto = new TeacherRegistrationDto();
 
-        UserRegistrationDto userRegistrationDto = new UserRegistrationDto();
-        userRegistrationDto.setFirstName("Name");
-        userRegistrationDto.setLastName("LastName");
-        userRegistrationDto.setEmail("email@gmail.com");
-        userRegistrationDto.setPassword("password");
-        userRegistrationDto.setConfirmPassword("password");
-        userRegistrationDto.setPhoneNumber("0999999999");
-        userRegistrationDto.setDateOfBirth(LocalDate.of(2000, 1, 1));
+        UserRegistrationDto userRegistrationDto = TestUtil.generateValidUserRegistrationDto();
+
 
         teacherRegistrationDto.setUser(userRegistrationDto);
         teacherRegistrationDto.setDisciplineIds(Set.of(1L, 2L));
@@ -736,21 +673,14 @@ class AdminControllerTests {
     void createTeacher_shouldReturnFormOnValidationErrors_whenPasswordsDontMatch() throws Exception {
         TeacherRegistrationDto teacherRegistrationDto = new TeacherRegistrationDto();
 
-        UserRegistrationDto userRegistrationDto = new UserRegistrationDto();
-        userRegistrationDto.setFirstName("Name");
-        userRegistrationDto.setLastName("LastName");
-        userRegistrationDto.setEmail("email@gmail.com");
+        UserRegistrationDto userRegistrationDto = TestUtil.generateValidUserRegistrationDto();
         userRegistrationDto.setPassword("password");
-        userRegistrationDto.setConfirmPassword("anotherPassword");
-        userRegistrationDto.setPhoneNumber("0999999999");
-        userRegistrationDto.setDateOfBirth(LocalDate.of(2000, 1, 1));
+        userRegistrationDto.setConfirmPassword("another_password");
 
         teacherRegistrationDto.setUser(userRegistrationDto);
         teacherRegistrationDto.setDisciplineIds(Set.of(1L, 2L));
 
-        DisciplineDto disciplineDto = new DisciplineDto();
-        disciplineDto.setId(1L);
-        disciplineDto.setName("Name");
+        DisciplineDto disciplineDto = TestUtil.generateDisciplineDto();
 
 
         List<DisciplineDto> disciplines = Collections.singletonList(disciplineDto);
@@ -774,19 +704,11 @@ class AdminControllerTests {
     void createTeacher_shouldReturnFormOnValidationErrors_whenAllFieldsNotBlanked() throws Exception {
         TeacherRegistrationDto teacherRegistrationDto = new TeacherRegistrationDto();
 
-        UserRegistrationDto userRegistrationDto = new UserRegistrationDto();
-        userRegistrationDto.setFirstName("");
-        userRegistrationDto.setLastName("");
-        userRegistrationDto.setEmail("a@");
-        userRegistrationDto.setPassword("");
-        userRegistrationDto.setConfirmPassword("");
-        userRegistrationDto.setPhoneNumber("");
+        UserRegistrationDto userRegistrationDto = TestUtil.generateInvalidUserRegistrationDto();
 
         teacherRegistrationDto.setUser(userRegistrationDto);
 
-        DisciplineDto disciplineDto = new DisciplineDto();
-        disciplineDto.setId(1L);
-        disciplineDto.setName("Name");
+        DisciplineDto disciplineDto = TestUtil.generateDisciplineDto();
 
 
         List<DisciplineDto> disciplines = Collections.singletonList(disciplineDto);
@@ -815,20 +737,13 @@ class AdminControllerTests {
     void createTeacher_shouldReturnFormOnValidationErrors_whenBlankedEmailAlreadyExists() throws Exception {
         TeacherRegistrationDto teacherRegistrationDto = new TeacherRegistrationDto();
 
-        UserRegistrationDto userRegistrationDto = new UserRegistrationDto();
-        userRegistrationDto.setFirstName("Name");
-        userRegistrationDto.setLastName("LastName");
-        userRegistrationDto.setEmail("existingEmail@gmail.com");
-        userRegistrationDto.setPassword("password");
-        userRegistrationDto.setConfirmPassword("password");
-        userRegistrationDto.setPhoneNumber("0998790987");
-        userRegistrationDto.setDateOfBirth(LocalDate.of(2000, 1, 1));
+        UserRegistrationDto userRegistrationDto = TestUtil.generateValidUserRegistrationDto();
+
 
         teacherRegistrationDto.setUser(userRegistrationDto);
 
-        DisciplineDto disciplineDto = new DisciplineDto();
-        disciplineDto.setId(1L);
-        disciplineDto.setName("Name");
+        DisciplineDto disciplineDto = TestUtil.generateDisciplineDto();
+
 
         List<DisciplineDto> disciplines = Collections.singletonList(disciplineDto);
         when(disciplineService.findAll()).thenReturn(disciplines);
@@ -855,20 +770,13 @@ class AdminControllerTests {
     void createTeacher_shouldReturnFormOnValidationErrors_whenBlankedPhoneNumberAlreadyExists() throws Exception {
         TeacherRegistrationDto teacherRegistrationDto = new TeacherRegistrationDto();
 
-        UserRegistrationDto userRegistrationDto = new UserRegistrationDto();
-        userRegistrationDto.setFirstName("Name");
-        userRegistrationDto.setLastName("LastName");
-        userRegistrationDto.setEmail("existingEmail@gmail.com");
-        userRegistrationDto.setPassword("password");
-        userRegistrationDto.setConfirmPassword("password");
-        userRegistrationDto.setPhoneNumber("0998790987");
-        userRegistrationDto.setDateOfBirth(LocalDate.of(2000, 1, 1));
+        UserRegistrationDto userRegistrationDto = TestUtil.generateValidUserRegistrationDto();
+
 
         teacherRegistrationDto.setUser(userRegistrationDto);
 
-        DisciplineDto disciplineDto = new DisciplineDto();
-        disciplineDto.setId(1L);
-        disciplineDto.setName("Name");
+        DisciplineDto disciplineDto = TestUtil.generateDisciplineDto();
+
 
         List<DisciplineDto> disciplines = Collections.singletonList(disciplineDto);
         when(disciplineService.findAll()).thenReturn(disciplines);
@@ -896,14 +804,8 @@ class AdminControllerTests {
 
         AdminRegistrationDto adminRegistrationDto = new AdminRegistrationDto();
 
-        UserRegistrationDto userRegistrationDto = new UserRegistrationDto();
-        userRegistrationDto.setFirstName("Name");
-        userRegistrationDto.setLastName("LastName");
-        userRegistrationDto.setEmail("email@gmail.com");
-        userRegistrationDto.setPassword("password");
-        userRegistrationDto.setConfirmPassword("password");
-        userRegistrationDto.setPhoneNumber("0999999999");
-        userRegistrationDto.setDateOfBirth(LocalDate.of(2000, 1, 1));
+        UserRegistrationDto userRegistrationDto = TestUtil.generateValidUserRegistrationDto();
+
 
         adminRegistrationDto.setUser(userRegistrationDto);
 
@@ -925,14 +827,9 @@ class AdminControllerTests {
     void createAdmin_shouldReturnFormOnValidationErrors_whenPasswordsDontMatch() throws Exception {
         AdminRegistrationDto adminRegistrationDto = new AdminRegistrationDto();
 
-        UserRegistrationDto userRegistrationDto = new UserRegistrationDto();
-        userRegistrationDto.setFirstName("Name");
-        userRegistrationDto.setLastName("LastName");
-        userRegistrationDto.setEmail("email@gmail.com");
+        UserRegistrationDto userRegistrationDto = TestUtil.generateValidUserRegistrationDto();
         userRegistrationDto.setPassword("password");
-        userRegistrationDto.setConfirmPassword("anotherPassword");
-        userRegistrationDto.setPhoneNumber("0999999999");
-        userRegistrationDto.setDateOfBirth(LocalDate.of(2000, 1, 1));
+        userRegistrationDto.setConfirmPassword("another_password");
 
         adminRegistrationDto.setUser(userRegistrationDto);
 
@@ -953,13 +850,8 @@ class AdminControllerTests {
     void createAdmin_shouldReturnFormOnValidationErrors_whenAllFieldsNotBlanked() throws Exception {
         AdminRegistrationDto adminRegistrationDto = new AdminRegistrationDto();
 
-        UserRegistrationDto userRegistrationDto = new UserRegistrationDto();
-        userRegistrationDto.setFirstName("");
-        userRegistrationDto.setLastName("");
-        userRegistrationDto.setEmail("badEmail");
-        userRegistrationDto.setPassword("");
-        userRegistrationDto.setConfirmPassword("");
-        userRegistrationDto.setPhoneNumber("");
+        UserRegistrationDto userRegistrationDto = TestUtil.generateInvalidUserRegistrationDto();
+
 
         adminRegistrationDto.setUser(userRegistrationDto);
 
@@ -986,14 +878,8 @@ class AdminControllerTests {
     void createAdmin_shouldReturnFormOnValidationErrors_whenBlankedEmailAlreadyExists() throws Exception {
         AdminRegistrationDto adminRegistrationDto = new AdminRegistrationDto();
 
-        UserRegistrationDto userRegistrationDto = new UserRegistrationDto();
-        userRegistrationDto.setFirstName("Name");
-        userRegistrationDto.setLastName("LastName");
-        userRegistrationDto.setEmail("existingEmail@gmail.com");
-        userRegistrationDto.setPassword("password");
-        userRegistrationDto.setConfirmPassword("password");
-        userRegistrationDto.setPhoneNumber("0999999999");
-        userRegistrationDto.setDateOfBirth(LocalDate.of(2000, 1, 1));
+        UserRegistrationDto userRegistrationDto = TestUtil.generateValidUserRegistrationDto();
+
 
         adminRegistrationDto.setUser(userRegistrationDto);
 
@@ -1018,14 +904,8 @@ class AdminControllerTests {
     void createAdmin_shouldReturnFormOnValidationErrors_whenBlankedPhoneNumberAlreadyExists() throws Exception {
         AdminRegistrationDto adminRegistrationDto = new AdminRegistrationDto();
 
-        UserRegistrationDto userRegistrationDto = new UserRegistrationDto();
-        userRegistrationDto.setFirstName("Name");
-        userRegistrationDto.setLastName("LastName");
-        userRegistrationDto.setEmail("email@gmail.com");
-        userRegistrationDto.setPassword("password");
-        userRegistrationDto.setConfirmPassword("password");
-        userRegistrationDto.setPhoneNumber("0999999999");
-        userRegistrationDto.setDateOfBirth(LocalDate.of(2000, 1, 1));
+        UserRegistrationDto userRegistrationDto = TestUtil.generateValidUserRegistrationDto();
+
 
         adminRegistrationDto.setUser(userRegistrationDto);
 
@@ -1045,8 +925,6 @@ class AdminControllerTests {
 
     }
 
-
-    //DELETE FEATURE TESTS
     @Test
     @WithMockCustomUser(email = "admin@gmail.com")
     void deleteAdmin_shouldRedirectWithSuccessMessage_whenAdminDeletedSuccessfully() throws Exception {
@@ -1066,11 +944,9 @@ class AdminControllerTests {
     @Test
     @WithMockCustomUser(email = "admin@gmail.com")
     void deleteAdmin_AdminNotFound_shouldAddErrorMessage() throws Exception {
-        // Arrange
         Long adminId = 1L;
         doThrow(new AdminNotFoundException("Admin not found")).when(adminService).deleteById(adminId);
 
-        // Act & Assert
         mockMvc.perform(post("/administrators/admins/delete/{id}", adminId)
                         .param("_method", "delete")
                         .with(csrf()))
@@ -1078,7 +954,6 @@ class AdminControllerTests {
                 .andExpect(redirectedUrl("/administrators/admins"))
                 .andExpect(flash().attribute("errorMessage", "Admin not found"));
 
-        // Verify that the service method was called
         verify(adminService).deleteById(adminId);
     }
 
@@ -1117,10 +992,8 @@ class AdminControllerTests {
     @Test
     @WithMockCustomUser(email = "admin@gmail.com")
     void deleteTeacher_shouldRedirectWithSuccessMessage_whenTeacherDeletedSuccessfully() throws Exception {
-        // Arrange
         Long teacherId = 1L;
 
-        // Act
         mockMvc.perform(post("/administrators/teachers/delete/{id}", teacherId)
                         .param("_method", "delete")
                         .with(csrf()))
@@ -1128,7 +1001,6 @@ class AdminControllerTests {
                 .andExpect(redirectedUrl("/administrators/teachers"))
                 .andExpect(flash().attribute("successMessage", "Teacher deleted successfully"));
 
-        // Assert
         verify(teacherService, times(1)).deleteById(teacherId);
     }
 
@@ -1180,13 +1052,7 @@ class AdminControllerTests {
         TeacherDto teacherDto = new TeacherDto();
         teacherDto.setId(1L);
 
-        UserDto userDto = new UserDto();
-        userDto.setEmail("email@gmail.com");
-        userDto.setPhoneNumber("0999999999");
-        userDto.setFirstName("test");
-        userDto.setLastName("test");
-        userDto.setDateOfBirth(LocalDate.of(2000,2,2));
-        userDto.setId(1L);
+        UserDto userDto = TestUtil.generateUserDto();
 
         teacherDto.setUser(userDto);
 
@@ -1194,13 +1060,7 @@ class AdminControllerTests {
         TeacherUpdateDto teacherUpdateDto = new TeacherUpdateDto();
         teacherUpdateDto.setId(1L);
 
-        UserUpdateDto userUpdateDto = new UserUpdateDto();
-        userUpdateDto.setEmail("email@gmail.com");
-        userUpdateDto.setPhoneNumber("0999999999");
-        userUpdateDto.setFirstName("test");
-        userUpdateDto.setLastName("test");
-        userUpdateDto.setDateOfBirth(LocalDate.of(2000,2,2));
-        userUpdateDto.setId(1L);
+        UserUpdateDto userUpdateDto = TestUtil.generateValidUserUpdateDto();
 
 
         teacherUpdateDto.setUser(userUpdateDto);
@@ -1222,20 +1082,10 @@ class AdminControllerTests {
     @WithMockUser(username = "admin", roles = "ADMIN")
     void editTeacher_ValidationErrors() throws Exception {
         TeacherDto teacherDto = new TeacherDto();
-        UserDto userDto = new UserDto();
-        userDto.setId(1L);
-        userDto.setPhoneNumber("0999999999");
-        userDto.setEmail("email@gmail.com");
+
+        UserDto userDto = TestUtil.generateUserDto();
+
         teacherDto.setUser(userDto);
-
-        UserUpdateDto userUpdateDto = new UserUpdateDto();
-        userUpdateDto.setEmail("email@gmail.com");
-        userUpdateDto.setPhoneNumber("0999999999");
-        userUpdateDto.setFirstName("test");
-        userUpdateDto.setLastName("test");
-        userUpdateDto.setDateOfBirth(LocalDate.of(2000,2,2));
-        userUpdateDto.setId(1L);
-
 
         UserUpdateDto invalidUserUpdateDto = new UserUpdateDto();
         invalidUserUpdateDto.setEmail("invalid-email");
@@ -1295,23 +1145,14 @@ class AdminControllerTests {
     void editAdmin_Success() throws Exception {
 
         AdminDto adminDto = new AdminDto();
-        UserDto userDto = new UserDto();
-        userDto.setId(1L);
-        userDto.setPhoneNumber("0999999999");
-        userDto.setEmail("email@gmail.com");
+        UserDto userDto = TestUtil.generateUserDto();
+
         adminDto.setUser(userDto);
 
         AdminUpdateDto adminUpdateDto = new AdminUpdateDto();
         adminUpdateDto.setId(1L);
 
-        UserUpdateDto userUpdateDto = new UserUpdateDto();
-        userUpdateDto.setEmail("email@gmail.com");
-        userUpdateDto.setPhoneNumber("0999999999");
-        userUpdateDto.setFirstName("test");
-        userUpdateDto.setLastName("test");
-        userUpdateDto.setDateOfBirth(LocalDate.of(2000,2,2));
-        userUpdateDto.setId(1L);
-
+        UserUpdateDto userUpdateDto = TestUtil.generateValidUserUpdateDto();
 
         adminUpdateDto.setUser(userUpdateDto);
 
@@ -1335,10 +1176,8 @@ class AdminControllerTests {
         adminDto.setId(1L);
 
 
-        UserDto userDto = new UserDto();
-        userDto.setId(1L);
-        userDto.setEmail("email@gmail.com");
-        userDto.setPhoneNumber("0997777876");
+        UserDto userDto = TestUtil.generateUserDto();
+
         adminDto.setUser(userDto);
 
         UserUpdateDto invalidUserUpdateDto = new UserUpdateDto();
@@ -1395,23 +1234,14 @@ class AdminControllerTests {
     @WithMockCustomUser(email = "admin@gmail.com")
     void editStudent_Success() throws Exception {
         StudentDto studentDto = new StudentDto();
-        UserDto userDto = new UserDto();
-        userDto.setId(1L);
-        userDto.setPhoneNumber("0999999999");
-        userDto.setEmail("email@gmail.com");
+        UserDto userDto = TestUtil.generateUserDto();
+
         studentDto.setUser(userDto);
 
         StudentUpdateDto studentUpdateDto = new StudentUpdateDto();
         studentUpdateDto.setId(1L);
 
-        UserUpdateDto userUpdateDto = new UserUpdateDto();
-        userUpdateDto.setEmail("email@gmail.com");
-        userUpdateDto.setPhoneNumber("0999999999");
-        userUpdateDto.setFirstName("test");
-        userUpdateDto.setLastName("test");
-        userUpdateDto.setDateOfBirth(LocalDate.of(2000,2,2));
-        userUpdateDto.setId(1L);
-
+        UserUpdateDto userUpdateDto = TestUtil.generateValidUserUpdateDto();
 
         studentUpdateDto.setUser(userUpdateDto);
         studentUpdateDto.setGroupId(1L);
@@ -1435,22 +1265,12 @@ class AdminControllerTests {
     void editStudent_ValidationErrors() throws Exception {
 
         StudentDto studentDto = new StudentDto();
-        UserDto userDto = new UserDto();
-        userDto.setId(1L);
-        userDto.setPhoneNumber("0999999999");
-        userDto.setEmail("email@gmail.com");
+        UserDto userDto = TestUtil.generateUserDto();
+
         studentDto.setUser(userDto);
 
 
-        UserUpdateDto userUpdateDto = new UserUpdateDto();
-        userUpdateDto.setEmail("email@gmail.com");
-        userUpdateDto.setPhoneNumber("0999999999");
-        userUpdateDto.setFirstName("test");
-        userUpdateDto.setLastName("test");
-        userUpdateDto.setDateOfBirth(LocalDate.of(2000,2,2));
-        userUpdateDto.setId(1L);
-
-
+        UserUpdateDto userUpdateDto = TestUtil.generateValidUserUpdateDto();
 
         UserUpdateDto invalidUserUpdateDto = new UserUpdateDto();
         invalidUserUpdateDto.setEmail("invalid-email");

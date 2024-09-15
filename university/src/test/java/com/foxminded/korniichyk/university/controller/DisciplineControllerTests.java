@@ -5,6 +5,7 @@ import com.foxminded.korniichyk.university.dto.display.DisciplineDto;
 import com.foxminded.korniichyk.university.security.CustomUserDetailsService;
 import com.foxminded.korniichyk.university.security.SecurityConfig;
 import com.foxminded.korniichyk.university.service.contract.DisciplineService;
+import com.foxminded.korniichyk.university.util.TestUtil;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
@@ -44,10 +45,7 @@ public class DisciplineControllerTests {
     @Test
     @WithMockUser(username = "admin@gmail.com", roles = {"ADMIN","TEACHER","STUDENT"})
     void disciplines_shouldReturnCorrectViewWithAttributes() throws Exception {
-        DisciplineDto disciplineDto = new DisciplineDto();
-        disciplineDto.setName("");
-        disciplineDto.setDescription("");
-        disciplineDto.setId(1L);
+        DisciplineDto disciplineDto = TestUtil.generateDisciplineDto();
 
         Page<DisciplineDto> page = new PageImpl<>(Collections.singletonList(disciplineDto), PageRequest.of(0, 7), 1);
 

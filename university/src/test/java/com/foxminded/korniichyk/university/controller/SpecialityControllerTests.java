@@ -4,6 +4,7 @@ import com.foxminded.korniichyk.university.dto.display.SpecialityDto;
 import com.foxminded.korniichyk.university.security.CustomUserDetailsService;
 import com.foxminded.korniichyk.university.security.SecurityConfig;
 import com.foxminded.korniichyk.university.service.contract.SpecialityService;
+import com.foxminded.korniichyk.university.util.TestUtil;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
@@ -42,12 +43,9 @@ public class SpecialityControllerTests {
     private CustomUserDetailsService customUserDetailsService;
 
     @Test
-    @WithMockUser(username = "user@gmail.com", roles = {"ADMIN", "STUDENT","TEACHER"})    void specialities_shouldReturnCorrectViewWithAttributes() throws Exception {
-        SpecialityDto specialityDto = new SpecialityDto();
-        specialityDto.setName("");
-        specialityDto.setDescription("");
-        specialityDto.setId(1L);
-        specialityDto.setCode(100);
+    @WithMockUser(username = "user@gmail.com", roles = {"ADMIN", "STUDENT","TEACHER"})
+    void specialities_shouldReturnCorrectViewWithAttributes() throws Exception {
+        SpecialityDto specialityDto = TestUtil.generateSpecialityDto();
 
         Page<SpecialityDto> page = new PageImpl<>(Collections.singletonList(specialityDto), PageRequest.of(0, 7), 1);
 
