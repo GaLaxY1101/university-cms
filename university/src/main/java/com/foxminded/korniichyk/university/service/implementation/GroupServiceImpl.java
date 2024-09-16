@@ -43,13 +43,6 @@ public class GroupServiceImpl implements GroupService {
                 .orElseThrow(() -> new GroupNotFoundException("Teacher with id " + id + " not found"));
     }
 
-    public List<GroupDto> findAll() {
-        return groupDao.findAll()
-                .stream()
-                .map(groupMapper::toDto)
-                .collect(toList());
-    }
-
     @Transactional
     @Override
     public void save(Group group) {
