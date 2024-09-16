@@ -1,0 +1,224 @@
+.main-content{
+    display: flex;
+    max-width: 1500px;
+    min-width: 700px;
+    flex-direction: column;
+    padding-left: 230px;
+    padding-right: 30px;
+    padding-top: 50px;
+
+}
+
+.dashboard-header {
+    display: flex;
+    gap: 20px;
+    flex-direction: column;
+    color: #4A85F6;
+    font-size: 24px;
+    font-weight: bold;
+}
+
+.edit-icon{
+    color: black;
+}
+
+.input-wrapper{
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+}
+
+.input-wrapper button {
+    background-color: #4A85F6;
+    color: white;
+    border: none;
+    border-radius: 15px;
+    padding: 10px 20px;
+    font-size: 16px;
+    font-weight: bold;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    transition: background-color 0.3s ease; /* Smooth transition for background color */
+}
+
+.input-wrapper a{
+    text-decoration: none;
+    color: white;
+}
+
+.input-container {
+    position: relative;
+    display: inline-block;
+    width: 500px;
+}
+
+.input-container input {
+    width: 80%;
+    padding: 12px 20px 12px 40px; /* Padding for the input, adjusted to fit the icon */
+    border: 1px solid #ccc;
+    border-radius: 15px; /* Rounded corners */
+    font-size: 16px;
+    outline: none;
+    transition: border-color 0.3s ease; /* Smooth transition for the border color */
+}
+
+.input-container input:hover,
+.input-container input:focus {
+    border-color: #aaa; /* Slightly darker border color on hover and focus */
+}
+
+.input-container .fa-search {
+    position: absolute;
+    left: 12px; /* Position the icon inside the input */
+    top: 50%;
+    transform: translateY(-50%);
+    color: #888; /* Grey color for the icon */
+    font-size: 18px;
+}
+
+.fa-solid{
+    padding-left: 10px;
+}
+
+.sort-by-wrapper{
+    padding-left: 30px;
+    color: #404040;
+    font-size: 17px;
+    font-weight: 600;
+    cursor: pointer;
+}
+
+.filter-wrapper{
+    padding-left: 30px;
+    color: #404040;
+    font-size: 17px;
+    font-weight: 600;
+    cursor: pointer;
+    letter-spacing: 1px;
+}
+
+
+/* Student List*/
+.list-wrapper {
+    display: flex;
+    justify-content: space-between;
+    flex-direction: column;
+    border-radius: 15px;
+    background-color: white;
+    min-height: 60vh;
+    width: 100%;
+    margin-top: 20px;
+    padding:20px;
+}
+
+.list{
+    display: flex;
+    flex-direction: column;
+}
+
+.list-wrapper thead{
+    height: 50px;
+}
+
+.list-wrapper header{
+    font-size: 19px;
+    font-weight: 700;
+}
+
+.list-wrapper table {
+    border-collapse: collapse;
+    margin: 10px 0;
+    font-size: 18px;
+    text-align: left;
+    background-color: #ffffff; /* White background for the entire table */
+}
+
+.list-wrapper thead{
+    background-color: #EFF4FA;
+    border:none;
+}
+
+td th{
+    border:none;
+    color: #8F9BB3;
+}
+
+
+.list-wrapper td{
+    height: 50px;
+    border-bottom: 1px solid #EFF4FA;
+}
+
+.fa-trash{
+    color:red;
+    cursor: pointer;
+}
+
+.fa-pen-to-square{
+    cursor:pointer;
+}
+
+.body {
+    font-family: Arial, sans-serif;
+    margin: 0;
+    padding: 0;
+    background: #f5f7fa;
+    color: #333;
+}
+
+.welcome-container-wrapper{
+    display: flex;
+    justify-content: center;
+    max-width: 800px;
+    margin: 100px auto;
+    padding: 20px;
+    background: #ffffff;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+    border-radius: 8px;
+}
+
+.welcome-container {
+    display: flex;
+    flex-direction: column;
+    align-items: flex-start;
+    width: fit-content;
+
+}
+
+.welcome-container h1 {
+    font-size: 2.5em;
+    margin-bottom: 20px;
+    color: #4a90e2;
+}
+
+.welcome-container p {
+    font-size: 1.1em;
+    margin: 10px 0;
+}
+
+.welcome-container a {
+    color: #4a90e2;
+    text-decoration: none;
+    font-weight: bold;
+    transition: color 0.3s;
+}
+
+.welcome-container a:hover {
+    color: #2a6ebd;
+}
+
+.entity-info-wrapper{
+    display: flex;
+    flex-direction: column;
+    gap:15px;
+}
+
+.info-item{
+    font-size: 18px;
+}
+
+.info-item-header{
+    font-weight: bold;
+}

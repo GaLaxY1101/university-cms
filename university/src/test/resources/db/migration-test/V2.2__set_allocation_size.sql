@@ -1,0 +1,30 @@
+ALTER SEQUENCE user_sequence INCREMENT BY 50;
+
+
+ALTER SEQUENCE admin_sequence INCREMENT BY 50;
+
+
+
+ALTER SEQUENCE discipline_sequence INCREMENT BY 50;
+
+
+ALTER SEQUENCE group_sequence INCREMENT BY 50;
+
+
+ALTER SEQUENCE lesson_sequence INCREMENT BY 50;
+
+
+ALTER SEQUENCE lesson_type_sequence INCREMENT BY 50;
+
+
+ALTER SEQUENCE speciality_sequence INCREMENT BY 50;
+
+
+ALTER SEQUENCE student_sequence INCREMENT BY 50;
+
+
+ALTER SEQUENCE teacher_sequence INCREMENT BY 50;
+
+
+ALTER SEQUENCE user_sequence INCREMENT BY 50;
+

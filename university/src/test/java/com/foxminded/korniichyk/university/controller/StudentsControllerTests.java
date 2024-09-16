@@ -1,0 +1,182 @@
+package com.foxminded.korniichyk.university.controller;
+
+import com.foxminded.korniichyk.university.annotation.WithMockCustomUser;
+import com.foxminded.korniichyk.university.dto.display.GroupDto;
+import com.foxminded.korniichyk.university.dto.display.SpecialityDto;
+import com.foxminded.korniichyk.university.dto.display.StudentDto;
+import com.foxminded.korniichyk.university.dto.display.UserDto;
+import com.foxminded.korniichyk.university.mapper.display.GroupMapper;
+import com.foxminded.korniichyk.university.model.Group;
+import com.foxminded.korniichyk.university.model.Role;
+import com.foxminded.korniichyk.university.model.Student;
+import com.foxminded.korniichyk.university.security.CustomUserDetailsService;
+import com.foxminded.korniichyk.university.security.SecurityConfig;
+import com.foxminded.korniichyk.university.service.contract.GroupService;
+import com.foxminded.korniichyk.university.service.contract.StudentService;
+import com.foxminded.korniichyk.university.util.TestUtil;
+import org.junit.jupiter.api.Test;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
+import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
+import org.springframework.boot.test.mock.mockito.MockBean;
+import org.springframework.context.annotation.Import;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageImpl;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
+import org.springframework.security.test.context.support.WithMockUser;
+import org.springframework.test.web.servlet.MockMvc;
+import org.springframework.test.web.servlet.ResultActions;
+
+import java.util.Collections;
+import java.util.HashSet;
+import java.util.List;
+import java.util.Set;
+
+import static java.util.Collections.singletonList;
+import static org.mockito.ArgumentMatchers.anyInt;
+import static org.mockito.Mockito.when;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.model;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.view;
+
+@AutoConfigureMockMvc
+@Import(SecurityConfig.class)
+@WebMvcTest(StudentController.class)
+public class StudentsControllerTests {
+
+    @Autowired
+    private MockMvc mockMvc;
+
+    @MockBean
+    private StudentService studentService;
+
+    @MockBean private GroupService groupService;
+
+    @MockBean
+    private CustomUserDetailsService customUserDetailsService;
+
+    @MockBean
+    private GroupMapper groupMapper;
+
+    @Test
+    @WithMockUser(username = "user@gmail.com", roles = {"ADMIN","TEACHER"})
+        void students_shouldReturnCorrectViewWithAttributes() throws Exception {
+        GroupDto group = TestUtil.generateGroupDto();
+
+        StudentDto student = new StudentDto();
+        UserDto user = TestUtil.generateUserDto();
+        student.setGroupName("group 1");
+        student.setUser(user);
+
+        Page<StudentDto> page = new PageImpl<>(Collections.singletonList(student), PageRequest.of(0, 7), 1);
+
+        when(studentService.findPage(anyInt(),anyInt())).thenReturn(page);
+
+        ResultActions result = mockMvc.perform(get("/students/")
+                .param("pageNumber", "0")
+                .param("pageSize", "7"));
+
+        result.andExpect(status().isOk())
+                .andExpect(view().name("students"))
+                .andExpect(model().attributeExists("students"))
+                .andExpect(model().attributeExists("currentPage"))
+                .andExpect(model().attributeExists("totalPages"))
+                .andExpect(model().attributeExists("totalElements"))
+                .andExpect(model().attribute("students", page))
+                .andExpect(model().attribute("currentPage", 0))
+                .andExpect(model().attribute("totalPages", 1))
+                .andExpect(model().attribute("totalElements", 1L));
+    }
+
+    @Test
+    @WithMockUser(username = "student@gmail.com", roles = {"STUDENT"})
+    void groups_shouldReturnForbiddenForStudentRole() throws Exception {
+
+        Page<StudentDto> emptyPage = Page.empty();
+        when(studentService.findPage(anyInt(), anyInt())).thenReturn(emptyPage);
+
+        ResultActions result = mockMvc.perform(get("/students/")
+                .param("pageNumber", "0")
+                .param("pageSize", "7"));
+
+        result.andExpect(status().isForbidden());
+    }
+
+    @Test
+    @WithMockUser(username = "user@gmail.com", roles = {"ADMIN","TEACHER"})
+    void myGroup_shouldReturnForbiddenForNonStudentRole() throws Exception {
+
+        SpecialityDto specialityDto = TestUtil.generateSpecialityDto();
+
+        GroupDto group = TestUtil.generateGroupDto();
+
+        group.setSpeciality(specialityDto);
+        group.setStudents(new HashSet<StudentDto>());
+        Page<GroupDto> page = new PageImpl<>(singletonList(group), PageRequest.of(0, 7), 1);
+
+        when(groupService.findPage(anyInt(),anyInt())).thenReturn(page);
+
+        ResultActions result = mockMvc.perform(get("/students/my-group")
+                .param("pageNumber", "0")
+                .param("pageSize", "7"));
+
+        result.andExpect(status().isForbidden());
+
+    }
+
+    @Test
+    @WithMockCustomUser(email = "student@gmail.com", role = Role.ROLE_STUDENT)
+    void myGroup_shouldReturnCorrectViewWithAttributes() throws Exception {
+
+        SpecialityDto specialityDto = TestUtil.generateSpecialityDto();
+
+        UserDto user = TestUtil.generateUserDto();
+        StudentDto studentDto = new StudentDto();
+        studentDto.setId(2L);
+        studentDto.setUser(user);
+
+        GroupDto groupDto = TestUtil.generateGroupDto();
+        groupDto.setSpeciality(specialityDto);
+        groupDto.setStudents(Set.of(studentDto));
+
+        Student student = new Student();
+        student.setId(1L);
+        Group group = new Group();
+        group.setId(1L);
+        student.setGroup(group);
+
+        Pageable pageable = PageRequest.of(1,5);
+
+        when(studentService.getCurrentStudent()).thenReturn(student);
+        when(studentService.findByGroupIdExcludingByStudentId(1L, 1L, pageable ))
+                .thenReturn(new PageImpl<>(List.of(studentDto)));
+        when(groupMapper.toDto(group)).thenReturn(groupDto);
+
+        mockMvc.perform(get("/students/my-group")
+                        .param("page", "1")
+                        .param("size", "5"))
+                .andExpect(status().isOk())
+                .andExpect(view().name("/student/my-group"))
+                .andExpect(model().attributeExists("students"))
+                .andExpect(model().attribute("group", groupDto))
+                .andExpect(model().attribute("currentPage", 0))
+                .andExpect(model().attribute("totalPages", 1))
+                .andExpect(model().attribute("totalElements", 1L));
+    }
+
+
+
+    @Test
+    @WithMockUser(roles = {"ADMIN", "TEACHER"})
+    void myGroup_shouldReturnForbidden_whenNoStudentRole() throws Exception {
+
+        ResultActions result = mockMvc.perform(get("/students/my-group")
+                .param("page", "0")
+                .param("size", "5"));
+
+        result.andExpect(status().isForbidden());
+    }
+
+}
