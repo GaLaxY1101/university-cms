@@ -4,7 +4,6 @@ import com.foxminded.korniichyk.university.dto.display.GroupDto;
 import com.foxminded.korniichyk.university.service.contract.GroupService;
 import com.foxminded.korniichyk.university.service.contract.StudentService;
 import com.foxminded.korniichyk.university.service.contract.TeacherService;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;

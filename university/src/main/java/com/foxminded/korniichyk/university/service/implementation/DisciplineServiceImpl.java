@@ -3,14 +3,13 @@ package com.foxminded.korniichyk.university.service.implementation;
 
 import com.foxminded.korniichyk.university.dao.DisciplineDao;
 import com.foxminded.korniichyk.university.dto.display.DisciplineDto;
+import com.foxminded.korniichyk.university.dto.input.InputOptionDto;
+import com.foxminded.korniichyk.university.mapper.display.DisciplineMapper;
 import com.foxminded.korniichyk.university.model.Discipline;
 import com.foxminded.korniichyk.university.service.contract.DisciplineService;
 import com.foxminded.korniichyk.university.service.exception.DisciplineNotFoundException;
-import com.foxminded.korniichyk.university.mapper.display.DisciplineMapper;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.slf4j.Logger;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
@@ -45,6 +44,11 @@ public class DisciplineServiceImpl implements DisciplineService {
                     return disciplineMapper.toDto(discipline);
                 })
                 .collect(Collectors.toList());
+    }
+
+    @Override
+    public List<InputOptionDto> findAllDisciplineOptions() {
+        return disciplineDao.findAllDisciplineOptions();
     }
 
     @Transactional

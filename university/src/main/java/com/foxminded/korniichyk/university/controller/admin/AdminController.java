@@ -38,7 +38,13 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
-import org.springframework.web.bind.annotation.*;
+import org.springframework.web.bind.annotation.DeleteMapping;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.ModelAttribute;
+import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 import java.util.List;
@@ -276,7 +282,7 @@ public class AdminController {
     public String createTeacherPage(Model model) {
         TeacherRegistrationDto teacherRegistrationDto = new TeacherRegistrationDto();
         model.addAttribute("teacherRegistrationDto", teacherRegistrationDto);
-        model.addAttribute("disciplines", disciplineService.findAll());
+        model.addAttribute("disciplines", disciplineService.findAllDisciplineOptions());
         return "admin/create/create-teacher";
     }
 
@@ -294,7 +300,7 @@ public class AdminController {
 
         if (bindingResult.hasErrors()) {
             model.addAttribute("teacherRegistrationDto", teacherRegistrationDto);
-            model.addAttribute("disciplines", disciplineService.findAll());
+            model.addAttribute("disciplines", disciplineService.findAllDisciplineOptions());
             return "admin/create/create-teacher";
         }
 
@@ -309,7 +315,7 @@ public class AdminController {
                 bindingResult.rejectValue("user.phoneNumber", "error.phoneNumber", ex.getMessage());
 
             }
-            model.addAttribute("disciplines", disciplineService.findAll());
+            model.addAttribute("disciplines", disciplineService.findAllDisciplineOptions());
             return "admin/create/create-teacher";
         }
         return "redirect:/administrators/teachers";
@@ -545,7 +551,7 @@ public class AdminController {
     ) {
         try {
             TeacherUpdateDto teacherUpdateDto = teacherService.getTeacherUpdateDto(teacherId);
-            List<DisciplineDto> disciplines = disciplineService.findAll();
+            List<InputOptionDto> disciplines = disciplineService.findAllDisciplineOptions();
             model.addAttribute("disciplines", disciplines);
             model.addAttribute("teacherUpdateDto", teacherUpdateDto);
         } catch (TeacherNotFoundException ex) {
@@ -575,20 +581,20 @@ public class AdminController {
 
         if ((!emailBeforeUpdate.equals(emailAfterUpdate)) && (userService.isExistsByEmail(emailAfterUpdate))) {
             bindingResult.rejectValue("user.email", "error.email", "This email already registered");
-            model.addAttribute("disciplines", disciplineService.findAll());
+            model.addAttribute("disciplines", disciplineService.findAllDisciplineOptions());
             return "admin/edit/edit-teacher";
         }
 
         if ((!phoneNumberBeforeUpdate.equals(phoneNumberAfterUpdate)) && (userService.isExistsByPhoneNumber(phoneNumberAfterUpdate))) {
             bindingResult.rejectValue("user.phoneNumber", "error.phoneNumber", "This phone number already registered");
-            model.addAttribute("disciplines", disciplineService.findAll());
+            model.addAttribute("disciplines", disciplineService.findAllDisciplineOptions());
             return "admin/edit/edit-teacher";
         }
 
 
         if (bindingResult.hasErrors()) {
             model.addAttribute("teacherUpdateDto", teacherUpdateDto);
-            List<DisciplineDto> disciplines = disciplineService.findAll();
+            List<InputOptionDto> disciplines = disciplineService.findAllDisciplineOptions();
             model.addAttribute("disciplines", disciplines);
             return "admin/edit/edit-teacher";
         }
@@ -603,4 +609,5 @@ public class AdminController {
             return "redirect:/administrators/teachers";
         }
     }
+
 }
