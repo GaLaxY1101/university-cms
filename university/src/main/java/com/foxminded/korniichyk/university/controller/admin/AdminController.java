@@ -7,6 +7,7 @@ import com.foxminded.korniichyk.university.dto.display.LessonTypeDto;
 import com.foxminded.korniichyk.university.dto.display.SpecialityDto;
 import com.foxminded.korniichyk.university.dto.display.StudentDto;
 import com.foxminded.korniichyk.university.dto.display.TeacherDto;
+import com.foxminded.korniichyk.university.dto.input.InputOptionDto;
 import com.foxminded.korniichyk.university.dto.registration.AdminRegistrationDto;
 import com.foxminded.korniichyk.university.dto.registration.StudentRegistrationDto;
 import com.foxminded.korniichyk.university.dto.registration.TeacherRegistrationDto;
@@ -32,6 +33,8 @@ import com.foxminded.korniichyk.university.service.exception.StudentNotFoundExce
 import com.foxminded.korniichyk.university.service.exception.TeacherNotFoundException;
 import jakarta.validation.Valid;
 import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
@@ -210,7 +213,8 @@ public class AdminController {
         StudentRegistrationDto studentRegistrationDto = new StudentRegistrationDto();
 
         model.addAttribute("studentRegistrationDto", studentRegistrationDto);
-        model.addAttribute("groups", groupService.findAll());
+        Pageable pageable = PageRequest.of(0, 10);
+        model.addAttribute("groups", groupService.findAllGroupOptions());
 
         return "admin/create/create-student";
     }
@@ -227,7 +231,7 @@ public class AdminController {
         }
 
         if (bindingResult.hasErrors()) {
-            model.addAttribute("groups", groupService.findAll());
+            model.addAttribute("groups", groupService.findAllGroupOptions());
             return "admin/create/create-student";
         }
 
@@ -241,7 +245,7 @@ public class AdminController {
             if (ex instanceof PhoneNumberAlreadyExistsException) {
                 bindingResult.rejectValue("user.phoneNumber", "error.phoneNumber", ex.getMessage());
             }
-            model.addAttribute("groups", groupService.findAll());
+            model.addAttribute("groups", groupService.findAllGroupOptions());
             return "admin/create/create-student";
         }
 
@@ -419,7 +423,7 @@ public class AdminController {
     ) {
         try {
             StudentUpdateDto studentUpdateDto = studentService.getStudentUpdateDto(studentId);
-            List<GroupDto> groups = groupService.findAll();
+            List<InputOptionDto> groups = groupService.findAllGroupOptions();
 
             model.addAttribute("studentUpdateDto", studentUpdateDto);
             model.addAttribute("groups", groups);
@@ -447,18 +451,18 @@ public class AdminController {
 
         if ((!emailBeforeUpdate.equals(emailAfterUpdate)) && (userService.isExistsByEmail(emailAfterUpdate))) {
             bindingResult.rejectValue("user.email", "error.email", "This email already registered");
-            model.addAttribute("groups", groupService.findAll());
+            model.addAttribute("groups", groupService.findAllGroupOptions());
             return "admin/edit/edit-student";
         }
 
         if ((!phoneNumberBeforeUpdate.equals(phoneNumberAfterUpdate)) && (userService.isExistsByPhoneNumber(phoneNumberAfterUpdate))) {
             bindingResult.rejectValue("user.phoneNumber", "error.phoneNumber", "This phone number already registered");
-            model.addAttribute("groups", groupService.findAll());
+            model.addAttribute("groups", groupService.findAllGroupOptions());
             return "admin/edit/edit-student";
         }
 
         if (bindingResult.hasErrors()) {
-            List<GroupDto> groups = groupService.findAll();
+            List<InputOptionDto> groups = groupService.findAllGroupOptions();
             model.addAttribute("groups", groups);
             model.addAttribute("studentUpdateDto", studentUpdateDto);
             return "admin/edit/edit-student";

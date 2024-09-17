@@ -1,6 +1,7 @@
 package com.foxminded.korniichyk.university.service.contract;
 
 import com.foxminded.korniichyk.university.dto.display.GroupDto;
+import com.foxminded.korniichyk.university.dto.input.InputOptionDto;
 import com.foxminded.korniichyk.university.model.Group;
 import org.springframework.data.domain.Page;
 
@@ -16,4 +17,8 @@ public interface GroupService extends CrudService<Group, GroupDto> {
     Page<GroupDto> findPageByTeacherId(Long teacherId, int pageNumber, int pageSize);
 
     boolean isExistsById(Long id);
+
+    List<GroupDto> findAll();
+
+    List<InputOptionDto> findAllGroupOptions();
 }

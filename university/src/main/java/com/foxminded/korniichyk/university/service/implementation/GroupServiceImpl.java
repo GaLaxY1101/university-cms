@@ -3,6 +3,8 @@ package com.foxminded.korniichyk.university.service.implementation;
 import com.foxminded.korniichyk.university.dao.GroupDao;
 import com.foxminded.korniichyk.university.dao.StudentDao;
 import com.foxminded.korniichyk.university.dto.display.GroupDto;
+import com.foxminded.korniichyk.university.dto.input.InputOptionDto;
+import com.foxminded.korniichyk.university.mapper.display.GroupMapper;
 import com.foxminded.korniichyk.university.model.Group;
 import com.foxminded.korniichyk.university.model.Student;
 import com.foxminded.korniichyk.university.service.contract.GroupService;
@@ -10,7 +12,6 @@ import com.foxminded.korniichyk.university.service.contract.TeacherService;
 import com.foxminded.korniichyk.university.service.exception.GroupNotFoundException;
 import com.foxminded.korniichyk.university.service.exception.StudentNotFoundException;
 import com.foxminded.korniichyk.university.service.exception.TeacherNotFoundException;
-import com.foxminded.korniichyk.university.mapper.display.GroupMapper;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.domain.Page;
@@ -21,6 +22,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
+import java.util.stream.Collectors;
 
 import static java.util.stream.Collectors.toList;
 
@@ -107,5 +109,18 @@ public class GroupServiceImpl implements GroupService {
     @Override
     public boolean isExistsById(Long id) {
         return groupDao.existsById(id);
+    }
+
+    @Override
+    public List<GroupDto> findAll() {
+        return groupDao.findAll()
+                .stream()
+                .map(groupMapper::toDto)
+                .collect(Collectors.toList());
+    }
+
+    @Override
+    public List<InputOptionDto> findAllGroupOptions() {
+        return groupDao.findAllGroupOptions();
     }
 }
