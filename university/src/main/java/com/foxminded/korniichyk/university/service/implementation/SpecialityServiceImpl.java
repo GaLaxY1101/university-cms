@@ -1,14 +1,15 @@
 package com.foxminded.korniichyk.university.service.implementation;
 
+import com.foxminded.korniichyk.university.dao.GroupDao;
 import com.foxminded.korniichyk.university.dao.SpecialityDao;
 import com.foxminded.korniichyk.university.dto.display.SpecialityDto;
+import com.foxminded.korniichyk.university.mapper.display.SpecialityMapper;
 import com.foxminded.korniichyk.university.model.Speciality;
+import com.foxminded.korniichyk.university.projection.input.InputOptionProjection;
 import com.foxminded.korniichyk.university.service.contract.SpecialityService;
 import com.foxminded.korniichyk.university.service.exception.SpecialityNotFoundException;
-import com.foxminded.korniichyk.university.mapper.display.SpecialityMapper;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.slf4j.Logger;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
@@ -16,7 +17,6 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
-import java.util.stream.Collectors;
 
 @Service
 @Transactional(readOnly = true)
@@ -26,6 +26,7 @@ public class SpecialityServiceImpl implements SpecialityService {
 
     private final SpecialityDao specialityDao;
     private final SpecialityMapper specialityMapper;
+    private final GroupDao groupDao;
 
     @Override
     public SpecialityDto findById(Long id) {
@@ -57,8 +58,14 @@ public class SpecialityServiceImpl implements SpecialityService {
     }
 
     @Override
-    public Page<SpecialityDto> findPage(int pageNumber, int pageSize){
+    public Page<SpecialityDto> findPage(int pageNumber, int pageSize) {
         Pageable pageable = PageRequest.of(pageNumber, pageSize);
         return specialityDao.findAll(pageable).map(specialityMapper::toDto);
     }
+
+    @Override
+    public List<InputOptionProjection> findAllSpecialityOptions() {
+        return specialityDao.findAllSpecialityOptions();
+    }
+
 }

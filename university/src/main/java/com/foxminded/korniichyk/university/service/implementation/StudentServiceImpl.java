@@ -5,21 +5,19 @@ import com.foxminded.korniichyk.university.dao.StudentDao;
 import com.foxminded.korniichyk.university.dto.display.StudentDto;
 import com.foxminded.korniichyk.university.dto.registration.StudentRegistrationDto;
 import com.foxminded.korniichyk.university.dto.update.StudentUpdateDto;
-import com.foxminded.korniichyk.university.mapper.display.RoleMapper;
 import com.foxminded.korniichyk.university.mapper.display.StudentMapper;
 import com.foxminded.korniichyk.university.mapper.update.StudentUpdateMapper;
 import com.foxminded.korniichyk.university.model.Role;
 import com.foxminded.korniichyk.university.model.Student;
 import com.foxminded.korniichyk.university.model.User;
+import com.foxminded.korniichyk.university.projection.input.InputOptionProjection;
 import com.foxminded.korniichyk.university.security.CustomUserDetails;
-import com.foxminded.korniichyk.university.service.contract.GroupService;
 import com.foxminded.korniichyk.university.service.contract.StudentService;
 import com.foxminded.korniichyk.university.service.contract.UserService;
 import com.foxminded.korniichyk.university.service.exception.GroupNotFoundException;
 import com.foxminded.korniichyk.university.service.exception.StudentNotFoundException;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.slf4j.Logger;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
@@ -28,8 +26,8 @@ import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import java.util.Collections;
 import java.util.List;
+import java.util.Set;
 import java.util.stream.Collectors;
 
 @Transactional(readOnly = true)
@@ -39,12 +37,10 @@ import java.util.stream.Collectors;
 public class StudentServiceImpl implements StudentService {
 
     private final GroupDao groupDao;
-
     private final StudentDao studentDao;
     private final StudentMapper studentMapper;
     private final UserService userService;
     private final StudentUpdateMapper studentUpdateMapper;
-    private final GroupService groupService;
 
     @Override
     public StudentDto findById(Long id) {
@@ -100,10 +96,7 @@ public class StudentServiceImpl implements StudentService {
 
         if (!group.getStudents().contains(student)) {
             student.setGroup(group);
-            group.getStudents().add(student);
-            studentDao.save(student);
         }
-
 
     }
 
@@ -182,7 +175,7 @@ public class StudentServiceImpl implements StudentService {
     @Override
     public Page<StudentDto> findByGroupIdExcludingByStudentId(Long groupId, Long studentId, Pageable pageable) {
 
-        if (!groupService.isExistsById(groupId)) {
+        if (!groupDao.existsById(groupId)) {
             throw new GroupNotFoundException("Group with id " + groupId + " not found");
         }
 
@@ -197,6 +190,16 @@ public class StudentServiceImpl implements StudentService {
     @Override
     public boolean isExistsById(Long id) {
         return studentDao.existsById(id);
+    }
+
+    @Override
+    public List<InputOptionProjection> findAllStudentOptions() {
+        return studentDao.findAllStudentOptions();
+    }
+
+    @Override
+    public Set<Student> findAllByIdIn(Set<Long> studentIds) {
+        return studentDao.findAllByIdIn(studentIds);
     }
 
 

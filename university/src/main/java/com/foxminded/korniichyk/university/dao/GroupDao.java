@@ -1,6 +1,6 @@
 package com.foxminded.korniichyk.university.dao;
 
-import com.foxminded.korniichyk.university.dto.input.InputOptionDto;
+import com.foxminded.korniichyk.university.projection.input.InputOptionProjection;
 import com.foxminded.korniichyk.university.model.Group;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
@@ -25,6 +25,8 @@ public interface GroupDao extends JpaRepository<Group, Long> {
 
     boolean existsById(Long id);
 
-    @Query("SELECT new com.foxminded.korniichyk.university.dto.input.InputOptionDto(g.id, g.name) FROM Group g")
-    List<InputOptionDto> findAllGroupOptions();
+    @Query("SELECT new com.foxminded.korniichyk.university.projection.input.InputOptionProjection(g.id, g.name) FROM Group g")
+    List<InputOptionProjection> findAllGroupOptions();
+
+    boolean existsByName(String name);
 }

@@ -7,8 +7,9 @@ import com.foxminded.korniichyk.university.dto.display.LessonTypeDto;
 import com.foxminded.korniichyk.university.dto.display.SpecialityDto;
 import com.foxminded.korniichyk.university.dto.display.StudentDto;
 import com.foxminded.korniichyk.university.dto.display.TeacherDto;
-import com.foxminded.korniichyk.university.dto.input.InputOptionDto;
+import com.foxminded.korniichyk.university.projection.input.InputOptionProjection;
 import com.foxminded.korniichyk.university.dto.registration.AdminRegistrationDto;
+import com.foxminded.korniichyk.university.dto.registration.GroupRegistrationDto;
 import com.foxminded.korniichyk.university.dto.registration.StudentRegistrationDto;
 import com.foxminded.korniichyk.university.dto.registration.TeacherRegistrationDto;
 import com.foxminded.korniichyk.university.dto.update.AdminUpdateDto;
@@ -429,7 +430,7 @@ public class AdminController {
     ) {
         try {
             StudentUpdateDto studentUpdateDto = studentService.getStudentUpdateDto(studentId);
-            List<InputOptionDto> groups = groupService.findAllGroupOptions();
+            List<InputOptionProjection> groups = groupService.findAllGroupOptions();
 
             model.addAttribute("studentUpdateDto", studentUpdateDto);
             model.addAttribute("groups", groups);
@@ -448,8 +449,8 @@ public class AdminController {
             Model model
     ) {
 
-        String emailBeforeUpdate =  studentService.findById(studentUpdateDto.getId()).getUser().getEmail();
-        String phoneNumberBeforeUpdate =  studentService.findById(studentUpdateDto.getId()).getUser().getPhoneNumber();
+        String emailBeforeUpdate = studentService.findById(studentUpdateDto.getId()).getUser().getEmail();
+        String phoneNumberBeforeUpdate = studentService.findById(studentUpdateDto.getId()).getUser().getPhoneNumber();
 
         String emailAfterUpdate = studentUpdateDto.getUser().getEmail();
         String phoneNumberAfterUpdate = studentUpdateDto.getUser().getPhoneNumber();
@@ -468,7 +469,7 @@ public class AdminController {
         }
 
         if (bindingResult.hasErrors()) {
-            List<InputOptionDto> groups = groupService.findAllGroupOptions();
+            List<InputOptionProjection> groups = groupService.findAllGroupOptions();
             model.addAttribute("groups", groups);
             model.addAttribute("studentUpdateDto", studentUpdateDto);
             return "admin/edit/edit-student";
@@ -510,8 +511,8 @@ public class AdminController {
             Model model
     ) {
 
-        String emailBeforeUpdate =  adminService.findById(adminUpdateDto.getId()).getUser().getEmail();
-        String phoneNumberBeforeUpdate =  adminService.findById(adminUpdateDto.getId()).getUser().getPhoneNumber();
+        String emailBeforeUpdate = adminService.findById(adminUpdateDto.getId()).getUser().getEmail();
+        String phoneNumberBeforeUpdate = adminService.findById(adminUpdateDto.getId()).getUser().getPhoneNumber();
 
         String emailAfterUpdate = adminUpdateDto.getUser().getEmail();
         String phoneNumberAfterUpdate = adminUpdateDto.getUser().getPhoneNumber();
@@ -551,7 +552,7 @@ public class AdminController {
     ) {
         try {
             TeacherUpdateDto teacherUpdateDto = teacherService.getTeacherUpdateDto(teacherId);
-            List<InputOptionDto> disciplines = disciplineService.findAllDisciplineOptions();
+            List<InputOptionProjection> disciplines = disciplineService.findAllDisciplineOptions();
             model.addAttribute("disciplines", disciplines);
             model.addAttribute("teacherUpdateDto", teacherUpdateDto);
         } catch (TeacherNotFoundException ex) {
@@ -572,8 +573,8 @@ public class AdminController {
             Model model
     ) {
 
-        String emailBeforeUpdate =  teacherService.findById(teacherUpdateDto.getId()).getUser().getEmail();
-        String phoneNumberBeforeUpdate =  teacherService.findById(teacherUpdateDto.getId()).getUser().getPhoneNumber();
+        String emailBeforeUpdate = teacherService.findById(teacherUpdateDto.getId()).getUser().getEmail();
+        String phoneNumberBeforeUpdate = teacherService.findById(teacherUpdateDto.getId()).getUser().getPhoneNumber();
 
         String emailAfterUpdate = teacherUpdateDto.getUser().getEmail();
         String phoneNumberAfterUpdate = teacherUpdateDto.getUser().getPhoneNumber();
@@ -594,7 +595,7 @@ public class AdminController {
 
         if (bindingResult.hasErrors()) {
             model.addAttribute("teacherUpdateDto", teacherUpdateDto);
-            List<InputOptionDto> disciplines = disciplineService.findAllDisciplineOptions();
+            List<InputOptionProjection> disciplines = disciplineService.findAllDisciplineOptions();
             model.addAttribute("disciplines", disciplines);
             return "admin/edit/edit-teacher";
         }
@@ -608,6 +609,57 @@ public class AdminController {
             redirectAttributes.addFlashAttribute("errorMessage", ex.getMessage());
             return "redirect:/administrators/teachers";
         }
+    }
+
+    @GetMapping("/groups/create-page")
+    String createGroupPage(Model model) {
+
+        List<InputOptionProjection> specialities = specialityService.findAllSpecialityOptions();
+        GroupRegistrationDto groupRegistrationDto = new GroupRegistrationDto();
+        List<InputOptionProjection> students = studentService.findAllStudentOptions();
+
+        model.addAttribute("students", students);
+        model.addAttribute("groupRegistrationDto", groupRegistrationDto);
+        model.addAttribute("specialities", specialities);
+
+        return "admin/create/create-group";
+    }
+
+    @PostMapping("/groups/create-page")
+    String createGroup(
+            @ModelAttribute @Valid GroupRegistrationDto groupRegistrationDto,
+            BindingResult bindingResult,
+            Model model
+    ) {
+
+        if (bindingResult.hasErrors()) {
+            List<InputOptionProjection> specialities = specialityService.findAllSpecialityOptions();
+            List<InputOptionProjection> students = studentService.findAllStudentOptions();
+
+            model.addAttribute("students", students);
+            model.addAttribute("groupRegistrationDto", groupRegistrationDto);
+            model.addAttribute("specialities", specialities);
+            return "admin/create/create-group";
+        }
+
+        String newGroupName = groupRegistrationDto.getName();
+
+        if (groupService.isExistsByName(newGroupName)) {
+            bindingResult.rejectValue("name", "error.name", "This name already in use by another group");
+
+            List<InputOptionProjection> specialities = specialityService.findAllSpecialityOptions();
+            List<InputOptionProjection> students = studentService.findAllStudentOptions();
+
+            model.addAttribute("students", students);
+            model.addAttribute("groupRegistrationDto", groupRegistrationDto);
+            model.addAttribute("specialities", specialities);
+            return "admin/create/create-group";
+        }
+
+        groupService.registerGroup(groupRegistrationDto);
+        return "redirect:/administrators/groups";
+
+
     }
 
 }

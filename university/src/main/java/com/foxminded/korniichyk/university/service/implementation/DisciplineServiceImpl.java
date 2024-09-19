@@ -3,7 +3,7 @@ package com.foxminded.korniichyk.university.service.implementation;
 
 import com.foxminded.korniichyk.university.dao.DisciplineDao;
 import com.foxminded.korniichyk.university.dto.display.DisciplineDto;
-import com.foxminded.korniichyk.university.dto.input.InputOptionDto;
+import com.foxminded.korniichyk.university.projection.input.InputOptionProjection;
 import com.foxminded.korniichyk.university.mapper.display.DisciplineMapper;
 import com.foxminded.korniichyk.university.model.Discipline;
 import com.foxminded.korniichyk.university.service.contract.DisciplineService;
@@ -47,7 +47,7 @@ public class DisciplineServiceImpl implements DisciplineService {
     }
 
     @Override
-    public List<InputOptionDto> findAllDisciplineOptions() {
+    public List<InputOptionProjection> findAllDisciplineOptions() {
         return disciplineDao.findAllDisciplineOptions();
     }
 

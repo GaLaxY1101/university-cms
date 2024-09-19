@@ -2,8 +2,7 @@ package com.foxminded.korniichyk.university.controller;
 
 import com.foxminded.korniichyk.university.dto.display.GroupDto;
 import com.foxminded.korniichyk.university.service.contract.GroupService;
-import com.foxminded.korniichyk.university.service.contract.StudentService;
-import com.foxminded.korniichyk.university.service.contract.TeacherService;
+import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
@@ -11,22 +10,12 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 
+@RequiredArgsConstructor
 @Controller
 @RequestMapping("/groups")
 public class GroupController {
 
     private final GroupService groupService;
-    private final StudentService studentService;
-    private final TeacherService teacherService;
-
-    public GroupController(GroupService groupService,
-                           StudentService studentService,
-                           TeacherService teacherService
-    ) {
-        this.groupService = groupService;
-        this.studentService = studentService;
-        this.teacherService = teacherService;
-    }
 
     @GetMapping("/")
     public String groups(

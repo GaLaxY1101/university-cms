@@ -2,7 +2,7 @@ package com.foxminded.korniichyk.university.controller;
 
 import com.foxminded.korniichyk.university.dto.display.DisciplineDto;
 import com.foxminded.korniichyk.university.service.contract.DisciplineService;
-import org.springframework.beans.factory.annotation.Autowired;
+import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
@@ -10,16 +10,13 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 
-
+@RequiredArgsConstructor
 @Controller
 @RequestMapping("/disciplines")
 public class DisciplineController {
 
     private final DisciplineService disciplineService;
 
-    public DisciplineController(DisciplineService disciplineService) {
-        this.disciplineService = disciplineService;
-    }
 
     @GetMapping("/")
     public String disciplines(

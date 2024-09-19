@@ -1,15 +1,20 @@
 package com.foxminded.korniichyk.university.service.implementation;
 
 import com.foxminded.korniichyk.university.dao.GroupDao;
+import com.foxminded.korniichyk.university.dao.SpecialityDao;
 import com.foxminded.korniichyk.university.dao.StudentDao;
 import com.foxminded.korniichyk.university.dto.display.GroupDto;
-import com.foxminded.korniichyk.university.dto.input.InputOptionDto;
+import com.foxminded.korniichyk.university.dto.registration.GroupRegistrationDto;
 import com.foxminded.korniichyk.university.mapper.display.GroupMapper;
 import com.foxminded.korniichyk.university.model.Group;
+import com.foxminded.korniichyk.university.model.Speciality;
 import com.foxminded.korniichyk.university.model.Student;
+import com.foxminded.korniichyk.university.projection.input.InputOptionProjection;
 import com.foxminded.korniichyk.university.service.contract.GroupService;
+import com.foxminded.korniichyk.university.service.contract.StudentService;
 import com.foxminded.korniichyk.university.service.contract.TeacherService;
 import com.foxminded.korniichyk.university.service.exception.GroupNotFoundException;
+import com.foxminded.korniichyk.university.service.exception.SpecialityNotFoundException;
 import com.foxminded.korniichyk.university.service.exception.StudentNotFoundException;
 import com.foxminded.korniichyk.university.service.exception.TeacherNotFoundException;
 import lombok.RequiredArgsConstructor;
@@ -22,6 +27,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
+import java.util.Set;
 import java.util.stream.Collectors;
 
 import static java.util.stream.Collectors.toList;
@@ -37,6 +43,8 @@ public class GroupServiceImpl implements GroupService {
     private final GroupMapper groupMapper;
     private final StudentDao studentDao;
     private final TeacherService teacherService;
+    private final StudentService studentService;
+    private final SpecialityDao specialityDao;
 
     @Override
     public GroupDto findById(Long id) {
@@ -81,7 +89,6 @@ public class GroupServiceImpl implements GroupService {
     }
 
 
-
     @Override
     public Page<GroupDto> findPage(int pageNumber, int pageSize) {
         Pageable pageable = PageRequest.of(pageNumber, pageSize);
@@ -120,7 +127,45 @@ public class GroupServiceImpl implements GroupService {
     }
 
     @Override
-    public List<InputOptionDto> findAllGroupOptions() {
+    public List<InputOptionProjection> findAllGroupOptions() {
         return groupDao.findAllGroupOptions();
+    }
+
+
+    @Transactional
+    @Override
+    public Group registerGroup(GroupRegistrationDto groupRegistrationDto) {
+        Group group = new Group();
+        group.setName(groupRegistrationDto.getName());
+
+        Set<Student> students = studentService.findAllByIdIn(groupRegistrationDto.getStudentsIds());
+        group.setStudents(students);
+
+        save(group);
+
+        Long specialityId = groupRegistrationDto.getSpecialityId();
+        Long groupId = group.getId();
+
+        assignSpeciality(specialityId, groupId);
+        return group;
+    }
+
+    @Transactional
+    @Override
+    public void assignSpeciality(Long specialityId, Long groupId) {
+        Speciality speciality = specialityDao.findById(specialityId)
+                .orElseThrow(() -> new SpecialityNotFoundException("Speciality with id " + specialityId + "not found"));
+
+        Group group = groupDao.findById(groupId)
+                .orElseThrow(() -> new GroupNotFoundException("Group with id " + groupId + "not found"));
+
+        group.setSpeciality(speciality);
+        speciality.addGroup(group);
+
+    }
+
+    @Override
+    public boolean isExistsByName(String name) {
+        return groupDao.existsByName(name);
     }
 }

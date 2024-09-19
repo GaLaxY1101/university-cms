@@ -1,7 +1,8 @@
 package com.foxminded.korniichyk.university.service.contract;
 
 import com.foxminded.korniichyk.university.dto.display.GroupDto;
-import com.foxminded.korniichyk.university.dto.input.InputOptionDto;
+import com.foxminded.korniichyk.university.dto.registration.GroupRegistrationDto;
+import com.foxminded.korniichyk.university.projection.input.InputOptionProjection;
 import com.foxminded.korniichyk.university.model.Group;
 import org.springframework.data.domain.Page;
 
@@ -20,5 +21,11 @@ public interface GroupService extends CrudService<Group, GroupDto> {
 
     List<GroupDto> findAll();
 
-    List<InputOptionDto> findAllGroupOptions();
+    List<InputOptionProjection> findAllGroupOptions();
+
+    Group registerGroup(GroupRegistrationDto groupRegistrationDto);
+
+    void assignSpeciality(Long specialityId, Long groupId);
+
+    boolean isExistsByName(String name);
 }

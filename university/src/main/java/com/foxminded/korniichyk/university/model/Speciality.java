@@ -52,4 +52,12 @@ public class Speciality {
 
     @OneToMany(mappedBy = "speciality", cascade = CascadeType.ALL)
     private Set<Group> groups = new HashSet<>();
+
+    public void addGroup(Group group) {
+        groups.add(group);
+    }
+
+    public void removeGroup(Group group) {
+        groups.remove(group);
+    }
 }

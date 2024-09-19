@@ -20,10 +20,12 @@
         <input type="text" placeholder="Search...">
       </div>
 
-      <button type="button">
-        Add
-        <i class="fa-solid fa-plus"></i>
-      </button>
+      <a th:href="@{/administrators/groups/create-page}">
+        <button type="button" sec:authorize="hasRole('ROLE_ADMIN')">
+          Add
+          <i class="fa-solid fa-plus"></i>
+        </button>
+      </a>
       <div class="sort-by-wrapper">
         <span>Sort by</span>
         <span>▼</span>

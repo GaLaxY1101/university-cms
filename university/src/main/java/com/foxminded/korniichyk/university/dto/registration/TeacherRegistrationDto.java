@@ -16,6 +16,4 @@ public class TeacherRegistrationDto {
 
     private Set<Long> disciplineIds = new HashSet<>();
 
-
-
 }

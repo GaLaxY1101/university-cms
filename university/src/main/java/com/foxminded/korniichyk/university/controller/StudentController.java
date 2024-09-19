@@ -1,19 +1,14 @@
 package com.foxminded.korniichyk.university.controller;
 
-import com.foxminded.korniichyk.university.dto.display.GroupDto;
 import com.foxminded.korniichyk.university.dto.display.StudentDto;
 import com.foxminded.korniichyk.university.mapper.display.GroupMapper;
 import com.foxminded.korniichyk.university.model.Group;
 import com.foxminded.korniichyk.university.model.Student;
-import com.foxminded.korniichyk.university.security.CustomUserDetails;
-import com.foxminded.korniichyk.university.service.contract.GroupService;
 import com.foxminded.korniichyk.university.service.contract.StudentService;
-import org.springframework.beans.factory.annotation.Autowired;
+import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
-import org.springframework.security.core.Authentication;
-import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -21,8 +16,8 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 
 import java.util.List;
-import java.util.stream.Collectors;
 
+@RequiredArgsConstructor
 @Controller
 @RequestMapping("/students")
 public class StudentController {
@@ -30,14 +25,6 @@ public class StudentController {
     private final StudentService studentService;
 
     private final GroupMapper groupMapper;
-
-    public StudentController(StudentService studentService,
-                             GroupService groupService,
-                             GroupMapper groupMapper) {
-        this.studentService = studentService;
-        this.groupMapper = groupMapper;
-    }
-
 
     @GetMapping("/")
     public String students(

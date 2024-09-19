@@ -1,11 +1,11 @@
-package com.foxminded.korniichyk.university.dto.input;
+package com.foxminded.korniichyk.university.projection.input;
 
 import lombok.AllArgsConstructor;
 import lombok.Data;
 
 @AllArgsConstructor
 @Data
-public class InputOptionDto {
+public class InputOptionProjection {
 
     private Long id;
 

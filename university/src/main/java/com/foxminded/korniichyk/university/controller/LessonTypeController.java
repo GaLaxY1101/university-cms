@@ -2,7 +2,7 @@ package com.foxminded.korniichyk.university.controller;
 
 import com.foxminded.korniichyk.university.dto.display.LessonTypeDto;
 import com.foxminded.korniichyk.university.service.contract.LessonTypeService;
-import org.springframework.beans.factory.annotation.Autowired;
+import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
@@ -10,6 +10,7 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 
+@RequiredArgsConstructor
 @Controller
 @RequestMapping("/lesson-types")
 public class LessonTypeController {
@@ -17,9 +18,6 @@ public class LessonTypeController {
 
     private final LessonTypeService lessonTypeService;
 
-    public LessonTypeController(LessonTypeService lessonTypeService) {
-        this.lessonTypeService = lessonTypeService;
-    }
 
     @GetMapping("/")
     public String lessonTypes(
