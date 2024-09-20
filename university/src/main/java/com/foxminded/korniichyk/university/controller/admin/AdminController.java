@@ -29,6 +29,7 @@ import com.foxminded.korniichyk.university.service.contract.TeacherService;
 import com.foxminded.korniichyk.university.service.contract.UserService;
 import com.foxminded.korniichyk.university.service.exception.AdminNotFoundException;
 import com.foxminded.korniichyk.university.service.exception.EmailAlreadyExistsException;
+import com.foxminded.korniichyk.university.service.exception.GroupNotFoundException;
 import com.foxminded.korniichyk.university.service.exception.PhoneNumberAlreadyExistsException;
 import com.foxminded.korniichyk.university.service.exception.StudentNotFoundException;
 import com.foxminded.korniichyk.university.service.exception.TeacherNotFoundException;
@@ -659,7 +660,21 @@ public class AdminController {
         groupService.registerGroup(groupRegistrationDto);
         return "redirect:/administrators/groups";
 
+    }
 
+    @DeleteMapping("/groups/delete/{id}")
+    public String deleteGroup(
+            @PathVariable Long id,
+            RedirectAttributes redirectAttributes
+    ) {
+        try{
+            groupService.deleteById(id);
+            redirectAttributes.addFlashAttribute("successMessage", "Group deleted successfully");
+        } catch (GroupNotFoundException ex) {
+            redirectAttributes.addFlashAttribute("errorMessage",ex.getMessage());
+        }
+
+        return "redirect:/administrators/groups";
     }
 
 }
