@@ -59,7 +59,7 @@
                     <label for="groupId">Group</label>
                     <div class="registration-input-wrapper">
                         <select id="groupId" th:field="*{groupId}" class="form-control select2">
-                            <option value="" disabled selected>Select a group</option>
+                            <option value="" selected>Select a group</option>
                             <option th:each="group : ${groups}"
                                     th:value="${group.id}"
                                     th:text="${group.name}">

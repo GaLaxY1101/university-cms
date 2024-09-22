@@ -5,7 +5,9 @@ import com.foxminded.korniichyk.university.dao.SpecialityDao;
 import com.foxminded.korniichyk.university.dao.StudentDao;
 import com.foxminded.korniichyk.university.dto.display.GroupDto;
 import com.foxminded.korniichyk.university.dto.registration.GroupRegistrationDto;
+import com.foxminded.korniichyk.university.dto.update.GroupUpdateDto;
 import com.foxminded.korniichyk.university.mapper.display.GroupMapper;
+import com.foxminded.korniichyk.university.mapper.update.GroupUpdateMapper;
 import com.foxminded.korniichyk.university.model.Group;
 import com.foxminded.korniichyk.university.model.Speciality;
 import com.foxminded.korniichyk.university.model.Student;
@@ -45,6 +47,7 @@ public class GroupServiceImpl implements GroupService {
     private final TeacherService teacherService;
     private final StudentService studentService;
     private final SpecialityDao specialityDao;
+    private final GroupUpdateMapper groupUpdateMapper;
 
     @Override
     public GroupDto findById(Long id) {
@@ -168,4 +171,34 @@ public class GroupServiceImpl implements GroupService {
     public boolean isExistsByName(String name) {
         return groupDao.existsByName(name);
     }
+
+    @Override
+    public GroupUpdateDto getGroupUpdateDtoById(Long groupId) {
+        Group group = groupDao.findById(groupId)
+                .orElseThrow(() -> new GroupNotFoundException("Group with id " + groupId + "not found"));
+
+        return groupUpdateMapper.toDto(group);
+    }
+
+    @Transactional
+    @Override
+    public void save(GroupUpdateDto groupUpdateDto) {
+        Long groupId = groupUpdateDto.getId();
+        Group group = groupDao.findById(groupId)
+                .orElseThrow(() -> new GroupNotFoundException("Group with id " + groupId + " not found"));
+
+        Long specialityId = groupUpdateDto.getSpecialityId();
+        Speciality speciality = specialityDao.findById(specialityId)
+                        .orElseThrow(() -> new SpecialityNotFoundException("Speciality with id " + specialityId + " noy found"));
+
+        group.setName(groupUpdateDto.getName());
+        group.setSpeciality(speciality);
+    }
+
+    @Override
+    public String getNameById(Long id) {
+        return groupDao.getNameById(id);
+    }
+
+
 }

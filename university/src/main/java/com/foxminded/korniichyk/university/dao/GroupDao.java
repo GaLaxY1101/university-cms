@@ -29,4 +29,7 @@ public interface GroupDao extends JpaRepository<Group, Long> {
     List<InputOptionProjection> findAllGroupOptions();
 
     boolean existsByName(String name);
+
+    @Query("SELECT g.name FROM Group g WHERE g.id = :id")
+    String getNameById(@Param("id") Long id);
 }

@@ -1,7 +1,6 @@
 package com.foxminded.korniichyk.university.dto.registration;
 
 import jakarta.validation.Valid;
-import jakarta.validation.constraints.NotNull;
 import lombok.Data;
 
 @Data
@@ -12,7 +11,6 @@ public class StudentRegistrationDto {
     @Valid
     private UserRegistrationDto user;
 
-    @NotNull(message = "Please, choose the group")
     private Long groupId;
 
 }

@@ -7,17 +7,19 @@ import com.foxminded.korniichyk.university.dto.display.LessonTypeDto;
 import com.foxminded.korniichyk.university.dto.display.SpecialityDto;
 import com.foxminded.korniichyk.university.dto.display.StudentDto;
 import com.foxminded.korniichyk.university.dto.display.TeacherDto;
-import com.foxminded.korniichyk.university.projection.input.InputOptionProjection;
 import com.foxminded.korniichyk.university.dto.registration.AdminRegistrationDto;
 import com.foxminded.korniichyk.university.dto.registration.GroupRegistrationDto;
 import com.foxminded.korniichyk.university.dto.registration.StudentRegistrationDto;
 import com.foxminded.korniichyk.university.dto.registration.TeacherRegistrationDto;
 import com.foxminded.korniichyk.university.dto.update.AdminUpdateDto;
+import com.foxminded.korniichyk.university.dto.update.GroupUpdateDto;
 import com.foxminded.korniichyk.university.dto.update.StudentUpdateDto;
 import com.foxminded.korniichyk.university.dto.update.TeacherUpdateDto;
 import com.foxminded.korniichyk.university.mapper.update.AdminUpdateMapper;
 import com.foxminded.korniichyk.university.mapper.update.StudentUpdateMapper;
 import com.foxminded.korniichyk.university.mapper.update.TeacherUpdateMapper;
+import com.foxminded.korniichyk.university.projection.edit.group.StudentProjection;
+import com.foxminded.korniichyk.university.projection.input.InputOptionProjection;
 import com.foxminded.korniichyk.university.service.contract.AdminService;
 import com.foxminded.korniichyk.university.service.contract.DisciplineService;
 import com.foxminded.korniichyk.university.service.contract.GroupService;
@@ -31,6 +33,7 @@ import com.foxminded.korniichyk.university.service.exception.AdminNotFoundExcept
 import com.foxminded.korniichyk.university.service.exception.EmailAlreadyExistsException;
 import com.foxminded.korniichyk.university.service.exception.GroupNotFoundException;
 import com.foxminded.korniichyk.university.service.exception.PhoneNumberAlreadyExistsException;
+import com.foxminded.korniichyk.university.service.exception.SpecialityNotFoundException;
 import com.foxminded.korniichyk.university.service.exception.StudentNotFoundException;
 import com.foxminded.korniichyk.university.service.exception.TeacherNotFoundException;
 import jakarta.validation.Valid;
@@ -45,6 +48,7 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
@@ -667,14 +671,124 @@ public class AdminController {
             @PathVariable Long id,
             RedirectAttributes redirectAttributes
     ) {
-        try{
+        try {
             groupService.deleteById(id);
             redirectAttributes.addFlashAttribute("successMessage", "Group deleted successfully");
         } catch (GroupNotFoundException ex) {
-            redirectAttributes.addFlashAttribute("errorMessage",ex.getMessage());
+            redirectAttributes.addFlashAttribute("errorMessage", ex.getMessage());
         }
 
         return "redirect:/administrators/groups";
     }
 
+    @GetMapping("/groups/edit/{id}")
+    public String editGroupPage(
+            @PathVariable Long id,
+            @RequestParam(defaultValue = "0") int pageNumber,
+            @RequestParam(defaultValue = "7") int pageSize,
+            RedirectAttributes redirectAttributes,
+            Model model) {
+
+        Pageable pageable = PageRequest.of(pageNumber, pageSize);
+        Page<StudentProjection> students = studentService.findStudentsByGroupId(id, pageable);
+
+        model.addAttribute("students", students);
+
+        GroupUpdateDto groupUpdateDto = groupService.getGroupUpdateDtoById(id);
+        model.addAttribute("groupUpdateDto", groupUpdateDto);
+
+        model.addAttribute("totalElements", students.getTotalElements());
+
+
+        List<InputOptionProjection> studentsWithoutGroups = studentService.findAllStudentOptionsWithoutGroup();
+        model.addAttribute("studentsWithoutGroup", studentsWithoutGroups);
+
+        List<InputOptionProjection> specialities = specialityService.findAllSpecialityOptions();
+        model.addAttribute("specialities", specialities);
+        return "admin/edit/edit-group";
+    }
+
+    @PutMapping("/groups/edit/unassign-group/{studentId}")
+    String unassignGroup(
+            @PathVariable Long studentId,
+            @RequestParam Long groupId,
+            RedirectAttributes redirectAttributes
+    ) {
+        try {
+            studentService.unassignGroup(studentId);
+            redirectAttributes.addFlashAttribute("successMessage", "Student removed from group successfully");
+        } catch (StudentNotFoundException ex) {
+            redirectAttributes.addFlashAttribute("errorMessage", ex.getMessage());
+        }
+        return "redirect:/administrators/groups/edit/" + groupId;
+    }
+
+    @PutMapping("/groups/edit")
+    String editGroup(@ModelAttribute @Valid GroupUpdateDto groupUpdateDto,
+                     BindingResult bindingResult,
+                     RedirectAttributes redirectAttributes,
+                     Model model) {
+
+
+        String nameBeforeUpdate = groupService.getNameById(groupUpdateDto.getId());
+
+        if (!nameBeforeUpdate.equals(groupUpdateDto.getName()) && groupService.isExistsByName(nameBeforeUpdate)) {
+            bindingResult.rejectValue("name", "error.name", "This name already in use by another group");
+        }
+
+        if (bindingResult.hasErrors()) {
+            List<InputOptionProjection> specialities = specialityService.findAllSpecialityOptions();
+
+            Pageable pageable = PageRequest.of(0, 7);
+            Page<StudentProjection> students = studentService.findStudentsByGroupId(groupUpdateDto.getId(), pageable);
+
+            model.addAttribute("students", students);
+            model.addAttribute("groupUpdateDto", groupUpdateDto);
+            model.addAttribute("specialities", specialities);
+            model.addAttribute("totalElements", model.getAttribute("totalElements"));
+
+            return "admin/edit/edit-group";
+        }
+
+        try {
+            groupService.save(groupUpdateDto);
+            redirectAttributes.addFlashAttribute("successMessage", "Group updated successfully");
+        } catch (GroupNotFoundException | SpecialityNotFoundException ex) {
+            redirectAttributes.addFlashAttribute("errorMessage", ex.getMessage());
+        }
+
+        return "redirect:/administrators/groups";
+
+    }
+
+
+    @PutMapping("/groups/add-student/{studentId}")
+    String addStudentToGroup(
+            @PathVariable Long studentId,
+            @RequestParam Long groupId,
+            RedirectAttributes redirectAttributes,
+            Model model
+            ) {
+
+        try{
+            studentService.assignGroup(groupId,studentId);
+            redirectAttributes.addFlashAttribute("successMessage", "Student was added to group successfully");
+        } catch (StudentNotFoundException | GroupNotFoundException ex) {
+            redirectAttributes.addAttribute("errorMessage", ex.getMessage());
+        }
+
+        List<InputOptionProjection> specialities = specialityService.findAllSpecialityOptions();
+
+        Pageable pageable = PageRequest.of(0, 7);
+        Page<StudentProjection> students = studentService.findStudentsByGroupId(groupId, pageable);
+
+        GroupUpdateDto groupUpdateDto = groupService.getGroupUpdateDtoById(groupId);
+
+        model.addAttribute("students", students);
+        model.addAttribute("groupUpdateDto", groupUpdateDto);
+        model.addAttribute("specialities", specialities);
+        model.addAttribute("totalElements", model.getAttribute("totalElements"));
+
+        return "redirect:/administrators/groups/edit/" + groupId;
+    }
 }

@@ -10,6 +10,7 @@ import com.foxminded.korniichyk.university.mapper.update.StudentUpdateMapper;
 import com.foxminded.korniichyk.university.model.Role;
 import com.foxminded.korniichyk.university.model.Student;
 import com.foxminded.korniichyk.university.model.User;
+import com.foxminded.korniichyk.university.projection.edit.group.StudentProjection;
 import com.foxminded.korniichyk.university.projection.input.InputOptionProjection;
 import com.foxminded.korniichyk.university.security.CustomUserDetails;
 import com.foxminded.korniichyk.university.service.contract.StudentService;
@@ -128,7 +129,9 @@ public class StudentServiceImpl implements StudentService {
         student.setUser(user);
         studentDao.save(student);
 
-        assignGroup(studentRegistrationDto.getGroupId(), student.getId());
+        if(!(studentRegistrationDto.getGroupId() == null)) {
+            assignGroup(studentRegistrationDto.getGroupId(), student.getId());
+        }
         return student;
     }
 
@@ -200,6 +203,25 @@ public class StudentServiceImpl implements StudentService {
     @Override
     public Set<Student> findAllByIdIn(Set<Long> studentIds) {
         return studentDao.findAllByIdIn(studentIds);
+    }
+
+    @Override
+    public Page<StudentProjection> findStudentsByGroupId(Long groupId, Pageable pageable) {
+        return studentDao.findStudentsByGroupId(groupId, pageable);
+    }
+
+    @Transactional
+    @Override
+    public void unassignGroup(Long studentId) {
+        Student student = studentDao.findById(studentId)
+                .orElseThrow(() -> new StudentNotFoundException("Student with id " + studentId + "not found"));
+
+        student.setGroup(null);
+    }
+
+    @Override
+    public List<InputOptionProjection> findAllStudentOptionsWithoutGroup() {
+        return studentDao.findAllStudentOptionsWithoutGroup();
     }
 
 
