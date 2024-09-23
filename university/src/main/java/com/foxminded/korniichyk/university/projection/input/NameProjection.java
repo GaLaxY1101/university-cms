@@ -5,7 +5,7 @@ import lombok.Data;
 
 @AllArgsConstructor
 @Data
-public class InputOptionProjection {
+public class NameProjection {
 
     private Long id;
 

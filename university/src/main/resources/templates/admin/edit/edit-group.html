@@ -43,7 +43,7 @@
                                 <option value="" disabled>Select a speciality</option>
                                 <option th:each="speciality : ${specialities}"
                                         th:value="${speciality.id}"
-                                        th:text="${speciality.name}">
+                                        th:text="${speciality.code + ' ' + speciality.name}">
                                     Speciality name
                                 </option>
                             </select>
@@ -160,7 +160,7 @@
                                                 class="form-control studentToAddId-select2" required>
                                             <option th:each="student : ${studentsWithoutGroup}"
                                                     th:value="${student.id}"
-                                                    th:text="${student.name}">
+                                                    th:text="${student.firstName + ' ' + student.lastName}">
                                             </option>
                                         </select>
                                     </div>

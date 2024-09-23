@@ -7,6 +7,8 @@ import com.foxminded.korniichyk.university.dto.display.LessonTypeDto;
 import com.foxminded.korniichyk.university.dto.display.SpecialityDto;
 import com.foxminded.korniichyk.university.dto.display.StudentDto;
 import com.foxminded.korniichyk.university.dto.display.TeacherDto;
+import com.foxminded.korniichyk.university.dto.option.SpecialityOptionDto;
+import com.foxminded.korniichyk.university.dto.option.StudentOptionDto;
 import com.foxminded.korniichyk.university.dto.registration.AdminRegistrationDto;
 import com.foxminded.korniichyk.university.dto.registration.GroupRegistrationDto;
 import com.foxminded.korniichyk.university.dto.registration.StudentRegistrationDto;
@@ -19,7 +21,7 @@ import com.foxminded.korniichyk.university.mapper.update.AdminUpdateMapper;
 import com.foxminded.korniichyk.university.mapper.update.StudentUpdateMapper;
 import com.foxminded.korniichyk.university.mapper.update.TeacherUpdateMapper;
 import com.foxminded.korniichyk.university.projection.edit.group.StudentProjection;
-import com.foxminded.korniichyk.university.projection.input.InputOptionProjection;
+import com.foxminded.korniichyk.university.projection.input.NameProjection;
 import com.foxminded.korniichyk.university.service.contract.AdminService;
 import com.foxminded.korniichyk.university.service.contract.DisciplineService;
 import com.foxminded.korniichyk.university.service.contract.GroupService;
@@ -226,7 +228,7 @@ public class AdminController {
 
         model.addAttribute("studentRegistrationDto", studentRegistrationDto);
         Pageable pageable = PageRequest.of(0, 10);
-        model.addAttribute("groups", groupService.findAllGroupOptions());
+        model.addAttribute("groups", groupService.findAllNameProjections());
 
         return "admin/create/create-student";
     }
@@ -243,7 +245,7 @@ public class AdminController {
         }
 
         if (bindingResult.hasErrors()) {
-            model.addAttribute("groups", groupService.findAllGroupOptions());
+            model.addAttribute("groups", groupService.findAllNameProjections());
             return "admin/create/create-student";
         }
 
@@ -257,7 +259,7 @@ public class AdminController {
             if (ex instanceof PhoneNumberAlreadyExistsException) {
                 bindingResult.rejectValue("user.phoneNumber", "error.phoneNumber", ex.getMessage());
             }
-            model.addAttribute("groups", groupService.findAllGroupOptions());
+            model.addAttribute("groups", groupService.findAllNameProjections());
             return "admin/create/create-student";
         }
 
@@ -435,7 +437,7 @@ public class AdminController {
     ) {
         try {
             StudentUpdateDto studentUpdateDto = studentService.getStudentUpdateDto(studentId);
-            List<InputOptionProjection> groups = groupService.findAllGroupOptions();
+            List<NameProjection> groups = groupService.findAllNameProjections();
 
             model.addAttribute("studentUpdateDto", studentUpdateDto);
             model.addAttribute("groups", groups);
@@ -463,18 +465,18 @@ public class AdminController {
 
         if ((!emailBeforeUpdate.equals(emailAfterUpdate)) && (userService.isExistsByEmail(emailAfterUpdate))) {
             bindingResult.rejectValue("user.email", "error.email", "This email already registered");
-            model.addAttribute("groups", groupService.findAllGroupOptions());
+            model.addAttribute("groups", groupService.findAllNameProjections());
             return "admin/edit/edit-student";
         }
 
         if ((!phoneNumberBeforeUpdate.equals(phoneNumberAfterUpdate)) && (userService.isExistsByPhoneNumber(phoneNumberAfterUpdate))) {
             bindingResult.rejectValue("user.phoneNumber", "error.phoneNumber", "This phone number already registered");
-            model.addAttribute("groups", groupService.findAllGroupOptions());
+            model.addAttribute("groups", groupService.findAllNameProjections());
             return "admin/edit/edit-student";
         }
 
         if (bindingResult.hasErrors()) {
-            List<InputOptionProjection> groups = groupService.findAllGroupOptions();
+            List<NameProjection> groups = groupService.findAllNameProjections();
             model.addAttribute("groups", groups);
             model.addAttribute("studentUpdateDto", studentUpdateDto);
             return "admin/edit/edit-student";
@@ -557,7 +559,7 @@ public class AdminController {
     ) {
         try {
             TeacherUpdateDto teacherUpdateDto = teacherService.getTeacherUpdateDto(teacherId);
-            List<InputOptionProjection> disciplines = disciplineService.findAllDisciplineOptions();
+            List<NameProjection> disciplines = disciplineService.findAllDisciplineOptions();
             model.addAttribute("disciplines", disciplines);
             model.addAttribute("teacherUpdateDto", teacherUpdateDto);
         } catch (TeacherNotFoundException ex) {
@@ -600,7 +602,7 @@ public class AdminController {
 
         if (bindingResult.hasErrors()) {
             model.addAttribute("teacherUpdateDto", teacherUpdateDto);
-            List<InputOptionProjection> disciplines = disciplineService.findAllDisciplineOptions();
+            List<NameProjection> disciplines = disciplineService.findAllDisciplineOptions();
             model.addAttribute("disciplines", disciplines);
             return "admin/edit/edit-teacher";
         }
@@ -619,11 +621,9 @@ public class AdminController {
     @GetMapping("/groups/create-page")
     String createGroupPage(Model model) {
 
-        List<InputOptionProjection> specialities = specialityService.findAllSpecialityOptions();
+        List<SpecialityOptionDto> specialities = specialityService.findAllSpecialityOptions();
         GroupRegistrationDto groupRegistrationDto = new GroupRegistrationDto();
-        List<InputOptionProjection> students = studentService.findAllStudentOptions();
 
-        model.addAttribute("students", students);
         model.addAttribute("groupRegistrationDto", groupRegistrationDto);
         model.addAttribute("specialities", specialities);
 
@@ -638,10 +638,8 @@ public class AdminController {
     ) {
 
         if (bindingResult.hasErrors()) {
-            List<InputOptionProjection> specialities = specialityService.findAllSpecialityOptions();
-            List<InputOptionProjection> students = studentService.findAllStudentOptions();
+            List<SpecialityOptionDto> specialities = specialityService.findAllSpecialityOptions();
 
-            model.addAttribute("students", students);
             model.addAttribute("groupRegistrationDto", groupRegistrationDto);
             model.addAttribute("specialities", specialities);
             return "admin/create/create-group";
@@ -652,10 +650,7 @@ public class AdminController {
         if (groupService.isExistsByName(newGroupName)) {
             bindingResult.rejectValue("name", "error.name", "This name already in use by another group");
 
-            List<InputOptionProjection> specialities = specialityService.findAllSpecialityOptions();
-            List<InputOptionProjection> students = studentService.findAllStudentOptions();
-
-            model.addAttribute("students", students);
+            List<SpecialityOptionDto> specialities = specialityService.findAllSpecialityOptions();
             model.addAttribute("groupRegistrationDto", groupRegistrationDto);
             model.addAttribute("specialities", specialities);
             return "admin/create/create-group";
@@ -700,10 +695,10 @@ public class AdminController {
         model.addAttribute("totalElements", students.getTotalElements());
 
 
-        List<InputOptionProjection> studentsWithoutGroups = studentService.findAllStudentOptionsWithoutGroup();
+        List<StudentOptionDto> studentsWithoutGroups = studentService.findAllStudentOptionsWithoutGroup();
         model.addAttribute("studentsWithoutGroup", studentsWithoutGroups);
 
-        List<InputOptionProjection> specialities = specialityService.findAllSpecialityOptions();
+        List<SpecialityOptionDto> specialities = specialityService.findAllSpecialityOptions();
         model.addAttribute("specialities", specialities);
         return "admin/edit/edit-group";
     }
@@ -737,7 +732,7 @@ public class AdminController {
         }
 
         if (bindingResult.hasErrors()) {
-            List<InputOptionProjection> specialities = specialityService.findAllSpecialityOptions();
+            List<SpecialityOptionDto> specialities = specialityService.findAllSpecialityOptions();
 
             Pageable pageable = PageRequest.of(0, 7);
             Page<StudentProjection> students = studentService.findStudentsByGroupId(groupUpdateDto.getId(), pageable);
@@ -777,7 +772,7 @@ public class AdminController {
             redirectAttributes.addAttribute("errorMessage", ex.getMessage());
         }
 
-        List<InputOptionProjection> specialities = specialityService.findAllSpecialityOptions();
+        List<SpecialityOptionDto> specialities = specialityService.findAllSpecialityOptions();
 
         Pageable pageable = PageRequest.of(0, 7);
         Page<StudentProjection> students = studentService.findStudentsByGroupId(groupId, pageable);

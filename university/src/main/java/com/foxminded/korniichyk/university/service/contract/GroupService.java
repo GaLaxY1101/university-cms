@@ -4,7 +4,7 @@ import com.foxminded.korniichyk.university.dto.display.GroupDto;
 import com.foxminded.korniichyk.university.dto.registration.GroupRegistrationDto;
 import com.foxminded.korniichyk.university.dto.update.GroupUpdateDto;
 import com.foxminded.korniichyk.university.model.Group;
-import com.foxminded.korniichyk.university.projection.input.InputOptionProjection;
+import com.foxminded.korniichyk.university.projection.input.NameProjection;
 import org.springframework.data.domain.Page;
 
 import java.util.List;
@@ -22,7 +22,7 @@ public interface GroupService extends CrudService<Group, GroupDto> {
 
     List<GroupDto> findAll();
 
-    List<InputOptionProjection> findAllGroupOptions();
+    List<NameProjection> findAllNameProjections();
 
     Group registerGroup(GroupRegistrationDto groupRegistrationDto);
 

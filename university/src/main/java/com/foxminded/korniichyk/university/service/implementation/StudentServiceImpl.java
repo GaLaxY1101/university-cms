@@ -3,15 +3,17 @@ package com.foxminded.korniichyk.university.service.implementation;
 import com.foxminded.korniichyk.university.dao.GroupDao;
 import com.foxminded.korniichyk.university.dao.StudentDao;
 import com.foxminded.korniichyk.university.dto.display.StudentDto;
+import com.foxminded.korniichyk.university.dto.option.StudentOptionDto;
 import com.foxminded.korniichyk.university.dto.registration.StudentRegistrationDto;
 import com.foxminded.korniichyk.university.dto.update.StudentUpdateDto;
 import com.foxminded.korniichyk.university.mapper.display.StudentMapper;
 import com.foxminded.korniichyk.university.mapper.update.StudentUpdateMapper;
+import com.foxminded.korniichyk.university.model.Group;
 import com.foxminded.korniichyk.university.model.Role;
 import com.foxminded.korniichyk.university.model.Student;
 import com.foxminded.korniichyk.university.model.User;
 import com.foxminded.korniichyk.university.projection.edit.group.StudentProjection;
-import com.foxminded.korniichyk.university.projection.input.InputOptionProjection;
+import com.foxminded.korniichyk.university.projection.input.NameProjection;
 import com.foxminded.korniichyk.university.security.CustomUserDetails;
 import com.foxminded.korniichyk.university.service.contract.StudentService;
 import com.foxminded.korniichyk.university.service.contract.UserService;
@@ -89,11 +91,19 @@ public class StudentServiceImpl implements StudentService {
     @Transactional
     @Override
     public void assignGroup(Long groupId, Long studentId) {
-        var group = groupDao.findById(groupId)
-                .orElseThrow(() -> new GroupNotFoundException("Group with id: " + groupId + "not found"));
 
-        var student = studentDao.findById(studentId)
-                .orElseThrow(() -> new StudentNotFoundException("Student with id: " + studentId + "not found"));
+        if (!groupDao.existsById(groupId)) {
+            throw new GroupNotFoundException("Group with id " + groupId + " not found");
+        }
+
+        if (!studentDao.existsById(studentId)) {
+            throw new StudentNotFoundException("Student with id " + studentId + " not found");
+        }
+
+        Group group = groupDao.findReferenceById(groupId);
+
+        Student student = studentDao.findReferenceById(studentId);
+
 
         if (!group.getStudents().contains(student)) {
             student.setGroup(group);
@@ -129,7 +139,7 @@ public class StudentServiceImpl implements StudentService {
         student.setUser(user);
         studentDao.save(student);
 
-        if(!(studentRegistrationDto.getGroupId() == null)) {
+        if (!(studentRegistrationDto.getGroupId() == null)) {
             assignGroup(studentRegistrationDto.getGroupId(), student.getId());
         }
         return student;
@@ -196,11 +206,6 @@ public class StudentServiceImpl implements StudentService {
     }
 
     @Override
-    public List<InputOptionProjection> findAllStudentOptions() {
-        return studentDao.findAllStudentOptions();
-    }
-
-    @Override
     public Set<Student> findAllByIdIn(Set<Long> studentIds) {
         return studentDao.findAllByIdIn(studentIds);
     }
@@ -213,15 +218,23 @@ public class StudentServiceImpl implements StudentService {
     @Transactional
     @Override
     public void unassignGroup(Long studentId) {
-        Student student = studentDao.findById(studentId)
-                .orElseThrow(() -> new StudentNotFoundException("Student with id " + studentId + "not found"));
-
+        if (!studentDao.existsById(studentId)) {
+            throw new StudentNotFoundException("Student with id " + studentId + "not found");
+        }
+        Student student = studentDao.findReferenceById(studentId);
         student.setGroup(null);
     }
 
     @Override
-    public List<InputOptionProjection> findAllStudentOptionsWithoutGroup() {
-        return studentDao.findAllStudentOptionsWithoutGroup();
+    public List<StudentOptionDto> findAllStudentOptionsWithoutGroup() {
+        return studentDao.findAllStudentOptionsWithoutGroup()
+                .stream()
+                .map((projection) ->
+                        new StudentOptionDto(projection.getId(),
+                                projection.getFirstName(),
+                                projection.getLastName())
+
+                ).collect(Collectors.toList());
     }
 
 

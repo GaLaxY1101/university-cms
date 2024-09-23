@@ -11,7 +11,7 @@ import com.foxminded.korniichyk.university.mapper.update.GroupUpdateMapper;
 import com.foxminded.korniichyk.university.model.Group;
 import com.foxminded.korniichyk.university.model.Speciality;
 import com.foxminded.korniichyk.university.model.Student;
-import com.foxminded.korniichyk.university.projection.input.InputOptionProjection;
+import com.foxminded.korniichyk.university.projection.input.NameProjection;
 import com.foxminded.korniichyk.university.service.contract.GroupService;
 import com.foxminded.korniichyk.university.service.contract.StudentService;
 import com.foxminded.korniichyk.university.service.contract.TeacherService;
@@ -130,7 +130,7 @@ public class GroupServiceImpl implements GroupService {
     }
 
     @Override
-    public List<InputOptionProjection> findAllGroupOptions() {
+    public List<NameProjection> findAllNameProjections() {
         return groupDao.findAllGroupOptions();
     }
 
@@ -156,14 +156,19 @@ public class GroupServiceImpl implements GroupService {
     @Transactional
     @Override
     public void assignSpeciality(Long specialityId, Long groupId) {
-        Speciality speciality = specialityDao.findById(specialityId)
-                .orElseThrow(() -> new SpecialityNotFoundException("Speciality with id " + specialityId + "not found"));
 
-        Group group = groupDao.findById(groupId)
-                .orElseThrow(() -> new GroupNotFoundException("Group with id " + groupId + "not found"));
+        if (!specialityDao.existsById(specialityId)) {
+            throw new SpecialityNotFoundException("Speciality with id " + specialityId + " not found");
+        }
+
+        if (!groupDao.existsById(groupId)) {
+            throw new GroupNotFoundException("Group with id " + groupId + "not found");
+        }
+
+        Speciality speciality = specialityDao.findReferenceById(specialityId);
+        Group group = groupDao.findReferenceById(groupId);
 
         group.setSpeciality(speciality);
-        speciality.addGroup(group);
 
     }
 
@@ -189,7 +194,7 @@ public class GroupServiceImpl implements GroupService {
 
         Long specialityId = groupUpdateDto.getSpecialityId();
         Speciality speciality = specialityDao.findById(specialityId)
-                        .orElseThrow(() -> new SpecialityNotFoundException("Speciality with id " + specialityId + " noy found"));
+                .orElseThrow(() -> new SpecialityNotFoundException("Speciality with id " + specialityId + " noy found"));
 
         group.setName(groupUpdateDto.getName());
         group.setSpeciality(speciality);

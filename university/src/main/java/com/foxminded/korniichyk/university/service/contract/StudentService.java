@@ -1,11 +1,11 @@
 package com.foxminded.korniichyk.university.service.contract;
 
 import com.foxminded.korniichyk.university.dto.display.StudentDto;
+import com.foxminded.korniichyk.university.dto.option.StudentOptionDto;
 import com.foxminded.korniichyk.university.dto.registration.StudentRegistrationDto;
 import com.foxminded.korniichyk.university.dto.update.StudentUpdateDto;
 import com.foxminded.korniichyk.university.model.Student;
 import com.foxminded.korniichyk.university.projection.edit.group.StudentProjection;
-import com.foxminded.korniichyk.university.projection.input.InputOptionProjection;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 
@@ -24,10 +24,9 @@ public interface StudentService extends CrudService<Student, StudentDto> {
     Student getCurrentStudent();
     Page<StudentDto> findByGroupIdExcludingByStudentId(Long groupId, Long studentId, Pageable pageable);
     boolean isExistsById(Long id);
-    List<InputOptionProjection> findAllStudentOptions();
     Set<Student> findAllByIdIn(Set<Long> studentIds);
     Page<StudentProjection> findStudentsByGroupId(Long groupId, Pageable pageable);
     void unassignGroup(Long studentId);
-    List<InputOptionProjection> findAllStudentOptionsWithoutGroup();
+    List<StudentOptionDto> findAllStudentOptionsWithoutGroup();
 
 }

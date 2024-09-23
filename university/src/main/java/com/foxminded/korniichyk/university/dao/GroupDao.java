@@ -1,6 +1,6 @@
 package com.foxminded.korniichyk.university.dao;
 
-import com.foxminded.korniichyk.university.projection.input.InputOptionProjection;
+import com.foxminded.korniichyk.university.projection.input.NameProjection;
 import com.foxminded.korniichyk.university.model.Group;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
@@ -25,11 +25,13 @@ public interface GroupDao extends JpaRepository<Group, Long> {
 
     boolean existsById(Long id);
 
-    @Query("SELECT new com.foxminded.korniichyk.university.projection.input.InputOptionProjection(g.id, g.name) FROM Group g")
-    List<InputOptionProjection> findAllGroupOptions();
+    @Query("SELECT new com.foxminded.korniichyk.university.projection.input.NameProjection(g.id, g.name) FROM Group g")
+    List<NameProjection> findAllGroupOptions();
 
     boolean existsByName(String name);
 
     @Query("SELECT g.name FROM Group g WHERE g.id = :id")
     String getNameById(@Param("id") Long id);
+
+    Group findReferenceById(Long groupId);
 }

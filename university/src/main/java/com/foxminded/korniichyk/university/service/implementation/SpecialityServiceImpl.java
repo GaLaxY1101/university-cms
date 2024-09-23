@@ -3,9 +3,9 @@ package com.foxminded.korniichyk.university.service.implementation;
 import com.foxminded.korniichyk.university.dao.GroupDao;
 import com.foxminded.korniichyk.university.dao.SpecialityDao;
 import com.foxminded.korniichyk.university.dto.display.SpecialityDto;
+import com.foxminded.korniichyk.university.dto.option.SpecialityOptionDto;
 import com.foxminded.korniichyk.university.mapper.display.SpecialityMapper;
 import com.foxminded.korniichyk.university.model.Speciality;
-import com.foxminded.korniichyk.university.projection.input.InputOptionProjection;
 import com.foxminded.korniichyk.university.service.contract.SpecialityService;
 import com.foxminded.korniichyk.university.service.exception.SpecialityNotFoundException;
 import lombok.RequiredArgsConstructor;
@@ -17,6 +17,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
+import java.util.stream.Collectors;
 
 @Service
 @Transactional(readOnly = true)
@@ -64,8 +65,20 @@ public class SpecialityServiceImpl implements SpecialityService {
     }
 
     @Override
-    public List<InputOptionProjection> findAllSpecialityOptions() {
-        return specialityDao.findAllSpecialityOptions();
+    public List<SpecialityOptionDto> findAllSpecialityOptions() {
+        return specialityDao.findAllSpecialityOptions().stream().map((projection) ->
+                        new SpecialityOptionDto(
+                                projection.getId(),
+                                projection.getName(),
+                                projection.getCode()
+                        )
+                )
+                .collect(Collectors.toList());
+    }
+
+    @Override
+    public Speciality findReferenceById(Long id) {
+        return specialityDao.findReferenceById(id);
     }
 
 }

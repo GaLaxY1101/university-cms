@@ -34,7 +34,7 @@
                 <option value="" disabled selected>Select a speciality</option>
                 <option th:each="speciality : ${specialities}"
                         th:value="${speciality.id}"
-                        th:text="${speciality.name}">
+                        th:text="${speciality.code + ' ' + speciality.name}">
                 </option>
               </select>
             </div>

@@ -1,7 +1,7 @@
 package com.foxminded.korniichyk.university.service.contract;
 
 import com.foxminded.korniichyk.university.dto.display.DisciplineDto;
-import com.foxminded.korniichyk.university.projection.input.InputOptionProjection;
+import com.foxminded.korniichyk.university.projection.input.NameProjection;
 import com.foxminded.korniichyk.university.model.Discipline;
 
 import java.util.List;
@@ -13,5 +13,5 @@ public interface DisciplineService extends CrudService<Discipline, DisciplineDto
 
     List<DisciplineDto> findAll();
 
-    List<InputOptionProjection> findAllDisciplineOptions();
+    List<NameProjection> findAllDisciplineOptions();
 }

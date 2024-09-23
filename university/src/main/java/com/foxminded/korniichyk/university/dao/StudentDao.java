@@ -1,8 +1,8 @@
 package com.foxminded.korniichyk.university.dao;
 
 import com.foxminded.korniichyk.university.model.Student;
+import com.foxminded.korniichyk.university.projection.edit.group.StudentOptionProjection;
 import com.foxminded.korniichyk.university.projection.edit.group.StudentProjection;
-import com.foxminded.korniichyk.university.projection.input.InputOptionProjection;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.JpaRepository;
@@ -26,14 +26,16 @@ public interface StudentDao extends JpaRepository<Student, Long> {
                                                     Pageable pageable);
 
 
-    @Query("SELECT new com.foxminded.korniichyk.university.projection.input.InputOptionProjection(s.id, CONCAT(s.user.firstName, ' ', s.user.lastName)) FROM Student s")
-    List<InputOptionProjection> findAllStudentOptions();
+    @Query("SELECT new com.foxminded.korniichyk.university.projection.input.NameProjection(s.id, CONCAT(s.user.firstName, ' ', s.user.lastName)) FROM Student s")
+    List<StudentOptionProjection> findAllStudentOptions();
 
     @Query("SELECT new com.foxminded.korniichyk.university.projection.edit.group.StudentProjection(s.id, s.user.firstName, s.user.lastName, s.user.email) FROM Student s WHERE s.group.id = :groupId")
     Page<StudentProjection> findStudentsByGroupId(Long groupId, Pageable pageable);
 
     Set<Student> findAllByIdIn(Set<Long> studentIds);
 
-    @Query("SELECT new com.foxminded.korniichyk.university.projection.input.InputOptionProjection(s.id, CONCAT(s.user.firstName, ' ', s.user.lastName)) FROM Student s WHERE s.group IS NULL")
-    List<InputOptionProjection> findAllStudentOptionsWithoutGroup();
+    @Query("SELECT new com.foxminded.korniichyk.university.projection.edit.group.StudentOptionProjection(s.id, s.user.firstName, s.user.lastName) FROM Student s WHERE s.group IS NULL")
+    List<StudentOptionProjection> findAllStudentOptionsWithoutGroup();
+
+    Student findReferenceById(Long studentId);
 }
