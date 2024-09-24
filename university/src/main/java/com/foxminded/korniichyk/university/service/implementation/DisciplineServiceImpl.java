@@ -3,9 +3,9 @@ package com.foxminded.korniichyk.university.service.implementation;
 
 import com.foxminded.korniichyk.university.dao.DisciplineDao;
 import com.foxminded.korniichyk.university.dto.display.DisciplineDto;
-import com.foxminded.korniichyk.university.projection.input.NameProjection;
 import com.foxminded.korniichyk.university.mapper.display.DisciplineMapper;
 import com.foxminded.korniichyk.university.model.Discipline;
+import com.foxminded.korniichyk.university.projection.input.NameProjection;
 import com.foxminded.korniichyk.university.service.contract.DisciplineService;
 import com.foxminded.korniichyk.university.service.exception.DisciplineNotFoundException;
 import lombok.RequiredArgsConstructor;
@@ -18,7 +18,8 @@ import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
 import java.util.Set;
-import java.util.stream.Collectors;
+
+import static java.util.stream.Collectors.toList;
 
 @Service
 @Transactional(readOnly = true)
@@ -43,7 +44,7 @@ public class DisciplineServiceImpl implements DisciplineService {
                 .map(discipline -> {
                     return disciplineMapper.toDto(discipline);
                 })
-                .collect(Collectors.toList());
+                .collect(toList());
     }
 
     @Override

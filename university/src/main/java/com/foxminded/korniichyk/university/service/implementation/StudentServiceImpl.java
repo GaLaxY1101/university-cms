@@ -13,7 +13,6 @@ import com.foxminded.korniichyk.university.model.Role;
 import com.foxminded.korniichyk.university.model.Student;
 import com.foxminded.korniichyk.university.model.User;
 import com.foxminded.korniichyk.university.projection.edit.group.StudentProjection;
-import com.foxminded.korniichyk.university.projection.input.NameProjection;
 import com.foxminded.korniichyk.university.security.CustomUserDetails;
 import com.foxminded.korniichyk.university.service.contract.StudentService;
 import com.foxminded.korniichyk.university.service.contract.UserService;
@@ -31,7 +30,8 @@ import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
 import java.util.Set;
-import java.util.stream.Collectors;
+
+import static java.util.stream.Collectors.toList;
 
 @Transactional(readOnly = true)
 @Service
@@ -85,7 +85,7 @@ public class StudentServiceImpl implements StudentService {
         return group.getStudents()
                 .stream()
                 .map(studentMapper::toDto)
-                .collect(Collectors.toList());
+                .collect(toList());
     }
 
     @Transactional
@@ -234,7 +234,7 @@ public class StudentServiceImpl implements StudentService {
                                 projection.getFirstName(),
                                 projection.getLastName())
 
-                ).collect(Collectors.toList());
+                ).collect(toList());
     }
 
 

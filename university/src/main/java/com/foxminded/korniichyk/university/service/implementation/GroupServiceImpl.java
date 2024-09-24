@@ -29,7 +29,6 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
-import java.util.stream.Collectors;
 
 import static java.util.stream.Collectors.toList;
 
@@ -125,7 +124,7 @@ public class GroupServiceImpl implements GroupService {
         return groupDao.findAll()
                 .stream()
                 .map(groupMapper::toDto)
-                .collect(Collectors.toList());
+                .collect(toList());
     }
 
     @Override

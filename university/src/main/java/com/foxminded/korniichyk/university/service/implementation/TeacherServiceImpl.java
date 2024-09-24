@@ -7,7 +7,6 @@ import com.foxminded.korniichyk.university.dao.UserDao;
 import com.foxminded.korniichyk.university.dto.display.TeacherDto;
 import com.foxminded.korniichyk.university.dto.registration.TeacherRegistrationDto;
 import com.foxminded.korniichyk.university.dto.update.TeacherUpdateDto;
-import com.foxminded.korniichyk.university.mapper.display.RoleMapper;
 import com.foxminded.korniichyk.university.mapper.display.TeacherMapper;
 import com.foxminded.korniichyk.university.mapper.update.TeacherUpdateMapper;
 import com.foxminded.korniichyk.university.model.Discipline;
@@ -33,7 +32,8 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.Set;
-import java.util.stream.Collectors;
+
+import static java.util.stream.Collectors.toSet;
 
 @Transactional(readOnly = true)
 @Service
@@ -131,7 +131,7 @@ public class TeacherServiceImpl implements TeacherService {
         Set<Long> existingDisciplineIds = teacher.getDisciplines()
                 .stream()
                 .map(discipline -> discipline.getId())
-                .collect(Collectors.toSet());
+                .collect(toSet());
 
         if (!existingDisciplineIds.equals(existingDisciplineIds)) {
             Set<Discipline> disciplines = disciplineService.findAllByIdIn(teacherUpdateDto.getDisciplineIds());

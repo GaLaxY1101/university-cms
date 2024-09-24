@@ -7,11 +7,11 @@ import com.foxminded.korniichyk.university.service.contract.DisciplineService;
 import org.mapstruct.Mapper;
 import org.mapstruct.Mapping;
 import org.mapstruct.Named;
-import org.mapstruct.NullValuePropertyMappingStrategy;
 import org.springframework.beans.factory.annotation.Autowired;
 
 import java.util.Set;
-import java.util.stream.Collectors;
+
+import static java.util.stream.Collectors.toSet;
 
 @Mapper(componentModel = "spring", uses = {UserUpdateMapper.class})
 public abstract class TeacherUpdateMapper {
@@ -28,7 +28,7 @@ public abstract class TeacherUpdateMapper {
         return  disciplines
                 .stream()
                 .map(Discipline::getId)
-                .collect(Collectors.toSet());
+                .collect(toSet());
     }
 
     @Named("mapIdsToDisciplines")
