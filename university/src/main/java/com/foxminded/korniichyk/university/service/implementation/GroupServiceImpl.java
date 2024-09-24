@@ -29,7 +29,6 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
-import java.util.Set;
 import java.util.stream.Collectors;
 
 import static java.util.stream.Collectors.toList;
@@ -140,10 +139,6 @@ public class GroupServiceImpl implements GroupService {
     public Group registerGroup(GroupRegistrationDto groupRegistrationDto) {
         Group group = new Group();
         group.setName(groupRegistrationDto.getName());
-
-        Set<Student> students = studentService.findAllByIdIn(groupRegistrationDto.getStudentsIds());
-        group.setStudents(students);
-
         save(group);
 
         Long specialityId = groupRegistrationDto.getSpecialityId();
@@ -187,7 +182,7 @@ public class GroupServiceImpl implements GroupService {
 
     @Transactional
     @Override
-    public void save(GroupUpdateDto groupUpdateDto) {
+    public void update(GroupUpdateDto groupUpdateDto) {
         Long groupId = groupUpdateDto.getId();
         Group group = groupDao.findById(groupId)
                 .orElseThrow(() -> new GroupNotFoundException("Group with id " + groupId + " not found"));

@@ -746,7 +746,7 @@ public class AdminController {
         }
 
         try {
-            groupService.save(groupUpdateDto);
+            groupService.update(groupUpdateDto);
             redirectAttributes.addFlashAttribute("successMessage", "Group updated successfully");
         } catch (GroupNotFoundException | SpecialityNotFoundException ex) {
             redirectAttributes.addFlashAttribute("errorMessage", ex.getMessage());

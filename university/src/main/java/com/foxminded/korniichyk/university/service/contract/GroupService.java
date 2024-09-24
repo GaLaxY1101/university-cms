@@ -32,7 +32,7 @@ public interface GroupService extends CrudService<Group, GroupDto> {
 
     GroupUpdateDto getGroupUpdateDtoById(Long groupId);
 
-    void save(GroupUpdateDto groupUpdateDto);
+    void update(GroupUpdateDto groupUpdateDto);
 
     String getNameById(Long id);
 }
