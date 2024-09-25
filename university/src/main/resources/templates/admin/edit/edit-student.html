@@ -19,6 +19,7 @@
             <div class="create-teacher-form-wrapper">
                 <h2>Edit student</h2>
                 <form th:action="@{/administrators/students/edit}" th:object="${studentUpdateDto}" method="post">
+                    <input type="hidden" name="_method" value="PUT"/>
                     <input type="hidden" th:name="${_csrf.parameterName}" th:value="${_csrf.token}" />
                     <div class="label-and-input-wrapper">
                         <label for="firstName">First name</label>

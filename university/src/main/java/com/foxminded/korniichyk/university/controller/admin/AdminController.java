@@ -31,13 +31,8 @@ import com.foxminded.korniichyk.university.service.contract.SpecialityService;
 import com.foxminded.korniichyk.university.service.contract.StudentService;
 import com.foxminded.korniichyk.university.service.contract.TeacherService;
 import com.foxminded.korniichyk.university.service.contract.UserService;
-import com.foxminded.korniichyk.university.service.exception.AdminNotFoundException;
 import com.foxminded.korniichyk.university.service.exception.EmailAlreadyExistsException;
-import com.foxminded.korniichyk.university.service.exception.GroupNotFoundException;
 import com.foxminded.korniichyk.university.service.exception.PhoneNumberAlreadyExistsException;
-import com.foxminded.korniichyk.university.service.exception.SpecialityNotFoundException;
-import com.foxminded.korniichyk.university.service.exception.StudentNotFoundException;
-import com.foxminded.korniichyk.university.service.exception.TeacherNotFoundException;
 import jakarta.validation.Valid;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
@@ -391,12 +386,10 @@ public class AdminController {
             @PathVariable("id") Long adminId,
             RedirectAttributes redirectAttributes
     ) {
-        try {
-            adminService.deleteById(adminId);
-            redirectAttributes.addFlashAttribute("successMessage", "Admin deleted successfully");
-        } catch (AdminNotFoundException ex) {
-            redirectAttributes.addFlashAttribute("errorMessage", ex.getMessage());
-        }
+
+        adminService.deleteById(adminId);
+        redirectAttributes.addFlashAttribute("successMessage", "Admin deleted successfully");
+
         return "redirect:/administrators/admins";
     }
 
@@ -406,12 +399,10 @@ public class AdminController {
             @PathVariable("id") Long studentId,
             RedirectAttributes redirectAttributes
     ) {
-        try {
-            studentService.deleteById(studentId);
-            redirectAttributes.addFlashAttribute("successMessage", "Student deleted successfully");
-        } catch (StudentNotFoundException ex) {
-            redirectAttributes.addFlashAttribute("errorMessage", ex.getMessage());
-        }
+
+        studentService.deleteById(studentId);
+        redirectAttributes.addFlashAttribute("successMessage", "Student deleted successfully");
+
         return "redirect:/administrators/students";
     }
 
@@ -420,12 +411,10 @@ public class AdminController {
             @PathVariable("id") Long teacherId,
             RedirectAttributes redirectAttributes
     ) {
-        try {
-            teacherService.deleteById(teacherId);
-            redirectAttributes.addFlashAttribute("successMessage", "Teacher deleted successfully");
-        } catch (TeacherNotFoundException ex) {
-            redirectAttributes.addFlashAttribute("errorMessage", ex.getMessage());
-        }
+
+        teacherService.deleteById(teacherId);
+        redirectAttributes.addFlashAttribute("successMessage", "Teacher deleted successfully");
+
         return "redirect:/administrators/teachers";
     }
 
@@ -435,20 +424,17 @@ public class AdminController {
             Model model,
             RedirectAttributes redirectAttributes
     ) {
-        try {
-            StudentUpdateDto studentUpdateDto = studentService.getStudentUpdateDto(studentId);
-            List<NameProjection> groups = groupService.findAllNameProjections();
 
-            model.addAttribute("studentUpdateDto", studentUpdateDto);
-            model.addAttribute("groups", groups);
-        } catch (StudentNotFoundException ex) {
-            redirectAttributes.addFlashAttribute("errorMessage", ex.getMessage());
-            return "redirect:/administrators/students";
-        }
+        StudentUpdateDto studentUpdateDto = studentService.getStudentUpdateDto(studentId);
+        List<NameProjection> groups = groupService.findAllNameProjections();
+
+        model.addAttribute("studentUpdateDto", studentUpdateDto);
+        model.addAttribute("groups", groups);
+
         return "admin/edit/edit-student";
     }
 
-    @PostMapping("/students/edit")
+    @PutMapping("/students/edit")
     public String editStudent(
             @ModelAttribute @Valid StudentUpdateDto studentUpdateDto,
             BindingResult bindingResult,
@@ -482,14 +468,11 @@ public class AdminController {
             return "admin/edit/edit-student";
         }
 
-        try {
-            studentService.update(studentUpdateDto);
-            redirectAttributes.addFlashAttribute("successMessage", "Student updated successfully!");
-            return "redirect:/administrators/students";
-        } catch (StudentNotFoundException ex) {
-            redirectAttributes.addFlashAttribute("errorMessage", ex.getMessage());
-            return "redirect:/administrators/students" + studentUpdateDto.getId();
-        }
+
+        studentService.update(studentUpdateDto);
+        redirectAttributes.addFlashAttribute("successMessage", "Student updated successfully!");
+        return "redirect:/administrators/students";
+
     }
 
 
@@ -499,13 +482,10 @@ public class AdminController {
             RedirectAttributes redirectAttributes,
             Model model
     ) {
-        try {
-            AdminUpdateDto adminUpdateDto = adminService.getAdminUpdateDto(adminId);
-            model.addAttribute("adminUpdateDto", adminUpdateDto);
-        } catch (AdminNotFoundException ex) {
-            redirectAttributes.addFlashAttribute("errorMessage", ex.getMessage());
-            return "redirect:/administrators/admins";
-        }
+
+        AdminUpdateDto adminUpdateDto = adminService.getAdminUpdateDto(adminId);
+        model.addAttribute("adminUpdateDto", adminUpdateDto);
+
 
         return "admin/edit/edit-admin";
     }
@@ -540,15 +520,10 @@ public class AdminController {
             return "admin/edit/edit-admin";
         }
 
-        try {
-            adminService.update(adminUpdateDto);
-            redirectAttributes.addFlashAttribute("successMessage", "Admin updated successfully");
-            return "redirect:/administrators/admins";
-        } catch (Exception ex) {
-            redirectAttributes.addFlashAttribute("errorMessage", ex.getMessage());
-            return "redirect:/administrators/admins";
-        }
 
+        adminService.update(adminUpdateDto);
+        redirectAttributes.addFlashAttribute("successMessage", "Admin updated successfully");
+        return "redirect:/administrators/admins";
     }
 
     @GetMapping("/teachers/edit/{id}")
@@ -557,15 +532,12 @@ public class AdminController {
             RedirectAttributes redirectAttributes,
             Model model
     ) {
-        try {
-            TeacherUpdateDto teacherUpdateDto = teacherService.getTeacherUpdateDto(teacherId);
-            List<NameProjection> disciplines = disciplineService.findAllDisciplineOptions();
-            model.addAttribute("disciplines", disciplines);
-            model.addAttribute("teacherUpdateDto", teacherUpdateDto);
-        } catch (TeacherNotFoundException ex) {
-            redirectAttributes.addFlashAttribute("errorMessage", ex.getMessage());
-            return "redirect:/administrators/teachers";
-        }
+
+        TeacherUpdateDto teacherUpdateDto = teacherService.getTeacherUpdateDto(teacherId);
+        List<NameProjection> disciplines = disciplineService.findAllDisciplineOptions();
+        model.addAttribute("disciplines", disciplines);
+        model.addAttribute("teacherUpdateDto", teacherUpdateDto);
+
 
         return "admin/edit/edit-teacher";
 
@@ -608,14 +580,10 @@ public class AdminController {
         }
 
 
-        try {
-            teacherService.update(teacherUpdateDto);
-            redirectAttributes.addFlashAttribute("successMessage", "Teacher updated successfully");
-            return "redirect:/administrators/teachers";
-        } catch (TeacherNotFoundException ex) {
-            redirectAttributes.addFlashAttribute("errorMessage", ex.getMessage());
-            return "redirect:/administrators/teachers";
-        }
+        teacherService.update(teacherUpdateDto);
+        redirectAttributes.addFlashAttribute("successMessage", "Teacher updated successfully");
+        return "redirect:/administrators/teachers";
+
     }
 
     @GetMapping("/groups/create-page")
@@ -666,12 +634,10 @@ public class AdminController {
             @PathVariable Long id,
             RedirectAttributes redirectAttributes
     ) {
-        try {
-            groupService.deleteById(id);
-            redirectAttributes.addFlashAttribute("successMessage", "Group deleted successfully");
-        } catch (GroupNotFoundException ex) {
-            redirectAttributes.addFlashAttribute("errorMessage", ex.getMessage());
-        }
+
+        groupService.deleteById(id);
+        redirectAttributes.addFlashAttribute("successMessage", "Group deleted successfully");
+
 
         return "redirect:/administrators/groups";
     }
@@ -709,12 +675,10 @@ public class AdminController {
             @RequestParam Long groupId,
             RedirectAttributes redirectAttributes
     ) {
-        try {
-            studentService.unassignGroup(studentId);
-            redirectAttributes.addFlashAttribute("successMessage", "Student removed from group successfully");
-        } catch (StudentNotFoundException ex) {
-            redirectAttributes.addFlashAttribute("errorMessage", ex.getMessage());
-        }
+
+        studentService.unassignGroup(studentId);
+        redirectAttributes.addFlashAttribute("successMessage", "Student removed from group successfully");
+
         return "redirect:/administrators/groups/edit/" + groupId;
     }
 
@@ -745,12 +709,9 @@ public class AdminController {
             return "admin/edit/edit-group";
         }
 
-        try {
-            groupService.update(groupUpdateDto);
-            redirectAttributes.addFlashAttribute("successMessage", "Group updated successfully");
-        } catch (GroupNotFoundException | SpecialityNotFoundException ex) {
-            redirectAttributes.addFlashAttribute("errorMessage", ex.getMessage());
-        }
+
+        groupService.update(groupUpdateDto);
+        redirectAttributes.addFlashAttribute("successMessage", "Group updated successfully");
 
         return "redirect:/administrators/groups";
 
@@ -763,14 +724,12 @@ public class AdminController {
             @RequestParam Long groupId,
             RedirectAttributes redirectAttributes,
             Model model
-            ) {
+    ) {
 
-        try{
-            studentService.assignGroup(groupId,studentId);
-            redirectAttributes.addFlashAttribute("successMessage", "Student was added to group successfully");
-        } catch (StudentNotFoundException | GroupNotFoundException ex) {
-            redirectAttributes.addAttribute("errorMessage", ex.getMessage());
-        }
+
+        studentService.assignGroup(groupId, studentId);
+        redirectAttributes.addFlashAttribute("successMessage", "Student was added to group successfully");
+
 
         List<SpecialityOptionDto> specialities = specialityService.findAllSpecialityOptions();
 
