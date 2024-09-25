@@ -49,7 +49,7 @@ public class StudentServiceImpl implements StudentService {
     public StudentDto findById(Long id) {
         return studentDao.findById(id)
                 .map(studentMapper::toDto)
-                .orElseThrow(() -> new StudentNotFoundException("Student with id: " + id + "not found"));
+                .orElseThrow(() -> new StudentNotFoundException("Student with id: " + id + " not found"));
     }
 
     @Transactional
@@ -69,7 +69,7 @@ public class StudentServiceImpl implements StudentService {
                             log.info("{} deleted", student);
                         },
                         () -> {
-                            throw new StudentNotFoundException("Student with id: " + id + "not found");
+                            throw new StudentNotFoundException("Student with id: " + id + " not found");
                         }
                 );
     }
@@ -80,7 +80,7 @@ public class StudentServiceImpl implements StudentService {
         var group = groupDao.findByName(groupName)
                 .stream()
                 .findFirst()
-                .orElseThrow(() -> new GroupNotFoundException("Group with name: " + groupName + "not found"));
+                .orElseThrow(() -> new GroupNotFoundException("Group with name: " + groupName + " not found"));
 
         return group.getStudents()
                 .stream()
@@ -115,7 +115,7 @@ public class StudentServiceImpl implements StudentService {
     public StudentDto findByUserId(Long userId) {
 
         Student student = studentDao.findByUserId(userId).orElseThrow(
-                () -> new StudentNotFoundException("Student with user id: " + userId + "not found")
+                () -> new StudentNotFoundException("Student with user id: " + userId + " not found")
         );
         return studentMapper.toDto(student);
     }
@@ -147,7 +147,7 @@ public class StudentServiceImpl implements StudentService {
 
     @Override
     public StudentUpdateDto getStudentUpdateDto(Long id) {
-        Student student = studentDao.findById(id).orElseThrow(() -> new StudentNotFoundException("Student with id" + id + "not found"));
+        Student student = studentDao.findById(id).orElseThrow(() -> new StudentNotFoundException("Student with id " + id + " not found"));
 
         return studentUpdateMapper.toDto(student);
     }
@@ -181,7 +181,7 @@ public class StudentServiceImpl implements StudentService {
         Long userId = userDetails.getUser().getId();
         Long studentId = findByUserId(userId).getId();
         return studentDao.findById(studentId).orElseThrow(
-                () -> new StudentNotFoundException("Student with id " + studentId + "not found")
+                () -> new StudentNotFoundException("Student with id " + studentId + " not found")
         );
     }
 
@@ -193,7 +193,7 @@ public class StudentServiceImpl implements StudentService {
         }
 
         if (!isExistsById(studentId)) {
-            throw new StudentNotFoundException("Student with id " + studentId + "not found");
+            throw new StudentNotFoundException("Student with id " + studentId + " not found");
         }
 
         return studentDao.findByGroupIdExcludingByStudentId(groupId, studentId, pageable)
@@ -219,7 +219,7 @@ public class StudentServiceImpl implements StudentService {
     @Override
     public void unassignGroup(Long studentId) {
         if (!studentDao.existsById(studentId)) {
-            throw new StudentNotFoundException("Student with id " + studentId + "not found");
+            throw new StudentNotFoundException("Student with id " + studentId + " not found");
         }
         Student student = studentDao.findReferenceById(studentId);
         student.setGroup(null);

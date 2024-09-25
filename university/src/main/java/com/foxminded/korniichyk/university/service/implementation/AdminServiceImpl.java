@@ -13,14 +13,12 @@ import com.foxminded.korniichyk.university.service.contract.AdminService;
 import com.foxminded.korniichyk.university.service.contract.UserService;
 import com.foxminded.korniichyk.university.service.exception.AdminNotFoundException;
 import lombok.RequiredArgsConstructor;
-import org.springframework.transaction.annotation.Transactional;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
-
-import static java.util.Collections.singleton;
+import org.springframework.transaction.annotation.Transactional;
 
 @Service
 @Slf4j
@@ -39,7 +37,7 @@ public class AdminServiceImpl implements AdminService {
         return adminDao.findById(id)
                 .map(adminMapper::toDto)
                 .orElseThrow(
-                        () -> new AdminNotFoundException("Admin with id " + id + " not found")
+                        () -> new AdminNotFoundException("Admin with id: " + id + " not found")
                 );
     }
 
@@ -60,7 +58,7 @@ public class AdminServiceImpl implements AdminService {
                             log.info("{} deleted", admin);
                         },
                         () -> {
-                            throw new AdminNotFoundException("Admin with id " + id + " not found");
+                            throw new AdminNotFoundException("Admin with id: " + id + " not found");
                         }
                 );
     }
@@ -91,7 +89,7 @@ public class AdminServiceImpl implements AdminService {
     public AdminUpdateDto getAdminUpdateDto(Long adminId) {
 
         Admin admin = adminDao.findById(adminId).orElseThrow(
-                () -> new AdminNotFoundException("Admin with id" + adminId + "not found")
+                () -> new AdminNotFoundException("Admin with id: " + adminId + " not found")
         );
 
         return adminUpdateMapper.toDto(admin);
@@ -104,7 +102,7 @@ public class AdminServiceImpl implements AdminService {
         Long adminId = adminUpdateDto.getId();
 
         Admin admin = adminDao.findById(adminId).orElseThrow(
-                () -> new AdminNotFoundException("Admin with id" + adminId + "not found")
+                () -> new AdminNotFoundException("Admin with id: " + adminId + " not found")
         );
 
         admin.getUser().setEmail(adminUpdateDto.getUser().getEmail());

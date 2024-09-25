@@ -153,7 +153,7 @@ public class TeacherServiceImpl implements TeacherService {
         Long userId = userDetails.getUser().getId();
         Long teacherId = findByUserId(userId).getId();
         return teacherDao.findById(teacherId).orElseThrow(
-                () -> new StudentNotFoundException("Teacher with id " + teacherId + "not found")
+                () -> new StudentNotFoundException("Teacher with id " + teacherId + " not found")
         );
     }
 
