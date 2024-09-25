@@ -34,8 +34,12 @@ public class SpecialityServiceImpl implements SpecialityService {
     public SpecialityDto findById(Long id) {
         return specialityDao.findById(id)
                 .map(specialityMapper::toDto)
-                .orElseThrow(() -> new SpecialityNotFoundException("Speciality with id " + id + " not found"));
+                .orElseThrow(() -> {
+                    log.error("Speciality with id {} not found", id);
+                    return new SpecialityNotFoundException("Speciality not found");
+                });
     }
+
 
     @Transactional
     @Override
@@ -47,17 +51,16 @@ public class SpecialityServiceImpl implements SpecialityService {
     @Transactional
     @Override
     public void deleteById(Long id) {
-        specialityDao.findById(id)
-                .ifPresentOrElse(
-                        speciality -> {
-                            specialityDao.delete(speciality);
-                            log.info("{} deleted", speciality);
-                        },
-                        () -> {
-                            throw new SpecialityNotFoundException("Speciality with id " + id + " not found");
-                        }
-                );
+        Speciality speciality = specialityDao.findById(id)
+                .orElseThrow(() -> {
+                    log.error("Speciality with id {} not found", id);
+                    return new SpecialityNotFoundException("Speciality not found");
+                });
+
+        specialityDao.delete(speciality);
+        log.info("{} deleted", speciality);
     }
+
 
     @Override
     public Page<SpecialityDto> findPage(int pageNumber, int pageSize) {

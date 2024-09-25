@@ -51,8 +51,12 @@ public class GroupServiceImpl implements GroupService {
     public GroupDto findById(Long id) {
         return groupDao.findById(id)
                 .map(groupMapper::toDto)
-                .orElseThrow(() -> new GroupNotFoundException("Teacher with id " + id + " not found"));
+                .orElseThrow(() -> {
+                    log.error("Group with id {} not found", id);
+                    return new GroupNotFoundException("Group not found");
+                });
     }
+
 
     @Transactional
     @Override
@@ -68,13 +72,15 @@ public class GroupServiceImpl implements GroupService {
                 .ifPresentOrElse(
                         group -> {
                             groupDao.delete(group);
-                            log.info("{} deleted", group);
+                            log.info("Group with id {} deleted", id);
                         },
                         () -> {
-                            throw new GroupNotFoundException("Teacher with id " + id + " not found");
+                            log.error("Group with id {} not found", id);
+                            throw new GroupNotFoundException("Group not found");
                         }
                 );
     }
+
 
     @Override
     public List<GroupDto> findByName(String name) {
@@ -83,11 +89,13 @@ public class GroupServiceImpl implements GroupService {
 
     @Override
     public GroupDto findByStudentId(Long studentId) {
-        Student student = studentDao.findById(studentId).orElseThrow(
-                () -> new StudentNotFoundException("Student with id " + studentId + " not found")
-        );
+        Student student = studentDao.findById(studentId).orElseThrow(() -> {
+            log.error("Student with id {} not found", studentId);
+            return new StudentNotFoundException("Student not found");
+        });
         return groupMapper.toDto(student.getGroup());
     }
+
 
 
     @Override
@@ -99,7 +107,8 @@ public class GroupServiceImpl implements GroupService {
     @Override
     public Page<GroupDto> findPageByTeacherId(Long teacherId, int pageNumber, int pageSize) {
         if (!teacherService.isExistsById(teacherId)) {
-            throw new TeacherNotFoundException("Teacher with id " + teacherId + " not found");
+            log.error("Teacher with id {} not found", teacherId);
+            throw new TeacherNotFoundException("Teacher not found");
         }
 
         Pageable pageable = PageRequest.of(pageNumber, pageSize);
@@ -110,9 +119,9 @@ public class GroupServiceImpl implements GroupService {
                 .map(groupMapper::toDto)
                 .toList();
 
-        return new PageImpl<GroupDto>(groups, pageable, groups.size());
-
+        return new PageImpl<>(groups, pageable, groupPage.getTotalElements());
     }
+
 
     @Override
     public boolean isExistsById(Long id) {
@@ -150,21 +159,22 @@ public class GroupServiceImpl implements GroupService {
     @Transactional
     @Override
     public void assignSpeciality(Long specialityId, Long groupId) {
-
         if (!specialityDao.existsById(specialityId)) {
-            throw new SpecialityNotFoundException("Speciality with id " + specialityId + " not found");
+            log.error("Speciality with id {} not found", specialityId);
+            throw new SpecialityNotFoundException("Speciality not found");
         }
 
         if (!groupDao.existsById(groupId)) {
-            throw new GroupNotFoundException("Group with id " + groupId + "not found");
+            log.error("Group with id {} not found", groupId);
+            throw new GroupNotFoundException("Group not found");
         }
 
         Speciality speciality = specialityDao.findReferenceById(specialityId);
         Group group = groupDao.findReferenceById(groupId);
 
         group.setSpeciality(speciality);
-
     }
+
 
     @Override
     public boolean isExistsByName(String name) {
@@ -174,25 +184,36 @@ public class GroupServiceImpl implements GroupService {
     @Override
     public GroupUpdateDto getGroupUpdateDtoById(Long groupId) {
         Group group = groupDao.findById(groupId)
-                .orElseThrow(() -> new GroupNotFoundException("Group with id " + groupId + "not found"));
+                .orElseThrow(() -> {
+                    log.error("Group with id {} not found", groupId);
+                    return new GroupNotFoundException("Group not found");
+                });
 
         return groupUpdateMapper.toDto(group);
     }
+
 
     @Transactional
     @Override
     public void update(GroupUpdateDto groupUpdateDto) {
         Long groupId = groupUpdateDto.getId();
         Group group = groupDao.findById(groupId)
-                .orElseThrow(() -> new GroupNotFoundException("Group with id " + groupId + " not found"));
+                .orElseThrow(() -> {
+                    log.error("Group with id {} not found", groupId);
+                    return new GroupNotFoundException("Group not found");
+                });
 
         Long specialityId = groupUpdateDto.getSpecialityId();
         Speciality speciality = specialityDao.findById(specialityId)
-                .orElseThrow(() -> new SpecialityNotFoundException("Speciality with id " + specialityId + " noy found"));
+                .orElseThrow(() -> {
+                    log.error("Speciality with id {} not found", specialityId);
+                    return new SpecialityNotFoundException("Speciality not found");
+                });
 
         group.setName(groupUpdateDto.getName());
         group.setSpeciality(speciality);
     }
+
 
     @Override
     public String getNameById(Long id) {

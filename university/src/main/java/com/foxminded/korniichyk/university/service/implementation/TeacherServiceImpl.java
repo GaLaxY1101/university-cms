@@ -17,8 +17,6 @@ import com.foxminded.korniichyk.university.security.CustomUserDetails;
 import com.foxminded.korniichyk.university.service.contract.DisciplineService;
 import com.foxminded.korniichyk.university.service.contract.TeacherService;
 import com.foxminded.korniichyk.university.service.contract.UserService;
-import com.foxminded.korniichyk.university.service.exception.AdminNotFoundException;
-import com.foxminded.korniichyk.university.service.exception.StudentNotFoundException;
 import com.foxminded.korniichyk.university.service.exception.TeacherNotFoundException;
 import com.foxminded.korniichyk.university.service.exception.UserNotFoundException;
 import lombok.RequiredArgsConstructor;
@@ -55,8 +53,12 @@ public class TeacherServiceImpl implements TeacherService {
     public TeacherDto findById(Long id) {
         return teacherDao.findById(id)
                 .map(teacherMapper::toDto)
-                .orElseThrow(() -> new TeacherNotFoundException("Teacher with id: " + id + " not found"));
+                .orElseThrow(() -> {
+                    log.error("Teacher with id {} not found", id);
+                    return new TeacherNotFoundException("Teacher not found");
+                });
     }
+
 
     @Transactional
     @Override
@@ -72,20 +74,26 @@ public class TeacherServiceImpl implements TeacherService {
                 .ifPresentOrElse(
                         teacher -> {
                             teacherDao.delete(teacher);
-                            log.info("{} deleted", teacher);
+                            log.info("Teacher {} deleted", teacher);
                         },
                         () -> {
-                            throw new TeacherNotFoundException("Teacher with id: " + id + " not found");
+                            log.error("Teacher with id {} not found", id);
+                            throw new TeacherNotFoundException("Teacher not found");
                         });
     }
 
+
     @Override
     public Teacher findByUserId(Long userId) {
-        if (userDao.findById(userId).isEmpty()) {
-            throw new UserNotFoundException("User with id " + userId + " not found");
-        }
+        userDao.findById(userId)
+                .orElseThrow(() -> {
+                    log.error("User with id {} not found", userId);
+                    return new UserNotFoundException("User not found");
+                });
+
         return teacherDao.findByUserId(userId);
     }
+
 
 
     @Override
@@ -115,18 +123,25 @@ public class TeacherServiceImpl implements TeacherService {
 
     @Override
     public TeacherUpdateDto getTeacherUpdateDto(Long id) {
+        Teacher teacher = teacherDao.findById(id)
+                .orElseThrow(() -> {
+                    log.error("Teacher with id {} not found", id);
+                    return new TeacherNotFoundException("Teacher not found");
+                });
 
-        Teacher teacher = teacherDao.findById(id).orElseThrow(() -> new AdminNotFoundException("Admin with id " + id + " not found"));
         return teacherUpdateMapper.toDto(teacher);
     }
+
 
     @Transactional
     @Override
     public void update(TeacherUpdateDto teacherUpdateDto) {
         Long teacherId = teacherUpdateDto.getId();
-        Teacher teacher = teacherDao.findById(teacherUpdateDto.getId()).orElseThrow(
-                () -> new TeacherNotFoundException("Teacher with id: " + teacherId + " not found")
-        );
+        Teacher teacher = teacherDao.findById(teacherId).orElseThrow(() -> {
+            log.error("Teacher with id: {} not found", teacherId);
+            return new TeacherNotFoundException("Teacher not found");
+        });
+
 
         Set<Long> existingDisciplineIds = teacher.getDisciplines()
                 .stream()
@@ -152,10 +167,13 @@ public class TeacherServiceImpl implements TeacherService {
         CustomUserDetails userDetails = (CustomUserDetails) authentication.getPrincipal();
         Long userId = userDetails.getUser().getId();
         Long teacherId = findByUserId(userId).getId();
-        return teacherDao.findById(teacherId).orElseThrow(
-                () -> new StudentNotFoundException("Teacher with id " + teacherId + " not found")
-        );
+
+        return teacherDao.findById(teacherId).orElseThrow(() -> {
+            log.error("Teacher with id: {} not found", teacherId);
+            return new TeacherNotFoundException("Teacher not found");
+        });
     }
+
 
     @Override
     public boolean isExistsById(Long id) {

@@ -49,7 +49,10 @@ public class StudentServiceImpl implements StudentService {
     public StudentDto findById(Long id) {
         return studentDao.findById(id)
                 .map(studentMapper::toDto)
-                .orElseThrow(() -> new StudentNotFoundException("Student with id: " + id + " not found"));
+                .orElseThrow(() -> {
+                    log.error("Student with id: {} not found", id);
+                    return new StudentNotFoundException("No such student found.");
+                });
     }
 
     @Transactional
@@ -69,7 +72,8 @@ public class StudentServiceImpl implements StudentService {
                             log.info("{} deleted", student);
                         },
                         () -> {
-                            throw new StudentNotFoundException("Student with id: " + id + " not found");
+                            log.error("Student with id: {} not found", id);
+                            throw new StudentNotFoundException("No such student.");
                         }
                 );
     }
@@ -80,7 +84,11 @@ public class StudentServiceImpl implements StudentService {
         var group = groupDao.findByName(groupName)
                 .stream()
                 .findFirst()
-                .orElseThrow(() -> new GroupNotFoundException("Group with name: " + groupName + " not found"));
+                .orElseThrow(() -> {
+                            log.error("Group with name: {} not found", groupName);
+                            throw new GroupNotFoundException("No such group found");
+                        }
+                );
 
         return group.getStudents()
                 .stream()
@@ -93,11 +101,13 @@ public class StudentServiceImpl implements StudentService {
     public void assignGroup(Long groupId, Long studentId) {
 
         if (!groupDao.existsById(groupId)) {
-            throw new GroupNotFoundException("Group with id " + groupId + " not found");
+            log.error("Group with id {} not found", groupId);
+            throw new GroupNotFoundException("No such group found");
         }
 
         if (!studentDao.existsById(studentId)) {
-            throw new StudentNotFoundException("Student with id " + studentId + " not found");
+            log.error("Student with id: {} not found", studentId);
+            throw new StudentNotFoundException("No such student found");
         }
 
         Group group = groupDao.findReferenceById(groupId);
@@ -115,7 +125,10 @@ public class StudentServiceImpl implements StudentService {
     public StudentDto findByUserId(Long userId) {
 
         Student student = studentDao.findByUserId(userId).orElseThrow(
-                () -> new StudentNotFoundException("Student with user id: " + userId + " not found")
+                () -> {
+                    log.error("Student with user id: {} not found", userId);
+                    throw new StudentNotFoundException("No such user found");
+                }
         );
         return studentMapper.toDto(student);
     }
@@ -147,7 +160,12 @@ public class StudentServiceImpl implements StudentService {
 
     @Override
     public StudentUpdateDto getStudentUpdateDto(Long id) {
-        Student student = studentDao.findById(id).orElseThrow(() -> new StudentNotFoundException("Student with id " + id + " not found"));
+        Student student = studentDao.findById(id).orElseThrow(
+                () -> {
+                    log.error("Student with id {} not found", id);
+                    throw new StudentNotFoundException("No such student found");
+                }
+        );
 
         return studentUpdateMapper.toDto(student);
     }
@@ -160,7 +178,10 @@ public class StudentServiceImpl implements StudentService {
 
         Student student = studentDao.findById(studentUpdateDto.getId())
                 .orElseThrow(
-                        () -> new StudentNotFoundException("Student with id " + studentId + " not found")
+                        () -> {
+                            log.error("Student with id {} not found", studentId);
+                            throw new StudentNotFoundException("No such student found.");
+                        }
                 );
 
         Long groupId = studentUpdateDto.getGroupId();
@@ -180,20 +201,23 @@ public class StudentServiceImpl implements StudentService {
         CustomUserDetails userDetails = (CustomUserDetails) authentication.getPrincipal();
         Long userId = userDetails.getUser().getId();
         Long studentId = findByUserId(userId).getId();
-        return studentDao.findById(studentId).orElseThrow(
-                () -> new StudentNotFoundException("Student with id " + studentId + " not found")
-        );
+        return studentDao.findById(studentId).orElseThrow(() -> {
+            log.error("Student with id {} not found", studentId);
+            throw new StudentNotFoundException("No such student found.");
+        });
     }
 
     @Override
     public Page<StudentDto> findByGroupIdExcludingByStudentId(Long groupId, Long studentId, Pageable pageable) {
 
         if (!groupDao.existsById(groupId)) {
-            throw new GroupNotFoundException("Group with id " + groupId + " not found");
+            log.error("Group with id {} not found", groupId);
+            throw new GroupNotFoundException("Group not found");
         }
 
         if (!isExistsById(studentId)) {
-            throw new StudentNotFoundException("Student with id " + studentId + " not found");
+            log.error("Student with id {} not found", studentId);
+            throw new StudentNotFoundException("Student not found");
         }
 
         return studentDao.findByGroupIdExcludingByStudentId(groupId, studentId, pageable)
@@ -219,8 +243,11 @@ public class StudentServiceImpl implements StudentService {
     @Override
     public void unassignGroup(Long studentId) {
         if (!studentDao.existsById(studentId)) {
-            throw new StudentNotFoundException("Student with id " + studentId + " not found");
+            log.error("Student with id {} not found", studentId);
+            throw new StudentNotFoundException("Student not found");
         }
+
+
         Student student = studentDao.findReferenceById(studentId);
         student.setGroup(null);
     }

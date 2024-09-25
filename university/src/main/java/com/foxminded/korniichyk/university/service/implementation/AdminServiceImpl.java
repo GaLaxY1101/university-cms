@@ -36,9 +36,10 @@ public class AdminServiceImpl implements AdminService {
     public AdminDto findById(Long id) {
         return adminDao.findById(id)
                 .map(adminMapper::toDto)
-                .orElseThrow(
-                        () -> new AdminNotFoundException("Admin with id: " + id + " not found")
-                );
+                .orElseThrow(() -> {
+                    log.error("Admin with id {} not found", id);
+                    return new AdminNotFoundException("Admin not found");
+                });
     }
 
     @Transactional
@@ -55,10 +56,11 @@ public class AdminServiceImpl implements AdminService {
                 .ifPresentOrElse(
                         admin -> {
                             adminDao.delete(admin);
-                            log.info("{} deleted", admin);
+                            log.info("Admin with id {} deleted", id);
                         },
                         () -> {
-                            throw new AdminNotFoundException("Admin with id: " + id + " not found");
+                            log.error("Admin with id {} not found", id);
+                            throw new AdminNotFoundException("Admin not found");
                         }
                 );
     }
@@ -88,9 +90,11 @@ public class AdminServiceImpl implements AdminService {
     @Override
     public AdminUpdateDto getAdminUpdateDto(Long adminId) {
 
-        Admin admin = adminDao.findById(adminId).orElseThrow(
-                () -> new AdminNotFoundException("Admin with id: " + adminId + " not found")
-        );
+        Admin admin = adminDao.findById(adminId).orElseThrow(() -> {
+            log.error("Admin with id {} not found", adminId);
+            return new AdminNotFoundException("Admin not found");
+        });
+
 
         return adminUpdateMapper.toDto(admin);
     }
@@ -101,9 +105,11 @@ public class AdminServiceImpl implements AdminService {
 
         Long adminId = adminUpdateDto.getId();
 
-        Admin admin = adminDao.findById(adminId).orElseThrow(
-                () -> new AdminNotFoundException("Admin with id: " + adminId + " not found")
-        );
+        Admin admin = adminDao.findById(adminId).orElseThrow(() -> {
+            log.error("Admin with id {} not found", adminId);
+            return new AdminNotFoundException("Admin not found");
+        });
+
 
         admin.getUser().setEmail(adminUpdateDto.getUser().getEmail());
         admin.getUser().setFirstName(adminUpdateDto.getUser().getFirstName());

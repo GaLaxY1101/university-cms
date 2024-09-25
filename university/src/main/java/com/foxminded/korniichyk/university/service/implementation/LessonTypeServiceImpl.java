@@ -28,8 +28,12 @@ public class LessonTypeServiceImpl implements LessonTypeService {
     public LessonTypeDto findById(Long id) {
         return lessonTypeDao.findById(id)
                 .map(lessonTypeMapper::toDto)
-                .orElseThrow(() -> new LessonTypeNotFoundException("Lesson type with id " + id + "not found"));
+                .orElseThrow(() -> {
+                    log.error("Lesson type with id {} not found", id);
+                    return new LessonTypeNotFoundException("Lesson type not found");
+                });
     }
+
 
     @Transactional
     @Override
@@ -42,11 +46,15 @@ public class LessonTypeServiceImpl implements LessonTypeService {
     @Override
     public void deleteById(Long id) {
         var lessonType = lessonTypeDao.findById(id)
-                .orElseThrow(() -> new LessonTypeNotFoundException("Lesson type with id "+ id + " not found"));
+                .orElseThrow(() -> {
+                    log.error("Lesson type with id {} not found", id);
+                    return new LessonTypeNotFoundException("Lesson type not found");
+                });
 
         lessonTypeDao.delete(lessonType);
         log.info("Lesson type {} deleted", lessonType);
     }
+
 
     @Override
     public Page<LessonTypeDto> findPage(int pageNumber, int pageSize) {

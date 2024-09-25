@@ -35,8 +35,12 @@ public class DisciplineServiceImpl implements DisciplineService {
     public DisciplineDto findById(Long id) {
         return disciplineDao.findById(id)
                 .map(disciplineMapper::toDto)
-                .orElseThrow(() -> new DisciplineNotFoundException("Discipline with id: " + id + " not found"));
+                .orElseThrow(() -> {
+                    log.error("Discipline with id {} not found", id);
+                    return new DisciplineNotFoundException("Discipline not found");
+                });
     }
+
 
     @Override
     public List<DisciplineDto> findAll() {
@@ -66,12 +70,15 @@ public class DisciplineServiceImpl implements DisciplineService {
                 .ifPresentOrElse(
                         discipline -> {
                             disciplineDao.delete(discipline);
-                            log.info("{} deleted", discipline);
+                            log.info("Discipline with id {} deleted", id);
                         },
                         () -> {
-                            throw new DisciplineNotFoundException("Discipline with id: " + id + " not found");
-                        });
+                            log.error("Discipline with id {} not found", id);
+                            throw new DisciplineNotFoundException("Discipline not found");
+                        }
+                );
     }
+
 
     @Override
     public Page<DisciplineDto> findPage(int pageNumber, int pageSize) {
