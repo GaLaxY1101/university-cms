@@ -1,7 +1,7 @@
 package com.foxminded.korniichyk.university.dao;
 
-import com.foxminded.korniichyk.university.projection.input.NameProjection;
 import com.foxminded.korniichyk.university.model.Group;
+import com.foxminded.korniichyk.university.projection.input.NameProjection;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.JpaRepository;
@@ -14,7 +14,9 @@ import java.util.List;
 @Repository
 public interface GroupDao extends JpaRepository<Group, Long> {
 
-    List<Group> findByName(String name);
+    Page<Group> findByNameContainingIgnoreCase(String name, Pageable pageable);
+
+    List<Group> findAllByName(String name);
 
 
     @Query("SELECT DISTINCT g FROM Lesson l " +

@@ -128,7 +128,7 @@ public class StudentServiceTests {
 
     @Test
     void findStudentsByGroupName_shouldThrowGroupNotFoundException_whenGroupDoesntExists() {
-        when(groupDao.findByName(anyString())).thenReturn(Collections.emptyList());
+        when(groupDao.findByNameContainingIgnoreCase(anyString())).thenReturn(Collections.emptyList());
         assertThrows(GroupNotFoundException.class, () -> studentService.findStudentsByGroupName(anyString()));
     }
 
@@ -136,7 +136,7 @@ public class StudentServiceTests {
     void findStudentsByGroupName_shouldReturnStudents_whenGroupExists() {
         Group group = mock(Group.class);
 
-        when(groupDao.findByName(anyString())).thenReturn(List.of(group));
+        when(groupDao.findByNameContainingIgnoreCase(anyString())).thenReturn(List.of(group));
         when(group.getStudents()).thenReturn(Set.of(new Student()));
         when(studentMapper.toDto(new Student())).thenReturn(new StudentDto());
         assertEquals(1, studentService.findStudentsByGroupName(anyString()).size());

@@ -81,7 +81,7 @@ public class StudentServiceImpl implements StudentService {
 
     @Override
     public List<StudentDto> findStudentsByGroupName(String groupName) {
-        var group = groupDao.findByName(groupName)
+        var group = groupDao.findAllByName(groupName)
                 .stream()
                 .findFirst()
                 .orElseThrow(() -> {

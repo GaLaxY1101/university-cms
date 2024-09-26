@@ -120,16 +120,27 @@ public class AdminController {
 
     @GetMapping("/groups")
     public String groups(
+            @RequestParam(required = false) String search,
             @RequestParam(defaultValue = "0") int pageNumber,
             @RequestParam(defaultValue = "7") int pageSize,
             Model model
     ) {
-        Page<GroupDto> groupsPage = groupService.findPage(pageNumber, pageSize);
+
+        Page<GroupDto> groupsPage;
+
+        if ((search != null) && (!search.isEmpty())) {
+            Pageable pageable = PageRequest.of(pageNumber, pageSize);
+            groupsPage = groupService.findByName(search, pageable);
+        } else {
+            groupsPage = groupService.findPage(pageNumber, pageSize);
+        }
+
         int totalPageNumber = groupsPage.getTotalPages();
         int currentPage = groupsPage.getNumber();
         long totalElements = groupsPage.getTotalElements();
         List<GroupDto> groups = groupsPage.getContent();
 
+        model.addAttribute("search", search);
         model.addAttribute("groups", groups);
         model.addAttribute("currentPage", currentPage);
         model.addAttribute("totalPages", totalPageNumber);

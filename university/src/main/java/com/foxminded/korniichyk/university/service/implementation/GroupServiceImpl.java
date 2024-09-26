@@ -81,12 +81,6 @@ public class GroupServiceImpl implements GroupService {
                 );
     }
 
-
-    @Override
-    public List<GroupDto> findByName(String name) {
-        return groupDao.findByName(name).stream().map(groupMapper::toDto).collect(toList());
-    }
-
     @Override
     public GroupDto findByStudentId(Long studentId) {
         Student student = studentDao.findById(studentId).orElseThrow(() -> {
@@ -218,6 +212,20 @@ public class GroupServiceImpl implements GroupService {
     @Override
     public String getNameById(Long id) {
         return groupDao.getNameById(id);
+    }
+
+    @Override
+    public Page<GroupDto> findByName(String name, Pageable pageable) {
+        return groupDao.findByNameContainingIgnoreCase(name, pageable)
+                .map(groupMapper::toDto);
+    }
+
+    @Override
+    public List<GroupDto> findAllByName(String name) {
+        return groupDao.findAllByName(name)
+                .stream()
+                .map(groupMapper::toDto)
+                .collect(toList());
     }
 
 
