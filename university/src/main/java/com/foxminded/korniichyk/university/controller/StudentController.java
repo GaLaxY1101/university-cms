@@ -33,7 +33,8 @@ public class StudentController {
             Model model
     ) {
 
-        Page<StudentDto> students = studentService.findPage(pageNumber, pageSize);
+        Pageable pageable = PageRequest.of(pageNumber, pageSize);
+        Page<StudentDto> students = studentService.findPage(pageable);
         int totalPageNumber = students.getTotalPages();
         int currentPage = students.getNumber();
         long totalElements = students.getTotalElements();

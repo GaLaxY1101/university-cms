@@ -16,7 +16,6 @@ public interface StudentService extends CrudService<Student, StudentDto> {
 
     List<StudentDto> findStudentsByGroupName(String groupName);
     void assignGroup(Long groupId, Long studentId);
-    Page<StudentDto> findPage(int pageNumber, int pageSize);
     StudentDto findByUserId(Long userId);
     Student registerStudent(StudentRegistrationDto studentRegistrationDto);
     StudentUpdateDto getStudentUpdateDto(Long id);

@@ -1,5 +1,6 @@
 package com.foxminded.korniichyk.university.controller.admin;
 
+import com.foxminded.korniichyk.university.dto.display.AdminDto;
 import com.foxminded.korniichyk.university.dto.display.DisciplineDto;
 import com.foxminded.korniichyk.university.dto.display.GroupDto;
 import com.foxminded.korniichyk.university.dto.display.LessonDto;
@@ -37,6 +38,7 @@ import jakarta.validation.Valid;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
@@ -105,7 +107,8 @@ public class AdminController {
             @RequestParam(defaultValue = "7") int pageSize,
             Model model
     ) {
-        Page<DisciplineDto> disciplinesPage = disciplineService.findPage(pageNumber, pageSize);
+        Pageable pageable = PageRequest.of(pageNumber, pageSize);
+        Page<DisciplineDto> disciplinesPage = disciplineService.findPage(pageable);
         int totalPageNumber = disciplinesPage.getTotalPages();
         int currentPage = disciplinesPage.getNumber();
         long totalElements = disciplinesPage.getTotalElements();
@@ -120,6 +123,7 @@ public class AdminController {
 
     @GetMapping("/groups")
     public String groups(
+            @RequestParam(defaultValue = "id") String sort,
             @RequestParam(required = false) String search,
             @RequestParam(defaultValue = "0") int pageNumber,
             @RequestParam(defaultValue = "7") int pageSize,
@@ -127,12 +131,13 @@ public class AdminController {
     ) {
 
         Page<GroupDto> groupsPage;
+        Sort sortOption = Sort.by(sort).ascending();
+        Pageable pageable = PageRequest.of(pageNumber, pageSize, sortOption);
 
         if ((search != null) && (!search.isEmpty())) {
-            Pageable pageable = PageRequest.of(pageNumber, pageSize);
             groupsPage = groupService.findByName(search, pageable);
         } else {
-            groupsPage = groupService.findPage(pageNumber, pageSize);
+            groupsPage = groupService.findPage(pageable);
         }
 
         int totalPageNumber = groupsPage.getTotalPages();
@@ -140,11 +145,14 @@ public class AdminController {
         long totalElements = groupsPage.getTotalElements();
         List<GroupDto> groups = groupsPage.getContent();
 
+        model.addAttribute("sort", sort);
         model.addAttribute("search", search);
         model.addAttribute("groups", groups);
         model.addAttribute("currentPage", currentPage);
         model.addAttribute("totalPages", totalPageNumber);
         model.addAttribute("totalElements", totalElements);
+        model.addAttribute("pageSize", pageSize);
+
         return "admin/groups";
     }
 
@@ -155,7 +163,9 @@ public class AdminController {
             @RequestParam(defaultValue = "7") int pageSize,
             Model model
     ) {
-        Page<LessonDto> lessonsPage = lessonService.findPage(pageNumber, pageSize);
+        Pageable pageable = PageRequest.of(pageNumber, pageSize);
+
+        Page<LessonDto> lessonsPage = lessonService.findPage(pageable);
         int totalPageNumber = lessonsPage.getTotalPages();
         int currentPage = lessonsPage.getNumber();
         long totalElements = lessonsPage.getTotalElements();
@@ -174,7 +184,9 @@ public class AdminController {
             @RequestParam(defaultValue = "7") int pageSize,
             Model model
     ) {
-        Page<LessonTypeDto> lessonTypesPage = lessonTypeService.findPage(pageNumber, pageSize);
+        Pageable pageable = PageRequest.of(pageNumber, pageSize);
+
+        Page<LessonTypeDto> lessonTypesPage = lessonTypeService.findPage(pageable);
         int totalPageNumber = lessonTypesPage.getTotalPages();
         int currentPage = lessonTypesPage.getNumber();
         long totalElements = lessonTypesPage.getTotalElements();
@@ -193,7 +205,10 @@ public class AdminController {
             @RequestParam(defaultValue = "7") int pageSize,
             Model model
     ) {
-        Page<SpecialityDto> specialitiesPage = specialityService.findPage(pageNumber, pageSize);
+
+        Pageable pageable = PageRequest.of(pageNumber, pageSize);
+
+        Page<SpecialityDto> specialitiesPage = specialityService.findPage(pageable);
         int totalPageNumber = specialitiesPage.getTotalPages();
         int currentPage = specialitiesPage.getNumber();
         long totalElements = specialitiesPage.getTotalElements();
@@ -212,8 +227,9 @@ public class AdminController {
             @RequestParam(defaultValue = "7") int pageSize,
             Model model
     ) {
+        Pageable pageable = PageRequest.of(pageNumber, pageSize);
 
-        Page<StudentDto> studentsPage = studentService.findPage(pageNumber, pageSize);
+        Page<StudentDto> studentsPage = studentService.findPage(pageable);
         int totalPageNumber = studentsPage.getTotalPages();
         int currentPage = studentsPage.getNumber();
         long totalElements = studentsPage.getTotalElements();
@@ -279,7 +295,9 @@ public class AdminController {
             @RequestParam(defaultValue = "7") int pageSize,
             Model model
     ) {
-        Page<TeacherDto> teachersPage = teacherService.findPage(pageNumber, pageSize);
+        Pageable pageable = PageRequest.of(pageNumber, pageSize);
+        Page<TeacherDto> teachersPage = teacherService.findPage(pageable);
+
         int totalPageNumber = teachersPage.getTotalPages();
         int currentPage = teachersPage.getNumber();
         long totalElements = teachersPage.getTotalElements();
@@ -342,9 +360,10 @@ public class AdminController {
             @RequestParam(defaultValue = "7") int pageSize,
             Model model
     ) {
-        var page = adminService.findPage(pageNumber, pageSize);
+        Pageable pageable = PageRequest.of(pageNumber, pageSize);
+        Page<AdminDto> page = adminService.findPage(pageable);
 
-        var admins = page.getContent();
+        List<AdminDto> admins = page.getContent();
         int totalPages = page.getTotalPages();
         int currentPage = page.getNumber();
         int totalElements = admins.size();

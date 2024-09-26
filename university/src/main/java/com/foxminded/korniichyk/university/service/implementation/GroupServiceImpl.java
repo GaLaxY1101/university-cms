@@ -93,8 +93,7 @@ public class GroupServiceImpl implements GroupService {
 
 
     @Override
-    public Page<GroupDto> findPage(int pageNumber, int pageSize) {
-        Pageable pageable = PageRequest.of(pageNumber, pageSize);
+    public Page<GroupDto> findPage(Pageable pageable) {
         return groupDao.findAll(pageable).map(groupMapper::toDto);
     }
 

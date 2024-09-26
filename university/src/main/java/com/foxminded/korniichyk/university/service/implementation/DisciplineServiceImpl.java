@@ -11,7 +11,6 @@ import com.foxminded.korniichyk.university.service.exception.DisciplineNotFoundE
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.domain.Page;
-import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -81,8 +80,7 @@ public class DisciplineServiceImpl implements DisciplineService {
 
 
     @Override
-    public Page<DisciplineDto> findPage(int pageNumber, int pageSize) {
-        Pageable pageable = PageRequest.of(pageNumber, pageSize);
+    public Page<DisciplineDto> findPage(Pageable pageable) {
         return disciplineDao.findAll(pageable).map(disciplineMapper::toDto);
     }
 

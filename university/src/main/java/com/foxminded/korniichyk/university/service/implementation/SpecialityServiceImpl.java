@@ -11,7 +11,6 @@ import com.foxminded.korniichyk.university.service.exception.SpecialityNotFoundE
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.domain.Page;
-import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -63,8 +62,7 @@ public class SpecialityServiceImpl implements SpecialityService {
 
 
     @Override
-    public Page<SpecialityDto> findPage(int pageNumber, int pageSize) {
-        Pageable pageable = PageRequest.of(pageNumber, pageSize);
+    public Page<SpecialityDto> findPage(Pageable pageable) {
         return specialityDao.findAll(pageable).map(specialityMapper::toDto);
     }
 

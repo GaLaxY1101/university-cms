@@ -1,0 +1,89 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Title</title>
+</head>
+<body>
+<!-- pagination.html (Thymeleaf Fragment) -->
+
+
+
+<div class="pagination" th:fragment="pagination (currentPage, totalPages, search, sort, pageSize)" style="display:">
+    <div>
+        <a th:if="${currentPage > 0}"
+           th:href="@{/administrators/groups(pageNumber=${currentPage - 1}, search=${search}, sort =${sort}, pageSize=${pageSize})}">
+            <i class="fa-solid fa-arrow-left"></i>
+        </a>
+        <a th:unless="${currentPage > 0}">
+            <i class="fa-solid fa-arrow-left" style="color: #a1a1a1;"></i>
+        </a>
+    </div>
+
+    <ul class="pagination" th:if="${totalPages <= 7}">
+        <li th:each="i : ${#numbers.sequence(1, totalPages)}">
+
+            <a th:text="${i}" th:id="${i == currentPage + 1 ? 'selected-page-number' : ''}"
+               th:href="@{/administrators/groups(pageNumber=${i - 1}, search=${search}, sort =${sort}, pageSize=${pageSize})}"></a>
+        </li>
+    </ul>
+    <ul class="pagination" th:if="${totalPages > 7 and currentPage < 7}">
+        <li th:each="i : ${#numbers.sequence(1, 7)}">
+
+            <a th:text="${i}" th:id="${i == currentPage + 1 ? 'selected-page-number' : ''}"
+               th:href="@{/administrators/groups(pageNumber=${i - 1})}"></a>
+        </li>
+        <li>
+            <a th:text="..." th:href="@{/administrators/groups(pageNumber=7, search=${search}, sort =${sort}, pageSize=${pageSize})}"></a>
+        </li>
+        <li>
+            <a th:text="${totalPages}"
+               th:href="@{/administrators/groups(pageNumber=${totalPages - 1}, search=${search}, sort =${sort}, pageSize=${pageSize})}"></a>
+        </li>
+    </ul>
+    <ul class="pagination" th:if="${totalPages > 7 and currentPage > 6 and totalPages - currentPage > 7 } ">
+        <li>
+            <a th:text="1" th:href="@{/administrators/groups(pageNumber=0, search=${search}, sort =${sort}, pageSize=${pageSize})}"></a>
+        </li>
+        <li>
+            <a th:text="..."
+               th:href="@{/administrators/groups(pageNumber=${currentPage - 3}, search=${search}, sort =${sort}, pageSize=${pageSize} )}"></a>
+        </li>
+        <li th:each="i : ${#numbers.sequence(currentPage - 1, currentPage + 3)}">
+            <a th:text="${i}" th:id="${i == currentPage + 1 ? 'selected-page-number' : ''}"
+               th:href="@{/administrators/groups(pageNumber=${i - 1})}"></a>
+        </li>
+        <li>
+            <a th:text="..."
+               th:href="@{/administrators/groups(pageNumber=${currentPage + 3}, search=${search}, sort =${sort}, pageSize=${pageSize})}"></a>
+        </li>
+        <li>
+            <a th:text="${totalPages}"
+               th:href="@{/administrators/groups(pageNumber=${totalPages - 1}, search=${search}, sort =${sort}, pageSize=${pageSize})}"></a>
+        </li>
+    </ul>
+    <ul class="pagination" th:if="${totalPages > 7 and currentPage > 6 and totalPages - currentPage <= 7}">
+        <li>
+            <a th:text="1" th:href="@{/administrators/groups(pageNumber=0, search=${search}, sort =${sort}, pageSize=${pageSize})}"></a>
+        </li>
+        <li>
+            <a th:text="..."
+               th:href="@{/administrators/groups(pageNumber=${totalPages - 7}, search=${search}, sort =${sort}, pageSize=${pageSize})}"></a>
+        <li th:each="i : ${#numbers.sequence(totalPages - 6, totalPages)}">
+            <a th:text="${i}" th:id="${i == currentPage + 1 ? 'selected-page-number' : ''}"
+               th:href="@{/administrators/groups(pageNumber=${i - 1} , search=${search} , sort =${sort}, pageSize=${pageSize})}"></a>
+        </li>
+        </li>
+    </ul>
+    <div>
+        <a th:if="${currentPage < totalPages - 1}"
+           th:href="@{/administrators/groups(pageNumber=${currentPage + 1}, search=${search}, sort =${sort}, pageSize=${pageSize})}">
+            <i class="fa-solid fa-arrow-right"></i>
+        </a>
+        <a th:unless="${currentPage < totalPages - 1}">
+            <i class="fa-solid fa-arrow-right" style="color: #a1a1a1"></i>
+        </a>
+    </div>
+</div>
+</body>
+</html>

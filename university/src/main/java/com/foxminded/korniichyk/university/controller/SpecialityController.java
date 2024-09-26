@@ -4,6 +4,8 @@ import com.foxminded.korniichyk.university.dto.display.SpecialityDto;
 import com.foxminded.korniichyk.university.service.contract.SpecialityService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -23,7 +25,8 @@ public class SpecialityController {
             @RequestParam(defaultValue = "7") int pageSize,
             Model model
     ) {
-        Page<SpecialityDto> specialities = specialityService.findPage(pageNumber, pageSize);
+        Pageable pageable = PageRequest.of(pageNumber, pageSize);
+        Page<SpecialityDto> specialities = specialityService.findPage(pageable);
         int totalPageNumber = specialities.getTotalPages();
         int currentPage = specialities.getNumber();
         long totalElements = specialities.getTotalElements();

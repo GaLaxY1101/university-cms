@@ -18,7 +18,9 @@
             <form class="input-container" method="get" th:action="@{/administrators/groups}">
 
                 <i class="fas fa-search"></i>
-                <input type="text" name="search" placeholder="Search...">
+                <input type="text" th:value="${search}" name="search" placeholder="Search...">
+                <input type="hidden" name="pageSize" th:value="${pageSize}" >
+                <input type="hidden" name="sort" th:value="${sort}">
             </form>
 
             <a th:href="@{/administrators/groups/create-page}">
@@ -27,14 +29,34 @@
                     <i class="fa-solid fa-plus"></i>
                 </button>
             </a>
-            <div class="sort-by-wrapper">
-                <span>Sort by</span>
-                <span>▼</span>
-            </div>
-            <div class="filter-wrapper">
-                <span>Filter</span>
-                <i class="fa-solid fa-sliders fa-sm"></i>
-            </div>
+            <form method="get" th:action="@{/administrators/groups}" class="sort-form" style="margin-left: 15px;">
+                <div class="form-group">
+                    <select class="form-control" name="sort" id="sort" th:value="${sort}" onchange="this.form.submit()" style="font-weight: 600; font-size: 18px; color: #404040; background-color:#e5e5e5; border:none;">
+                        <option value="" disabled selected>Sort by ▼</option>
+                        <option value="id" th:selected="${sort == 'id'}">Sort by: Id▼</option>
+                        <option value="name" th:selected="${sort == 'name'}">Sort by: Name▼</option>
+                    </select>
+                    <input type="hidden" name="search" th:value="${search}"/>
+                    <input type="hidden" name="pageSize" th:value="${pageSize}">
+                </div>
+            </form>
+            <form method="get" th:action="@{/administrators/groups}" class="sort-form" style="margin-left: 15px;">
+                <!-- Page Size Dropdown -->
+                <div class="form-group ml-2">
+                    <label for="pageSize" class="d-none">Page Size:</label> <!-- Optional label for accessibility -->
+                    <select class="form-control" name="pageSize" id="pageSize" th:value="${pageSize}" onchange="this.form.submit()">
+                        <option value="5" th:selected="${pageSize == 5}">5</option>
+                        <option value="7" th:selected="${pageSize == 7}">7</option>
+                        <option value="10" th:selected="${pageSize == 10}">10</option>
+                        <option value="15" th:selected="${pageSize == 15}">15</option>
+                        <option value="20" th:selected="${pageSize == 20}">20</option>
+                        <option value="30" th:selected="${pageSize == 30}">30</option>
+                    </select>
+                </div>
+                <input type="hidden" name="search" th:value="${search}">
+                <input type="hidden" name="sort" th:value="${sort}">
+
+            </form>
         </div>
 
     </header>
@@ -107,78 +129,10 @@
         </div>
 
 
-        <div class="pagination" th:if="${totalElements != 0}">
-            <div>
-                <a th:if="${currentPage > 0}" th:href="@{/administrators/groups(pageNumber=${currentPage - 1}, search=${search})}">
-                    <i class="fa-solid fa-arrow-left"></i>
-                </a>
-                <a th:unless="${currentPage > 0}">
-                    <i class="fa-solid fa-arrow-left" style="color: #a1a1a1;"></i>
-                </a>
-            </div>
+        <div th:if="${totalElements != 0}" th:replace="~{reusable/pagination :: pagination(${currentPage}, ${totalPages}, ${search}, ${sort}, ${pageSize})}">
 
-            <ul class="pagination" th:if="${totalPages <= 7}">
-                <li th:each="i : ${#numbers.sequence(1, totalPages)}">
-
-                    <a th:text="${i}" th:id="${i == currentPage + 1 ? 'selected-page-number' : ''}"
-                       th:href="@{/administrators/groups(pageNumber=${i - 1}, search=${search})}"></a>
-                </li>
-            </ul>
-            <ul class="pagination" th:if="${totalPages > 7 and currentPage < 7}">
-                <li th:each="i : ${#numbers.sequence(1, 7)}">
-
-                    <a th:text="${i}" th:id="${i == currentPage + 1 ? 'selected-page-number' : ''}"
-                       th:href="@{/administrators/groups(pageNumber=${i - 1})}"></a>
-                </li>
-                <li>
-                    <a th:text="..." th:href="@{/administrators/groups(pageNumber=7, search=${search})}"></a>
-                </li>
-                <li>
-                    <a th:text="${totalPages}"
-                       th:href="@{/administrators/groups(pageNumber=${totalPages - 1}, search=${search})}"></a>
-                </li>
-            </ul>
-            <ul class="pagination" th:if="${totalPages > 7 and currentPage > 6 and totalPages - currentPage > 7 } ">
-                <li>
-                    <a th:text="1" th:href="@{/administrators/groups(pageNumber=0, search=${search})}"></a>
-                </li>
-                <li>
-                    <a th:text="..." th:href="@{/administrators/groups(pageNumber=${currentPage - 3}, search=${search} )}"></a>
-                </li>
-                <li th:each="i : ${#numbers.sequence(currentPage - 1, currentPage + 3)}">
-                    <a th:text="${i}" th:id="${i == currentPage + 1 ? 'selected-page-number' : ''}"
-                       th:href="@{/administrators/groups(pageNumber=${i - 1})}"></a>
-                </li>
-                <li>
-                    <a th:text="..." th:href="@{/administrators/groups(pageNumber=${currentPage + 3}, search=${search})}"></a>
-                </li>
-                <li>
-                    <a th:text="${totalPages}"
-                       th:href="@{/administrators/groups(pageNumber=${totalPages - 1}, search=${search})}"></a>
-                </li>
-            </ul>
-            <ul class="pagination" th:if="${totalPages > 7 and currentPage > 6 and totalPages - currentPage <= 7}">
-                <li>
-                    <a th:text="1" th:href="@{/administrators/groups(pageNumber=0, search=${search})}"></a>
-                </li>
-                <li>
-                    <a th:text="..." th:href="@{/administrators/groups(pageNumber=${totalPages - 7}, search=${search})}"></a>
-                <li th:each="i : ${#numbers.sequence(totalPages - 6, totalPages)}">
-                    <a th:text="${i}" th:id="${i == currentPage + 1 ? 'selected-page-number' : ''}"
-                       th:href="@{/administrators/groups(pageNumber=${i - 1}), search=${search}}"></a>
-                </li>
-                </li>
-            </ul>
-            <div>
-                <a th:if="${currentPage < totalPages - 1}"
-                   th:href="@{/administrators/groups(pageNumber=${currentPage + 1}, search=${search})}">
-                    <i class="fa-solid fa-arrow-right"></i>
-                </a>
-                <a th:unless="${currentPage < totalPages - 1}">
-                    <i class="fa-solid fa-arrow-right" style="color: #a1a1a1"></i>
-                </a>
-            </div>
         </div>
+
     </div>
 </div>
 

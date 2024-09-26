@@ -4,6 +4,8 @@ import com.foxminded.korniichyk.university.dto.display.LessonTypeDto;
 import com.foxminded.korniichyk.university.service.contract.LessonTypeService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -25,7 +27,9 @@ public class LessonTypeController {
             @RequestParam(defaultValue = "7") int pageSize,
             Model model
     ) {
-        Page<LessonTypeDto> lessonTypes = lessonTypeService.findPage(pageNumber, pageSize);
+        Pageable pageable = PageRequest.of(pageNumber, pageSize);
+
+        Page<LessonTypeDto> lessonTypes = lessonTypeService.findPage(pageable);
         int totalPageNumber = lessonTypes.getTotalPages();
         int currentPage = lessonTypes.getNumber();
         long totalElements = lessonTypes.getTotalElements();

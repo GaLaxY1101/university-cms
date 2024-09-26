@@ -22,7 +22,6 @@ import com.foxminded.korniichyk.university.service.exception.UserNotFoundExcepti
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.domain.Page;
-import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
@@ -97,8 +96,7 @@ public class TeacherServiceImpl implements TeacherService {
 
 
     @Override
-    public Page<TeacherDto> findPage(int pageNumber, int pageSize) {
-        Pageable pageable = PageRequest.of(pageNumber, pageSize);
+    public Page<TeacherDto> findPage(Pageable pageable) {
         return teacherDao.findAll(pageable).map(teacherMapper::toDto);
     }
 

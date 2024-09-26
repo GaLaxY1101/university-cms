@@ -13,7 +13,6 @@ import com.foxminded.korniichyk.university.service.exception.UserNotFoundExcepti
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.domain.Page;
-import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
@@ -65,8 +64,7 @@ public class UserServiceImpl implements UserService {
 
 
     @Override
-    public Page<UserDto> findPage(int pageNumber, int pageSize) {
-        Pageable pageable = PageRequest.of(pageNumber, pageSize);
+    public Page<UserDto> findPage(Pageable pageable) {
         return userDao.findAll(pageable).map(userMapper::toDto);
     }
 

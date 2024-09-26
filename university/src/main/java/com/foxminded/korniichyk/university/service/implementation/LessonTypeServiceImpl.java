@@ -9,7 +9,6 @@ import com.foxminded.korniichyk.university.service.exception.LessonTypeNotFoundE
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.domain.Page;
-import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -57,8 +56,7 @@ public class LessonTypeServiceImpl implements LessonTypeService {
 
 
     @Override
-    public Page<LessonTypeDto> findPage(int pageNumber, int pageSize) {
-        Pageable pageable = PageRequest.of(pageNumber, pageSize);
+    public Page<LessonTypeDto> findPage(Pageable pageable) {
         return lessonTypeDao.findAll(pageable).map(lessonTypeMapper::toDto);
     }
 }

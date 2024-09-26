@@ -4,6 +4,8 @@ import com.foxminded.korniichyk.university.dto.display.GroupDto;
 import com.foxminded.korniichyk.university.service.contract.GroupService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -23,7 +25,9 @@ public class GroupController {
             @RequestParam(defaultValue = "7") int pageSize,
             Model model
     ) {
-        Page<GroupDto> groups = groupService.findPage(pageNumber, pageSize);
+        Pageable pageable = PageRequest.of(pageNumber, pageSize);
+
+        Page<GroupDto> groups = groupService.findPage(pageable);
         int totalPageNumber = groups.getTotalPages();
         int currentPage = groups.getNumber();
         long totalElements = groups.getTotalElements();

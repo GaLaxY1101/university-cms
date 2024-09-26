@@ -7,6 +7,8 @@ import com.foxminded.korniichyk.university.service.contract.GroupService;
 import com.foxminded.korniichyk.university.service.contract.TeacherService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -27,7 +29,9 @@ public class TeacherController {
             @RequestParam(defaultValue = "7") int pageSize,
             Model model
     ) {
-        Page<TeacherDto> teachers = teacherService.findPage(pageNumber, pageSize);
+        Pageable pageable = PageRequest.of(pageNumber, pageSize);
+
+        Page<TeacherDto> teachers = teacherService.findPage(pageable);
         int totalPageNumber = teachers.getTotalPages();
         int currentPage = teachers.getNumber();
         long totalElements = teachers.getTotalElements();

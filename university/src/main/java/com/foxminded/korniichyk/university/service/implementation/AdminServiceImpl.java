@@ -15,7 +15,6 @@ import com.foxminded.korniichyk.university.service.exception.AdminNotFoundExcept
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.domain.Page;
-import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -66,8 +65,7 @@ public class AdminServiceImpl implements AdminService {
     }
 
     @Override
-    public Page<AdminDto> findPage(int pageNumber, int pageSize) {
-        Pageable pageable = PageRequest.of(pageNumber, pageSize);
+    public Page<AdminDto> findPage(Pageable pageable) {
         return adminDao.findAll(pageable).map(adminMapper::toDto);
     }
 
