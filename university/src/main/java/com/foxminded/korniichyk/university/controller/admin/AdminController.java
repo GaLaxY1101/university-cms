@@ -223,22 +223,43 @@ public class AdminController {
 
     @GetMapping("/students")
     public String students(
+            @RequestParam(defaultValue = "id") String sort,
+            @RequestParam(required = false) String search,
             @RequestParam(defaultValue = "0") int pageNumber,
             @RequestParam(defaultValue = "7") int pageSize,
             Model model
     ) {
-        Pageable pageable = PageRequest.of(pageNumber, pageSize);
 
-        Page<StudentDto> studentsPage = studentService.findPage(pageable);
+        Page<StudentDto> studentsPage;
+        Pageable pageable;
+        if ("name".equals(sort)) {
+            Sort sortOption = Sort.by("user.firstName").ascending()
+                    .and(Sort.by("user.lastName").ascending());
+            pageable = PageRequest.of(pageNumber, pageSize, sortOption);
+        } else {
+            Sort sortOption = Sort.by(sort).ascending();
+            pageable = PageRequest.of(pageNumber, pageSize, sortOption);
+        }
+
+
+        if ((search != null) && (!search.isEmpty())) {
+            studentsPage = studentService.findAllByName(search, pageable);
+        } else {
+            studentsPage = studentService.findPage(pageable);
+        }
+
         int totalPageNumber = studentsPage.getTotalPages();
         int currentPage = studentsPage.getNumber();
         long totalElements = studentsPage.getTotalElements();
         List<StudentDto> students = studentsPage.getContent();
 
+        model.addAttribute("sort", sort);
+        model.addAttribute("search", search);
         model.addAttribute("students", students);
         model.addAttribute("currentPage", currentPage);
         model.addAttribute("totalPages", totalPageNumber);
         model.addAttribute("totalElements", totalElements);
+        model.addAttribute("pageSize", pageSize);
 
         return "admin/students";
     }

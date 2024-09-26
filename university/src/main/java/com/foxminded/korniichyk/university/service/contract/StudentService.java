@@ -27,5 +27,6 @@ public interface StudentService extends CrudService<Student, StudentDto> {
     Page<StudentProjection> findStudentsByGroupId(Long groupId, Pageable pageable);
     void unassignGroup(Long studentId);
     List<StudentOptionDto> findAllStudentOptionsWithoutGroup();
+    Page<StudentDto> findAllByName(String name, Pageable pageable);
 
 }

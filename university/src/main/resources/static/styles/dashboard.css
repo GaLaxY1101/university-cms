@@ -222,3 +222,13 @@ td th{
 .info-item-header{
     font-weight: bold;
 }
+
+.sort-items-count{
+    display: flex;
+    font-weight: 600;
+    font-size: 18px;
+    color: #404040;
+    background-color:#e5e5e5;
+    border:none;
+}
+
