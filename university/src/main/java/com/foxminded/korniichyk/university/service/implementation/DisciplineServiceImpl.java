@@ -85,6 +85,11 @@ public class DisciplineServiceImpl implements DisciplineService {
     }
 
     @Override
+    public Page<DisciplineDto> findByName(String search, Pageable pageable) {
+        return disciplineDao.findByNameContainingIgnoreCase(search, pageable).map(disciplineMapper::toDto);
+    }
+
+    @Override
     public Set<Discipline> findAllByIdIn(Set<Long> disciplineIds) {
         return disciplineDao.findAllByIdIn(disciplineIds);
     }

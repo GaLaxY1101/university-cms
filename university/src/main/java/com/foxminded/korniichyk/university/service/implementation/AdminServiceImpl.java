@@ -69,6 +69,11 @@ public class AdminServiceImpl implements AdminService {
         return adminDao.findAll(pageable).map(adminMapper::toDto);
     }
 
+    @Override
+    public Page<AdminDto> findByName(String search, Pageable pageable) {
+        return adminDao.findByFullName(search, pageable).map(adminMapper::toDto);
+    }
+
     @Transactional
     @Override
     public void registerAdmin(AdminRegistrationDto adminRegistrationDto) {

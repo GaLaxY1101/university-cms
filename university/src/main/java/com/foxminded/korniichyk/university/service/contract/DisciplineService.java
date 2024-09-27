@@ -7,7 +7,7 @@ import com.foxminded.korniichyk.university.model.Discipline;
 import java.util.List;
 import java.util.Set;
 
-public interface DisciplineService extends CrudService<Discipline, DisciplineDto> {
+public interface DisciplineService extends CrudService<Discipline, DisciplineDto>, SearchableByName<DisciplineDto> {
 
     Set<Discipline> findAllByIdIn(Set<Long> disciplineIds);
 

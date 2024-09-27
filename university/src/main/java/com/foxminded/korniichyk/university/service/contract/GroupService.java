@@ -6,11 +6,10 @@ import com.foxminded.korniichyk.university.dto.update.GroupUpdateDto;
 import com.foxminded.korniichyk.university.model.Group;
 import com.foxminded.korniichyk.university.projection.input.NameProjection;
 import org.springframework.data.domain.Page;
-import org.springframework.data.domain.Pageable;
 
 import java.util.List;
 
-public interface GroupService extends CrudService<Group, GroupDto> {
+public interface GroupService extends CrudService<Group, GroupDto>, SearchableByName<GroupDto> {
 
     GroupDto findByStudentId(Long studentId);
 
@@ -34,8 +33,6 @@ public interface GroupService extends CrudService<Group, GroupDto> {
     void update(GroupUpdateDto groupUpdateDto);
 
     String getNameById(Long id);
-
-    Page<GroupDto> findByName(String name, Pageable pageable);
 
     List<GroupDto> findAllByName(String name);
 

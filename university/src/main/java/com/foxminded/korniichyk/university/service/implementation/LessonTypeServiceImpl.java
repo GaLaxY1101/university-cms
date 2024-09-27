@@ -59,4 +59,9 @@ public class LessonTypeServiceImpl implements LessonTypeService {
     public Page<LessonTypeDto> findPage(Pageable pageable) {
         return lessonTypeDao.findAll(pageable).map(lessonTypeMapper::toDto);
     }
+
+    @Override
+    public Page<LessonTypeDto> findByName(String search, Pageable pageable) {
+        return lessonTypeDao.findByNameContainingIgnoreCase(search, pageable).map(lessonTypeMapper::toDto);
+    }
 }

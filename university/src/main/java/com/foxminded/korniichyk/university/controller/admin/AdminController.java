@@ -103,21 +103,35 @@ public class AdminController {
 
     @GetMapping("/disciplines")
     public String disciplines(
+            @RequestParam(required = false) String search,
+            @RequestParam(defaultValue = "id") String sort,
             @RequestParam(defaultValue = "0") int pageNumber,
             @RequestParam(defaultValue = "7") int pageSize,
             Model model
     ) {
-        Pageable pageable = PageRequest.of(pageNumber, pageSize);
-        Page<DisciplineDto> disciplinesPage = disciplineService.findPage(pageable);
+        Page<DisciplineDto> disciplinesPage;
+        Sort sortOption = Sort.by(sort).ascending();
+        Pageable pageable = PageRequest.of(pageNumber, pageSize, sortOption);
+
+        if ((search != null) && (!search.isEmpty())) {
+            disciplinesPage = disciplineService.findByName(search, pageable);
+        } else {
+            disciplinesPage = disciplineService.findPage(pageable);
+        }
+
         int totalPageNumber = disciplinesPage.getTotalPages();
         int currentPage = disciplinesPage.getNumber();
         long totalElements = disciplinesPage.getTotalElements();
         List<DisciplineDto> disciplines = disciplinesPage.getContent();
 
+        model.addAttribute("sort", sort);
+        model.addAttribute("search", search);
         model.addAttribute("disciplines", disciplines);
         model.addAttribute("currentPage", currentPage);
         model.addAttribute("totalPages", totalPageNumber);
         model.addAttribute("totalElements", totalElements);
+        model.addAttribute("pageSize", pageSize);
+
         return "admin/disciplines";
     }
 
@@ -180,44 +194,70 @@ public class AdminController {
 
     @GetMapping("/lesson-types")
     public String lessonTypes(
+            @RequestParam(defaultValue = "id") String sort,
+            @RequestParam(required = false) String search,
             @RequestParam(defaultValue = "0") int pageNumber,
             @RequestParam(defaultValue = "7") int pageSize,
             Model model
     ) {
-        Pageable pageable = PageRequest.of(pageNumber, pageSize);
+        Page<LessonTypeDto> lessonTypesPage;
+        Sort sortOption = Sort.by(sort).ascending();
+        Pageable pageable = PageRequest.of(pageNumber, pageSize, sortOption);
 
-        Page<LessonTypeDto> lessonTypesPage = lessonTypeService.findPage(pageable);
+        if ((search != null) && (!search.isEmpty())) {
+            lessonTypesPage = lessonTypeService.findByName(search, pageable);
+        } else {
+            lessonTypesPage = lessonTypeService.findPage(pageable);
+        }
+
         int totalPageNumber = lessonTypesPage.getTotalPages();
         int currentPage = lessonTypesPage.getNumber();
         long totalElements = lessonTypesPage.getTotalElements();
-        List<LessonTypeDto> lessons = lessonTypesPage.getContent();
+        List<LessonTypeDto> lessonTypes = lessonTypesPage.getContent();
 
-        model.addAttribute("lessonTypes", lessons);
+        model.addAttribute("sort", sort);
+        model.addAttribute("search", search);
+        model.addAttribute("lessonTypes", lessonTypes);
         model.addAttribute("currentPage", currentPage);
         model.addAttribute("totalPages", totalPageNumber);
         model.addAttribute("totalElements", totalElements);
+        model.addAttribute("pageSize", pageSize);
+
         return "admin/lesson-types";
     }
 
     @GetMapping("/specialities")
     public String specialities(
+            @RequestParam(required = false) String search,
+            @RequestParam(defaultValue = "id") String sort,
             @RequestParam(defaultValue = "0") int pageNumber,
             @RequestParam(defaultValue = "7") int pageSize,
             Model model
     ) {
 
-        Pageable pageable = PageRequest.of(pageNumber, pageSize);
+        Page<SpecialityDto> specialitiesPage;
+        Sort sortOption = Sort.by(sort).ascending();
+        Pageable pageable = PageRequest.of(pageNumber, pageSize, sortOption);
 
-        Page<SpecialityDto> specialitiesPage = specialityService.findPage(pageable);
+        if ((search != null) && (!search.isEmpty())) {
+            specialitiesPage = specialityService.findByName(search, pageable);
+        } else {
+            specialitiesPage = specialityService.findPage(pageable);
+        }
+
         int totalPageNumber = specialitiesPage.getTotalPages();
         int currentPage = specialitiesPage.getNumber();
         long totalElements = specialitiesPage.getTotalElements();
         List<SpecialityDto> specialities = specialitiesPage.getContent();
 
+        model.addAttribute("sort", sort);
+        model.addAttribute("search", search);
         model.addAttribute("specialities", specialities);
         model.addAttribute("currentPage", currentPage);
         model.addAttribute("totalPages", totalPageNumber);
         model.addAttribute("totalElements", totalElements);
+        model.addAttribute("pageSize", pageSize);
+
         return "admin/specialities";
     }
 
@@ -230,20 +270,20 @@ public class AdminController {
             Model model
     ) {
 
-        Page<StudentDto> studentsPage;
-        Pageable pageable;
+
+        Sort sortOption;
         if ("name".equals(sort)) {
-            Sort sortOption = Sort.by("user.firstName").ascending()
+            sortOption = Sort.by("user.firstName").ascending()
                     .and(Sort.by("user.lastName").ascending());
-            pageable = PageRequest.of(pageNumber, pageSize, sortOption);
         } else {
-            Sort sortOption = Sort.by(sort).ascending();
-            pageable = PageRequest.of(pageNumber, pageSize, sortOption);
+            sortOption = Sort.by(sort).ascending();
         }
 
+        Pageable pageable = PageRequest.of(pageNumber, pageSize, sortOption);
 
+        Page<StudentDto> studentsPage;
         if ((search != null) && (!search.isEmpty())) {
-            studentsPage = studentService.findAllByName(search, pageable);
+            studentsPage = studentService.findByName(search, pageable);
         } else {
             studentsPage = studentService.findPage(pageable);
         }
@@ -312,21 +352,40 @@ public class AdminController {
 
     @GetMapping("/teachers")
     public String teachers(
+            @RequestParam(required = false) String search,
+            @RequestParam(defaultValue = "id") String sort,
             @RequestParam(defaultValue = "0") int pageNumber,
             @RequestParam(defaultValue = "7") int pageSize,
             Model model
     ) {
-        Pageable pageable = PageRequest.of(pageNumber, pageSize);
-        Page<TeacherDto> teachersPage = teacherService.findPage(pageable);
+        Sort sortOption;
+        if ("name".equals(sort)) {
+            sortOption = Sort.by("user.firstName").ascending()
+                    .and(Sort.by("user.lastName").ascending());
+        } else {
+            sortOption = Sort.by(sort).ascending();
+        }
 
-        int totalPageNumber = teachersPage.getTotalPages();
-        int currentPage = teachersPage.getNumber();
-        long totalElements = teachersPage.getTotalElements();
+        Pageable pageable = PageRequest.of(pageNumber, pageSize, sortOption);
+
+        Page<TeacherDto> teachersPage;
+        if ((search != null) && !(search.isEmpty())) {
+            teachersPage = teacherService.findByName(search, pageable);
+        } else {
+            teachersPage = teacherService.findPage(pageable);
+        }
+
         List<TeacherDto> teachers = teachersPage.getContent();
+        int totalPages = teachersPage.getTotalPages();
+        int currentPage = teachersPage.getNumber();
+        int totalElements = teachers.size();
 
+        model.addAttribute("pageSize", pageSize);
+        model.addAttribute("sort", sort);
+        model.addAttribute("search", search);
         model.addAttribute("teachers", teachers);
         model.addAttribute("currentPage", currentPage);
-        model.addAttribute("totalPages", totalPageNumber);
+        model.addAttribute("totalPages", totalPages);
         model.addAttribute("totalElements", totalElements);
         return "admin/teachers";
     }
@@ -377,18 +436,38 @@ public class AdminController {
 
     @GetMapping("/admins")
     public String admins(
+            @RequestParam(required = false) String search,
+            @RequestParam(defaultValue = "id") String sort,
             @RequestParam(defaultValue = "0") int pageNumber,
             @RequestParam(defaultValue = "7") int pageSize,
             Model model
     ) {
-        Pageable pageable = PageRequest.of(pageNumber, pageSize);
-        Page<AdminDto> page = adminService.findPage(pageable);
 
-        List<AdminDto> admins = page.getContent();
-        int totalPages = page.getTotalPages();
-        int currentPage = page.getNumber();
+        Sort sortOption;
+        if ("name".equals(sort)) {
+            sortOption = Sort.by("user.firstName").ascending()
+                    .and(Sort.by("user.lastName").ascending());
+        } else {
+            sortOption = Sort.by(sort).ascending();
+        }
+
+        Pageable pageable = PageRequest.of(pageNumber, pageSize, sortOption);
+
+        Page<AdminDto> adminsPage;
+        if ((search != null) && !(search.isEmpty())) {
+            adminsPage = adminService.findByName(search, pageable);
+        } else {
+            adminsPage = adminService.findPage(pageable);
+        }
+
+        List<AdminDto> admins = adminsPage.getContent();
+        int totalPages = adminsPage.getTotalPages();
+        int currentPage = adminsPage.getNumber();
         int totalElements = admins.size();
 
+        model.addAttribute("pageSize", pageSize);
+        model.addAttribute("sort", sort);
+        model.addAttribute("search", search);
         model.addAttribute("administrators", admins);
         model.addAttribute("currentPage", currentPage);
         model.addAttribute("totalPages", totalPages);

@@ -100,6 +100,11 @@ public class TeacherServiceImpl implements TeacherService {
         return teacherDao.findAll(pageable).map(teacherMapper::toDto);
     }
 
+    @Override
+    public Page<TeacherDto> findByName(String search, Pageable pageable) {
+        return teacherDao.findByFullName(search, pageable).map(teacherMapper::toDto);
+    }
+
     @Transactional
     @Override
     public Teacher registerTeacher(TeacherRegistrationDto teacherRegistrationDto) {

@@ -263,7 +263,7 @@ public class StudentServiceImpl implements StudentService {
     }
 
     @Override
-    public Page<StudentDto> findAllByName(String name, Pageable pageable) {
+    public Page<StudentDto> findByName(String name, Pageable pageable) {
         return studentDao.findByFullName(name, pageable).map(studentMapper::toDto);
     }
 

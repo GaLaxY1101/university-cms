@@ -12,7 +12,7 @@ import org.springframework.data.domain.Pageable;
 import java.util.List;
 import java.util.Set;
 
-public interface StudentService extends CrudService<Student, StudentDto> {
+public interface StudentService extends CrudService<Student, StudentDto>, SearchableByName<StudentDto> {
 
     List<StudentDto> findStudentsByGroupName(String groupName);
     void assignGroup(Long groupId, Long studentId);
@@ -27,6 +27,5 @@ public interface StudentService extends CrudService<Student, StudentDto> {
     Page<StudentProjection> findStudentsByGroupId(Long groupId, Pageable pageable);
     void unassignGroup(Long studentId);
     List<StudentOptionDto> findAllStudentOptionsWithoutGroup();
-    Page<StudentDto> findAllByName(String name, Pageable pageable);
 
 }

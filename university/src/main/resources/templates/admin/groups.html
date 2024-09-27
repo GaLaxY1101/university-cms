@@ -88,10 +88,12 @@
 
         </div>
 
+        <div class="pagination-wrapper" th:if="${totalElements != 0}">
+            <div  th:replace="~{reusable/pagination :: pagination(${currentPage}, ${totalPages}, ${search}, ${sort}, ${pageSize}, '/administrators/groups')}">
 
-        <div th:if="${totalElements != 0}" th:replace="~{reusable/pagination :: pagination(${currentPage}, ${totalPages}, ${search}, ${sort}, ${pageSize}, '/administrators/groups')}">
-
+            </div>
         </div>
+
 
     </div>
 </div>

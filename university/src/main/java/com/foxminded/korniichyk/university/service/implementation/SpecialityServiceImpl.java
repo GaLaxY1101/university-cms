@@ -67,6 +67,11 @@ public class SpecialityServiceImpl implements SpecialityService {
     }
 
     @Override
+    public Page<SpecialityDto> findByName(String search, Pageable pageable) {
+        return specialityDao.findByNameContainingIgnoreCase(search, pageable).map(specialityMapper::toDto);
+    }
+
+    @Override
     public List<SpecialityOptionDto> findAllSpecialityOptions() {
         return specialityDao.findAllSpecialityOptions().stream().map((projection) ->
                         new SpecialityOptionDto(

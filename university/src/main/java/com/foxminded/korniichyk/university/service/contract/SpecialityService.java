@@ -6,7 +6,7 @@ import com.foxminded.korniichyk.university.model.Speciality;
 
 import java.util.List;
 
-public interface SpecialityService extends CrudService<Speciality, SpecialityDto>{
+public interface SpecialityService extends CrudService<Speciality, SpecialityDto>, SearchableByName<SpecialityDto> {
 
     List<SpecialityOptionDto> findAllSpecialityOptions();
 

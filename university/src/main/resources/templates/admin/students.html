@@ -20,6 +20,12 @@
 
     </header>
     <div class="list-wrapper">
+        <span th:if="${totalElements == 0}"
+              style="font-size: 30px;
+                font-style: italic;
+                text-align: center;
+                ">No results found</span>
+
         <div class="list" th:if="${totalElements != 0}">
             <header>Students list</header>
             <table>
@@ -70,7 +76,8 @@
                             <form id="deleteForm" method="post" action="">
                                 <input type="hidden" id="studentId" name="id"/>
                                 <input type="hidden" th:name="${_csrf.parameterName}" th:value="${_csrf.token}"/>
-                                <input type="hidden" name="_method" value="DELETE" /> <!-- Hidden field to simulate DELETE method -->
+                                <input type="hidden" name="_method" value="DELETE"/>
+                                <!-- Hidden field to simulate DELETE method -->
                                 <button type="button" class="btn btn-primary" data-bs-dismiss="modal">Cancel</button>
                                 <button type="submit" class="btn btn-danger">Delete</button>
                             </form>
@@ -84,9 +91,11 @@
 
         </div>
 
-        <div th:if="${totalElements != 0}" th:replace="~{reusable/pagination :: pagination(${currentPage}, ${totalPages}, ${search}, ${sort}, ${pageSize}, '/administrators/students')}">
+        <div class="pagination-wrapper" th:if="${totalElements != 0}">
+            <div th:replace="~{reusable/pagination :: pagination(${currentPage}, ${totalPages}, ${search}, ${sort}, ${pageSize}, '/administrators/students')}">
+            </div>
         </div>
-        
+
     </div>
 </div>
 
