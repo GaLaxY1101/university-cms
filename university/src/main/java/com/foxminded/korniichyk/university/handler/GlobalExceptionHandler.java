@@ -21,7 +21,7 @@ public class GlobalExceptionHandler {
     @ResponseStatus(HttpStatus.INTERNAL_SERVER_ERROR)
     @ExceptionHandler(Exception.class)
     public String handleGenericException(Exception e, Model model) {
-        model.addAttribute("errorMessage", "An unexpected error occurred.");
+        model.addAttribute("errorMessage", e.getMessage());
         model.addAttribute("statusCode", HttpStatus.INTERNAL_SERVER_ERROR.value());
         return "error/error";
     }

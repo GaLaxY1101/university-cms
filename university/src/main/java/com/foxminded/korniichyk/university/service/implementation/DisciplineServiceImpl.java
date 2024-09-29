@@ -55,6 +55,8 @@ public class DisciplineServiceImpl implements DisciplineService {
         return disciplineDao.findAllDisciplineOptions();
     }
 
+
+
     @Transactional
     @Override
     public void save(Discipline discipline) {
@@ -93,4 +95,10 @@ public class DisciplineServiceImpl implements DisciplineService {
     public Set<Discipline> findAllByIdIn(Set<Long> disciplineIds) {
         return disciplineDao.findAllByIdIn(disciplineIds);
     }
+
+    @Override
+    public Page<DisciplineDto> findAllByTeacherId(Long teacherId, Pageable pageable) {
+        return disciplineDao.findAllByTeacherId(teacherId, pageable).map(disciplineMapper::toDto);
+    }
+
 }

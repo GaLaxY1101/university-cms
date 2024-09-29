@@ -1,8 +1,10 @@
 package com.foxminded.korniichyk.university.controller;
 
+import com.foxminded.korniichyk.university.dto.display.DisciplineDto;
 import com.foxminded.korniichyk.university.dto.display.GroupDto;
 import com.foxminded.korniichyk.university.dto.display.TeacherDto;
 import com.foxminded.korniichyk.university.model.Teacher;
+import com.foxminded.korniichyk.university.service.contract.DisciplineService;
 import com.foxminded.korniichyk.university.service.contract.GroupService;
 import com.foxminded.korniichyk.university.service.contract.TeacherService;
 import lombok.RequiredArgsConstructor;
@@ -22,6 +24,7 @@ public class TeacherController {
 
     private final TeacherService teacherService;
     private final GroupService groupService;
+    private final DisciplineService disciplineService;
 
     @GetMapping("/")
     public String teachers(
@@ -53,7 +56,7 @@ public class TeacherController {
         Teacher teacher = teacherService.getCurrentTeacher();
         Long teacherId = teacher.getId();
 
-        Page<GroupDto> groupsPage  = groupService.findPageByTeacherId(teacherId, page, size);
+        Page<GroupDto> groupsPage = groupService.findPageByTeacherId(teacherId, page, size);
 
         model.addAttribute("groups", groupsPage.getContent());
         model.addAttribute("currentPage", groupsPage.getNumber());
@@ -64,5 +67,22 @@ public class TeacherController {
 
     }
 
+    @GetMapping("/my-disciplines")
+    public String myDisciplines(@RequestParam(defaultValue = "0") int pageNumber,
+                                @RequestParam(defaultValue = "5") int pageSize,
+                                Model model
+    ) {
+        Teacher teacher = teacherService.getCurrentTeacher();
+        Long teacherId = teacher.getId();
 
+        Pageable pageable = PageRequest.of(pageNumber, pageSize);
+        Page<DisciplineDto> disciplinesPage = disciplineService.findAllByTeacherId(teacherId, pageable);
+
+        model.addAttribute("disciplines", disciplinesPage.getContent());
+        model.addAttribute("currentPage", disciplinesPage.getNumber());
+        model.addAttribute("totalPages", disciplinesPage.getTotalPages());
+        model.addAttribute("totalElements", disciplinesPage.getTotalPages());
+
+        return "/teacher/my-disciplines";
+    }
 }

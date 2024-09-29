@@ -20,4 +20,8 @@ public interface DisciplineDao extends JpaRepository<Discipline, Long> {
     List<NameProjection> findAllDisciplineOptions();
 
     Page<Discipline> findByNameContainingIgnoreCase(String search, Pageable pageable);
+
+    @Query("SELECT d FROM Discipline d JOIN d.teachers t WHERE t.id = :teacherId")
+    Page<Discipline> findAllByTeacherId(Long teacherId, Pageable pageable);
+
 }

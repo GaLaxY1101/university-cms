@@ -1,56 +1,50 @@
 <!DOCTYPE html>
 <html lang="en" xmlns:sec="http://www.w3.org/1999/xhtml">
 <head>
-    <meta charset="UTF-8">
-    <title>Title</title>
+  <meta charset="UTF-8">
+  <title>Title</title>
 </head>
 <body>
-<div class="input-wrapper" th:fragment="search-bar (currentPage, totalPages, search, sort, pageSize, currentPageUrl , createPageUrl)">
-    <form class="input-container" method="get" th:action="@{${currentPageUrl}}">
+<div class="input-wrapper" th:fragment="search-bar (currentPage, totalPages, search, sort, pageSize, currentPageUrl)">
+  <form class="input-container" method="get" th:action="@{${currentPageUrl}}">
 
-        <i class="fas fa-search"></i>
-        <input type="text" th:value="${search}" name="search" placeholder="Search...">
-        <input type="hidden" name="pageSize" th:value="${pageSize}">
-        <input type="hidden" name="sort" th:value="${sort}">
-    </form>
+    <i class="fas fa-search"></i>
+    <input type="text" th:value="${search}" name="search" placeholder="Search...">
+    <input type="hidden" name="pageSize" th:value="${pageSize}">
+    <input type="hidden" name="sort" th:value="${sort}">
+  </form>
 
-    <a th:href="@{${createPageUrl}}">
-        <button type="button" sec:authorize="hasRole('ROLE_ADMIN')">
-            Add
-            <i class="fa-solid fa-plus"></i>
-        </button>
-    </a>
-    <form method="get" th:action="@{${currentPageUrl}}" class="sort-form sort-items-count"
-          style="margin-left: 15px;">
-        <label for="sort">Sort by ▼: </label> <!-- Optional label for accessibility -->
-        <div class="form-group">
-            <select class="form-control sort-items-count" name="sort" id="sort" th:value="${sort}"
-                    onchange="this.form.submit()" style="padding: 0; text-align: center">
-                <option value="id" th:selected="${sort == 'id'}"> Id</option>
-                <option value="name" th:selected="${sort == 'name'}">Name</option>
-            </select>
-            <input type="hidden" name="search" th:value="${search}"/>
-            <input type="hidden" name="pageSize" th:value="${pageSize}">
-        </div>
-    </form>
-    <form method="get" th:action="@{${currentPageUrl}}" class="sort-form" style="margin-left: 15px;">
-        <!-- Page Size Dropdown -->
-        <div class="form-group sort-items-count">
-            <label for="pageSize">Items per page: </label> <!-- Optional label for accessibility -->
-            <select class="form-control sort-items-count" name="pageSize" id="pageSize" th:value="${pageSize}"
-                    onchange="this.form.submit()" style="width: 35px; padding: 0; text-align: center">
-                <option value="5" th:selected="${pageSize == 5}"> 5</option>
-                <option value="7" th:selected="${pageSize == 7}"> 7</option>
-                <option value="10" th:selected="${pageSize == 10}"> 10</option>
-                <option value="15" th:selected="${pageSize == 15}"> 15</option>
-                <option value="20" th:selected="${pageSize == 20}"> 20</option>
-                <option value="30" th:selected="${pageSize == 30}"> 30</option>
-            </select>
-        </div>
-        <input type="hidden" name="search" th:value="${search}">
-        <input type="hidden" name="sort" th:value="${sort}">
+  <form method="get" th:action="@{${currentPageUrl}}" class="sort-form sort-items-count"
+        style="margin-left: 15px;">
+    <label for="sort">Sort by ▼: </label> <!-- Optional label for accessibility -->
+    <div class="form-group">
+      <select class="form-control sort-items-count" name="sort" id="sort" th:value="${sort}"
+              onchange="this.form.submit()" style="padding: 0; text-align: center">
+        <option value="id" th:selected="${sort == 'id'}"> Id</option>
+        <option value="name" th:selected="${sort == 'name'}">Name</option>
+      </select>
+      <input type="hidden" name="search" th:value="${search}"/>
+      <input type="hidden" name="pageSize" th:value="${pageSize}">
+    </div>
+  </form>
+  <form method="get" th:action="@{${currentPageUrl}}" class="sort-form" style="margin-left: 15px;">
+    <!-- Page Size Dropdown -->
+    <div class="form-group sort-items-count">
+      <label for="pageSize">Items per page: </label> <!-- Optional label for accessibility -->
+      <select class="form-control sort-items-count" name="pageSize" id="pageSize" th:value="${pageSize}"
+              onchange="this.form.submit()" style="width: 35px; padding: 0; text-align: center">
+        <option value="5" th:selected="${pageSize == 5}"> 5</option>
+        <option value="7" th:selected="${pageSize == 7}"> 7</option>
+        <option value="10" th:selected="${pageSize == 10}"> 10</option>
+        <option value="15" th:selected="${pageSize == 15}"> 15</option>
+        <option value="20" th:selected="${pageSize == 20}"> 20</option>
+        <option value="30" th:selected="${pageSize == 30}"> 30</option>
+      </select>
+    </div>
+    <input type="hidden" name="search" th:value="${search}">
+    <input type="hidden" name="sort" th:value="${sort}">
 
-    </form>
+  </form>
 </div>
 </body>
 </html>

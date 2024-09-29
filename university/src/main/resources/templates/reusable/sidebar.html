@@ -55,11 +55,19 @@
                                     </span>
                     </a>
                 </li>
+                <li class="nav-link sidebar-nav-item" sec:authorize="hasAnyRole('ROLE_TEACHER')">
+                    <a th:href="@{/teachers/my-disciplines}">
+                        <i class="fa-solid fa-book"></i>
+                        <span class="nav-text">
+                                        My disciplines
+                                    </span>
+                    </a>
+                </li>
                 <li class="nav-link sidebar-nav-item" sec:authorize="hasAnyRole('ROLE_TEACHER','ROLE_STUDENT')">
                     <a th:href="@{/disciplines/}">
                         <i class="fa-solid fa-book"></i>
                         <span class="nav-text">
-                                        Disciplines
+                                        All disciplines
                                     </span>
                     </a>
                 </li>

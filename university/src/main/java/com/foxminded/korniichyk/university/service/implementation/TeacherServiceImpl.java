@@ -151,7 +151,7 @@ public class TeacherServiceImpl implements TeacherService {
                 .map(discipline -> discipline.getId())
                 .collect(toSet());
 
-        if (!existingDisciplineIds.equals(existingDisciplineIds)) {
+        if (!existingDisciplineIds.equals(teacherUpdateDto.getDisciplineIds())) {
             Set<Discipline> disciplines = disciplineService.findAllByIdIn(teacherUpdateDto.getDisciplineIds());
             teacher.setDisciplines(disciplines);
         }
