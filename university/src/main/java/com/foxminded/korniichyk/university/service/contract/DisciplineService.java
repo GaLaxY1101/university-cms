@@ -18,4 +18,7 @@ public interface DisciplineService extends CrudService<Discipline, DisciplineDto
     List<NameProjection> findAllDisciplineOptions();
 
     Page<DisciplineDto> findAllByTeacherId(Long teacherId, Pageable pageable);
+
+    Page<DisciplineDto> findAllByNameAndTeacherId(Long teacherId, String name, Pageable pageable);
+
 }

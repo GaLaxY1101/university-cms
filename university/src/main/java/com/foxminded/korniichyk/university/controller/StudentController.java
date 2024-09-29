@@ -9,6 +9,7 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -26,23 +27,45 @@ public class StudentController {
 
     private final GroupMapper groupMapper;
 
-    @GetMapping("/")
+    @GetMapping()
     public String students(
+            @RequestParam(defaultValue = "id") String sort,
+            @RequestParam(required = false) String search,
             @RequestParam(defaultValue = "0") int pageNumber,
             @RequestParam(defaultValue = "7") int pageSize,
             Model model
     ) {
 
-        Pageable pageable = PageRequest.of(pageNumber, pageSize);
-        Page<StudentDto> students = studentService.findPage(pageable);
-        int totalPageNumber = students.getTotalPages();
-        int currentPage = students.getNumber();
-        long totalElements = students.getTotalElements();
 
+        Sort sortOption;
+        if ("name".equals(sort)) {
+            sortOption = Sort.by("user.firstName").ascending()
+                    .and(Sort.by("user.lastName").ascending());
+        } else {
+            sortOption = Sort.by(sort).ascending();
+        }
+
+        Pageable pageable = PageRequest.of(pageNumber, pageSize, sortOption);
+
+        Page<StudentDto> studentsPage;
+        if ((search != null) && (!search.isEmpty())) {
+            studentsPage = studentService.findByName(search, pageable);
+        } else {
+            studentsPage = studentService.findPage(pageable);
+        }
+
+        int totalPageNumber = studentsPage.getTotalPages();
+        int currentPage = studentsPage.getNumber();
+        long totalElements = studentsPage.getTotalElements();
+        List<StudentDto> students = studentsPage.getContent();
+
+        model.addAttribute("sort", sort);
+        model.addAttribute("search", search);
         model.addAttribute("students", students);
         model.addAttribute("currentPage", currentPage);
         model.addAttribute("totalPages", totalPageNumber);
         model.addAttribute("totalElements", totalElements);
+        model.addAttribute("pageSize", pageSize);
 
         return "students";
     }

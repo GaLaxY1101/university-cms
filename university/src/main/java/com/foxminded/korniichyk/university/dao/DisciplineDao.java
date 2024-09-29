@@ -24,4 +24,7 @@ public interface DisciplineDao extends JpaRepository<Discipline, Long> {
     @Query("SELECT d FROM Discipline d JOIN d.teachers t WHERE t.id = :teacherId")
     Page<Discipline> findAllByTeacherId(Long teacherId, Pageable pageable);
 
+    @Query("SELECT d FROM Discipline d JOIN d.teachers t WHERE t.id = :teacherId AND lower(d.name) LIKE lower(CONCAT('%', :name, '%'))")
+    Page<Discipline> findAllByNameAndTeacherId(Long teacherId, String name, Pageable pageable);
+
 }

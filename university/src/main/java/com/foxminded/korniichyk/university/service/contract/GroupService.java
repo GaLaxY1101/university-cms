@@ -6,6 +6,7 @@ import com.foxminded.korniichyk.university.dto.update.GroupUpdateDto;
 import com.foxminded.korniichyk.university.model.Group;
 import com.foxminded.korniichyk.university.projection.input.NameProjection;
 import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 
 import java.util.List;
 
@@ -14,7 +15,7 @@ public interface GroupService extends CrudService<Group, GroupDto>, SearchableBy
     GroupDto findByStudentId(Long studentId);
 
 
-    Page<GroupDto> findPageByTeacherId(Long teacherId, int pageNumber, int pageSize);
+    Page<GroupDto> findByTeacherId(Long teacherId, Pageable pageable);
 
     boolean isExistsById(Long id);
 
@@ -36,5 +37,6 @@ public interface GroupService extends CrudService<Group, GroupDto>, SearchableBy
 
     List<GroupDto> findAllByName(String name);
 
+    Page<GroupDto> findByNameAndTeacherId(Long teacherId, String name, Pageable pageable);
 
 }

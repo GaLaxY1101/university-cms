@@ -13,7 +13,7 @@
     <div th:replace="~{home :: greeting}"></div>
     <header class="dashboard-header">
         <span>Disciplines dashboard</span>
-        <div th:replace="~{reusable/search-bar :: search-bar (${currentPage}, ${totalPages}, ${search}, ${sort}, ${pageSize},'/disciplines/')}">
+        <div th:replace="~{reusable/search-bar :: search-bar (${currentPage}, ${totalPages}, ${search}, ${sort}, ${pageSize},'/disciplines')}">
 
         </div>
 
@@ -53,7 +53,7 @@
         </div>
 
         <div class="pagination-wrapper" th:if="${totalElements != 0}">
-            <div  th:replace="~{reusable/pagination :: pagination(${currentPage}, ${totalPages}, ${search}, ${sort}, ${pageSize}, '/disciplines/')}">
+            <div  th:replace="~{reusable/pagination :: pagination(${currentPage}, ${totalPages}, ${search}, ${sort}, ${pageSize}, '/disciplines')}">
 
             </div>
         </div>

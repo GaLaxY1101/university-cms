@@ -101,4 +101,9 @@ public class DisciplineServiceImpl implements DisciplineService {
         return disciplineDao.findAllByTeacherId(teacherId, pageable).map(disciplineMapper::toDto);
     }
 
+    @Override
+    public Page<DisciplineDto> findAllByNameAndTeacherId(Long teacherId, String name, Pageable pageable) {
+        return disciplineDao.findAllByNameAndTeacherId(teacherId, name, pageable).map(disciplineMapper::toDto);
+    }
+
 }

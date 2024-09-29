@@ -19,11 +19,18 @@ public interface GroupDao extends JpaRepository<Group, Long> {
     List<Group> findAllByName(String name);
 
 
-    @Query("SELECT DISTINCT g FROM Lesson l " +
+    @Query("SELECT g FROM Lesson l " +
             "JOIN l.groups g " +
             "JOIN l.teachers t " +
             "WHERE t.id = :teacherId")
-    Page<Group> findByTeacherId(@Param("teacherId") Long teacherId, Pageable pageable);
+    Page<Group> findByTeacherId(Long teacherId, Pageable pageable);
+
+    @Query("SELECT g FROM Lesson l " +
+            "JOIN l.groups g " +
+            "JOIN l.teachers t " +
+            "WHERE t.id = :teacherId " +
+            "AND lower(g.name) LIKE lower(CONCAT('%', :name, '%'))")
+    Page<Group> findByNameAndTeacherId(Long teacherId, String name, Pageable pageable);
 
     boolean existsById(Long id);
 

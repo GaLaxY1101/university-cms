@@ -19,7 +19,7 @@ public class LessonController {
 
     private final LessonService lessonService;
 
-    @GetMapping("/")
+    @GetMapping()
     public String lessons(
             @RequestParam(defaultValue = "0") int pageNumber,
             @RequestParam(defaultValue = "7") int pageSize,

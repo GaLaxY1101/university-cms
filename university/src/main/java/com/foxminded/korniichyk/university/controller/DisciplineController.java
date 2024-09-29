@@ -23,7 +23,7 @@ public class DisciplineController {
     private final DisciplineService disciplineService;
 
 
-    @GetMapping("/")
+    @GetMapping("")
     public String disciplines(
             @RequestParam(required = false) String search,
             @RequestParam(defaultValue = "id") String sort,

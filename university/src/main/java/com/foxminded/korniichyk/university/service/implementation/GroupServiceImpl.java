@@ -23,7 +23,6 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageImpl;
-import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -98,13 +97,12 @@ public class GroupServiceImpl implements GroupService {
     }
 
     @Override
-    public Page<GroupDto> findPageByTeacherId(Long teacherId, int pageNumber, int pageSize) {
+    public Page<GroupDto> findByTeacherId(Long teacherId, Pageable pageable) {
         if (!teacherService.isExistsById(teacherId)) {
             log.error("Teacher with id {} not found", teacherId);
             throw new TeacherNotFoundException("Teacher not found");
         }
 
-        Pageable pageable = PageRequest.of(pageNumber, pageSize);
         Page<Group> groupPage = groupDao.findByTeacherId(teacherId, pageable);
 
         List<GroupDto> groups = groupPage.getContent()
@@ -225,6 +223,11 @@ public class GroupServiceImpl implements GroupService {
                 .stream()
                 .map(groupMapper::toDto)
                 .collect(toList());
+    }
+
+    @Override
+    public Page<GroupDto> findByNameAndTeacherId(Long teacherId, String name, Pageable pageable) {
+        return groupDao.findByNameAndTeacherId(teacherId, name, pageable).map(groupMapper::toDto);
     }
 
 
