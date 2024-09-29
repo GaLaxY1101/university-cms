@@ -775,20 +775,17 @@ public class AdminController {
     @GetMapping("/groups/edit/{id}")
     public String editGroupPage(
             @PathVariable Long id,
-            @RequestParam(defaultValue = "0") int pageNumber,
-            @RequestParam(defaultValue = "7") int pageSize,
             RedirectAttributes redirectAttributes,
             Model model) {
 
-        Pageable pageable = PageRequest.of(pageNumber, pageSize);
-        Page<StudentProjection> students = studentService.findStudentsByGroupId(id, pageable);
+        List<StudentProjection> students = studentService.findStudentsByGroupId(id);
 
         model.addAttribute("students", students);
 
         GroupUpdateDto groupUpdateDto = groupService.getGroupUpdateDtoById(id);
         model.addAttribute("groupUpdateDto", groupUpdateDto);
 
-        model.addAttribute("totalElements", students.getTotalElements());
+        model.addAttribute("totalElements", students.size());
 
 
         List<StudentOptionDto> studentsWithoutGroups = studentService.findAllStudentOptionsWithoutGroup();
@@ -828,8 +825,7 @@ public class AdminController {
         if (bindingResult.hasErrors()) {
             List<SpecialityOptionDto> specialities = specialityService.findAllSpecialityOptions();
 
-            Pageable pageable = PageRequest.of(0, 7);
-            Page<StudentProjection> students = studentService.findStudentsByGroupId(groupUpdateDto.getId(), pageable);
+            List<StudentProjection> students = studentService.findStudentsByGroupId(groupUpdateDto.getId());
 
             model.addAttribute("students", students);
             model.addAttribute("groupUpdateDto", groupUpdateDto);
@@ -864,14 +860,14 @@ public class AdminController {
         List<SpecialityOptionDto> specialities = specialityService.findAllSpecialityOptions();
 
         Pageable pageable = PageRequest.of(0, 7);
-        Page<StudentProjection> students = studentService.findStudentsByGroupId(groupId, pageable);
+        List<StudentProjection> students = studentService.findStudentsByGroupId(groupId);
 
         GroupUpdateDto groupUpdateDto = groupService.getGroupUpdateDtoById(groupId);
 
         model.addAttribute("students", students);
         model.addAttribute("groupUpdateDto", groupUpdateDto);
         model.addAttribute("specialities", specialities);
-        model.addAttribute("totalElements", model.getAttribute("totalElements"));
+        model.addAttribute("totalElements", students.size());
 
         return "redirect:/administrators/groups/edit/" + groupId;
     }

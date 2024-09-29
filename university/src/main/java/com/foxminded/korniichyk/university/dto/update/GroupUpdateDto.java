@@ -13,6 +13,6 @@ public class GroupUpdateDto {
     private String name;
 
     @NotNull(message = "Please, choose a speciality.")
-    private Long SpecialityId;
+    private Long specialityId;
 
 }

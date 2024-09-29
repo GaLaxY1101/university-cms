@@ -31,7 +31,7 @@ public interface StudentDao extends JpaRepository<Student, Long> {
     List<StudentOptionProjection> findAllStudentOptions();
 
     @Query("SELECT new com.foxminded.korniichyk.university.projection.edit.group.StudentProjection(s.id, s.user.firstName, s.user.lastName, s.user.email) FROM Student s WHERE s.group.id = :groupId")
-    Page<StudentProjection> findStudentsByGroupId(Long groupId, Pageable pageable);
+    List<StudentProjection> findStudentsByGroupId(Long groupId);
 
     Set<Student> findAllByIdIn(Set<Long> studentIds);
 

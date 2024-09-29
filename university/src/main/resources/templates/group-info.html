@@ -1,0 +1,92 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org"
+      xmlns:sec="http://www.thymeleaf.org/thymeleaf-extras-springsecurity6">
+<head>
+    <th:block th:insert="~{/reusable/admin_panel_head :: admin_panel_links}"></th:block>
+    <link rel="stylesheet" th:href="@{/styles/add_entity_form.css}"/>
+    <link rel="stylesheet" th:href="@{/styles/edit-group.css}"/>
+
+    <link href="https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/css/select2.min.css" rel="stylesheet"/>
+
+
+</head>
+<body>
+
+<nav th:replace="~{reusable/sidebar :: sidebar}"></nav>
+
+<div>
+    <div class="main-content">
+        <div th:replace="~{home :: greeting}"></div>
+        <div class="list-wrapper" style="width: 700px !important; min-height: 40vh !important;">
+            <div class="create-teacher-form-wrapper" style="width: 700px !important;">
+                <h2>Group Info</h2>
+                <div class="label-and-input-wrapper" style="width: 580px !important;">
+                    <label for="firstName">Name</label>
+                    <div class="registration-input-wrapper">
+                        <input type="text" id="firstName" th:value="${groupUpdateDto.name}" readonly/>
+                    </div>
+                </div>
+                <div class="label-and-input-wrapper" style="width: 580px !important; padding-top: 10px;">
+                    <label for="speciality">Speciality</label>
+                    <div class="registration-input-wrapper">
+                        <input id="speciality" th:value="${speciality.name}" readonly>
+                    </div>
+                </div>
+
+                <div th:if="${totalElements == 0}" style="display: flex; gap: 20px; padding-top: 20px;">
+                    <span>This group is empty.</span>
+                </div>
+
+                <div class="list" th:if="${totalElements != 0}" style="width: 85% !important; padding-top: 40px;">
+                    <div class="students-list-header-wrapper">
+                        <header>Students list</header>
+                    </div>
+                    <table>
+
+                        <thead>
+                        <tr>
+                            <th>Id</th>
+                            <th>Name</th>
+                            <th>Email</th>
+                        </tr>
+                        </thead>
+                        <tbody>
+                        <tr th:each="student : ${students}">
+                            <td th:text="${student.id}"/>
+                            <td th:text="${student.firstName + ' ' + student.lastName}"/>
+                            <td th:text="${student.email}"/>
+                        </tr>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Include jQuery (required for Select2) -->
+<script src="https://cdn.jsdelivr.net/npm/jquery@3.5.1/dist/jquery.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/js/select2.min.js"></script>
+<script>
+    $(document).ready(function () {
+        $('.specialityId-select2').select2({
+            placeholder: 'Select a group',
+            allowClear: true
+        });
+    });
+
+    $(document).ready(function () {
+        $('.studentToAddId-select2').select2({
+            dropdownParent: $('#addStudentModal'),
+            placeholder: 'Select a student',
+            allowClear: true
+        });
+    });
+</script>
+
+
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
+<script src="/script/unassign-group.js"></script>
+<script src="/script/edit-group.js"></script>
+</body>
+</html>

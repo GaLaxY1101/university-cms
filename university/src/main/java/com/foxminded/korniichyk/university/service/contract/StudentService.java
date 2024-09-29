@@ -24,7 +24,7 @@ public interface StudentService extends CrudService<Student, StudentDto>, Search
     Page<StudentDto> findByGroupIdExcludingByStudentId(Long groupId, Long studentId, Pageable pageable);
     boolean isExistsById(Long id);
     Set<Student> findAllByIdIn(Set<Long> studentIds);
-    Page<StudentProjection> findStudentsByGroupId(Long groupId, Pageable pageable);
+    List<StudentProjection> findStudentsByGroupId(Long groupId);
     void unassignGroup(Long studentId);
     List<StudentOptionDto> findAllStudentOptionsWithoutGroup();
 

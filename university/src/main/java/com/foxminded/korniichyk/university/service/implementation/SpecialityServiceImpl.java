@@ -6,6 +6,7 @@ import com.foxminded.korniichyk.university.dto.display.SpecialityDto;
 import com.foxminded.korniichyk.university.dto.option.SpecialityOptionDto;
 import com.foxminded.korniichyk.university.mapper.display.SpecialityMapper;
 import com.foxminded.korniichyk.university.model.Speciality;
+import com.foxminded.korniichyk.university.projection.input.NameProjection;
 import com.foxminded.korniichyk.university.service.contract.SpecialityService;
 import com.foxminded.korniichyk.university.service.exception.SpecialityNotFoundException;
 import lombok.RequiredArgsConstructor;
@@ -86,6 +87,17 @@ public class SpecialityServiceImpl implements SpecialityService {
     @Override
     public Speciality findReferenceById(Long id) {
         return specialityDao.findReferenceById(id);
+    }
+
+    @Override
+    public NameProjection findSpecialityOptionById(Long id) {
+        NameProjection speciality = specialityDao.findSpecialityOptionById(id);
+
+        if (speciality == null) {
+            throw new SpecialityNotFoundException("No such speciality");
+        }
+
+        return speciality;
     }
 
 }

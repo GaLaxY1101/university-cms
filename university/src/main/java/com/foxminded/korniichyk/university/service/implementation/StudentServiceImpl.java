@@ -233,8 +233,8 @@ public class StudentServiceImpl implements StudentService {
     }
 
     @Override
-    public Page<StudentProjection> findStudentsByGroupId(Long groupId, Pageable pageable) {
-        return studentDao.findStudentsByGroupId(groupId, pageable);
+    public List<StudentProjection> findStudentsByGroupId(Long groupId) {
+        return studentDao.findStudentsByGroupId(groupId);
     }
 
     @Transactional

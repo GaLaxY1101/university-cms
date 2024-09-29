@@ -38,12 +38,11 @@
                     <div class="label-and-input-wrapper" style="width: 580px !important;">
                         <label for="specialityId">Speciality</label>
                         <div class="registration-input-wrapper">
-                            <select id="specialityId" th:field="*{specialityId}"
-                                    class="form-control specialityId-select2">
-                                <option value="" disabled>Select a speciality</option>
+                            <select id="specialityId" th:field="*{specialityId}" class="form-control specialityId-select2">
                                 <option th:each="speciality : ${specialities}"
                                         th:value="${speciality.id}"
                                         th:text="${speciality.code + ' ' + speciality.name}">
+
                                     Speciality name
                                 </option>
                             </select>

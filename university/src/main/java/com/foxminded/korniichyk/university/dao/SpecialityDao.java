@@ -2,6 +2,7 @@ package com.foxminded.korniichyk.university.dao;
 
 import com.foxminded.korniichyk.university.model.Speciality;
 import com.foxminded.korniichyk.university.projection.edit.group.SpecialityOptionProjection;
+import com.foxminded.korniichyk.university.projection.input.NameProjection;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.JpaRepository;
@@ -19,4 +20,7 @@ public interface SpecialityDao extends JpaRepository<Speciality, Long> {
     Speciality findReferenceById(Long id);
 
     Page<Speciality> findByNameContainingIgnoreCase(String search, Pageable pageable);
+
+    @Query("SELECT new com.foxminded.korniichyk.university.projection.input.NameProjection(s.id, s.name) FROM Speciality s WHERE s.id = :id")
+    NameProjection findSpecialityOptionById(Long id);
 }

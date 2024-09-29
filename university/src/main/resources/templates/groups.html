@@ -28,42 +28,45 @@
                 text-align: center;
                 ">No results found</span>
 
-    </header>
-    <div class="list-wrapper">
-        <div class="list" th:if="${totalElements != 0}">
-            <header>Groups list</header>
-            <table>
+        </header>
+        <div class="list-wrapper">
+            <div class="list" th:if="${totalElements != 0}">
+                <header>Groups list</header>
+                <table>
 
-                <thead>
-                <tr>
-                    <th>Id</th>
-                    <th>Name</th>
-                    <th>Speciality</th>
-                    <th>Students</th>
-                    <th></th>
-                </tr>
-                </thead>
-                <tbody>
-                <tr th:each="group : ${groups}">
-                    <td th:text="${group.id}"/>
-                    <td th:text="${group.name}"/>
-                    <td th:text="${group.speciality.code + ' ' + group.speciality.name }"/>
-                    <td th:text="${group.students.size()}"/>
-                    <td sec:authorize="hasRole('ROLE_ADMIN')">
-                        <i class="fa-regular fa-pen-to-square"></i>
-                        <i class="fa-solid fa-trash"></i>
-                    </td>
-                </tr>
-                </tbody>
-            </table>
-        </div>
+                    <thead>
+                    <tr>
+                        <th>Id</th>
+                        <th>Name</th>
+                        <th>Speciality</th>
+                        <th>Students</th>
+                        <th></th>
+                        <th></th>
+                    </tr>
+                    </thead>
+                    <tbody>
+                    <tr th:each="group : ${groups}">
+                        <td th:text="${group.id}"/>
+                        <td th:text="${group.name}"/>
+                        <td th:text="${group.speciality.code + ' ' + group.speciality.name }"/>
+                        <td th:text="${group.students.size()}"/>
+                        <td>
+                            <a th:href="@{/groups/{id}(id=${group.id})}">
+                                <i class=" fa-solid fa-info"></i>
+                            </a>
+                        </td>
 
-        <div class="pagination-wrapper" th:if="${totalElements != 0}">
-            <div  th:replace="~{reusable/pagination :: pagination(${currentPage}, ${totalPages}, ${search}, ${sort}, ${pageSize}, '/groups')}">
+                    </tr>
+                    </tbody>
+                </table>
+            </div>
 
+            <div class="pagination-wrapper" th:if="${totalElements != 0}">
+                <div th:replace="~{reusable/pagination :: pagination(${currentPage}, ${totalPages}, ${search}, ${sort}, ${pageSize}, '/groups')}">
+
+                </div>
             </div>
         </div>
     </div>
-</div>
 </body>
 </html>

@@ -1,7 +1,12 @@
 package com.foxminded.korniichyk.university.controller;
 
 import com.foxminded.korniichyk.university.dto.display.GroupDto;
+import com.foxminded.korniichyk.university.dto.update.GroupUpdateDto;
+import com.foxminded.korniichyk.university.projection.edit.group.StudentProjection;
+import com.foxminded.korniichyk.university.projection.input.NameProjection;
 import com.foxminded.korniichyk.university.service.contract.GroupService;
+import com.foxminded.korniichyk.university.service.contract.SpecialityService;
+import com.foxminded.korniichyk.university.service.contract.StudentService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
@@ -10,8 +15,10 @@ import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 import java.util.List;
 
@@ -21,6 +28,9 @@ import java.util.List;
 public class GroupController {
 
     private final GroupService groupService;
+    private final StudentService studentService;
+    private final SpecialityService specialityService;
+
 
     @GetMapping()
     public String groups(
@@ -57,5 +67,23 @@ public class GroupController {
         return "groups";
     }
 
+    @GetMapping("/{id}")
+    public String editGroupPage(
+            @PathVariable Long id,
+            RedirectAttributes redirectAttributes,
+            Model model) {
+
+        List<StudentProjection> students = studentService.findStudentsByGroupId(id);
+        model.addAttribute("students", students);
+
+        GroupUpdateDto groupUpdateDto = groupService.getGroupUpdateDtoById(id);
+
+        NameProjection speciality = specialityService.findSpecialityOptionById(groupUpdateDto.getSpecialityId());
+
+        model.addAttribute("speciality", speciality);
+        model.addAttribute("groupUpdateDto", groupUpdateDto);
+        model.addAttribute("totalElements", students.size());
+        return "group-info";
+    }
 
 }
