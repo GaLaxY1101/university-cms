@@ -89,12 +89,12 @@ public class GroupServiceTests {
         List<Group> groups = List.of(group);
         List<GroupDto> groupDtos = List.of(groupDto);
 
-        when(groupDao.findByName(name)).thenReturn(groups);
+        when(groupDao.findByNameContainingIgnoreCase(name)).thenReturn(groups);
         when(groupMapper.toDto(any(Group.class))).thenReturn(groupDto);
 
         List<GroupDto> result = groupService.findByName(name);
 
-        verify(groupDao).findByName(name);
+        verify(groupDao).findByNameContainingIgnoreCase(name);
         assertEquals(groupDtos, result);
     }
 

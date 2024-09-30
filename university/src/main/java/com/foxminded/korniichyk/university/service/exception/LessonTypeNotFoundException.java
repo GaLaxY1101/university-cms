@@ -1,6 +1,8 @@
 package com.foxminded.korniichyk.university.service.exception;
 
-public class LessonTypeNotFoundException extends RuntimeException {
+import jakarta.persistence.EntityNotFoundException;
+
+public class LessonTypeNotFoundException extends EntityNotFoundException {
     public LessonTypeNotFoundException(String message) {
         super(message);
     }

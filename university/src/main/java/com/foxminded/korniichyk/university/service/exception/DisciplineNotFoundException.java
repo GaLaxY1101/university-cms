@@ -1,6 +1,8 @@
 package com.foxminded.korniichyk.university.service.exception;
 
-public class DisciplineNotFoundException extends RuntimeException {
+import jakarta.persistence.EntityNotFoundException;
+
+public class DisciplineNotFoundException extends EntityNotFoundException {
     public DisciplineNotFoundException(String message) {
         super(message);
     }

@@ -1,5 +1,6 @@
 package com.foxminded.korniichyk.university.controller.admin;
 
+import com.foxminded.korniichyk.university.dto.display.AdminDto;
 import com.foxminded.korniichyk.university.dto.display.DisciplineDto;
 import com.foxminded.korniichyk.university.dto.display.GroupDto;
 import com.foxminded.korniichyk.university.dto.display.LessonDto;
@@ -7,15 +8,21 @@ import com.foxminded.korniichyk.university.dto.display.LessonTypeDto;
 import com.foxminded.korniichyk.university.dto.display.SpecialityDto;
 import com.foxminded.korniichyk.university.dto.display.StudentDto;
 import com.foxminded.korniichyk.university.dto.display.TeacherDto;
+import com.foxminded.korniichyk.university.dto.option.SpecialityOptionDto;
+import com.foxminded.korniichyk.university.dto.option.StudentOptionDto;
 import com.foxminded.korniichyk.university.dto.registration.AdminRegistrationDto;
+import com.foxminded.korniichyk.university.dto.registration.GroupRegistrationDto;
 import com.foxminded.korniichyk.university.dto.registration.StudentRegistrationDto;
 import com.foxminded.korniichyk.university.dto.registration.TeacherRegistrationDto;
 import com.foxminded.korniichyk.university.dto.update.AdminUpdateDto;
+import com.foxminded.korniichyk.university.dto.update.GroupUpdateDto;
 import com.foxminded.korniichyk.university.dto.update.StudentUpdateDto;
 import com.foxminded.korniichyk.university.dto.update.TeacherUpdateDto;
 import com.foxminded.korniichyk.university.mapper.update.AdminUpdateMapper;
 import com.foxminded.korniichyk.university.mapper.update.StudentUpdateMapper;
 import com.foxminded.korniichyk.university.mapper.update.TeacherUpdateMapper;
+import com.foxminded.korniichyk.university.projection.edit.group.StudentProjection;
+import com.foxminded.korniichyk.university.projection.input.NameProjection;
 import com.foxminded.korniichyk.university.service.contract.AdminService;
 import com.foxminded.korniichyk.university.service.contract.DisciplineService;
 import com.foxminded.korniichyk.university.service.contract.GroupService;
@@ -25,17 +32,24 @@ import com.foxminded.korniichyk.university.service.contract.SpecialityService;
 import com.foxminded.korniichyk.university.service.contract.StudentService;
 import com.foxminded.korniichyk.university.service.contract.TeacherService;
 import com.foxminded.korniichyk.university.service.contract.UserService;
-import com.foxminded.korniichyk.university.service.exception.AdminNotFoundException;
 import com.foxminded.korniichyk.university.service.exception.EmailAlreadyExistsException;
 import com.foxminded.korniichyk.university.service.exception.PhoneNumberAlreadyExistsException;
-import com.foxminded.korniichyk.university.service.exception.StudentNotFoundException;
-import com.foxminded.korniichyk.university.service.exception.TeacherNotFoundException;
 import jakarta.validation.Valid;
 import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
-import org.springframework.web.bind.annotation.*;
+import org.springframework.web.bind.annotation.DeleteMapping;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.ModelAttribute;
+import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.PutMapping;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 import java.util.List;
@@ -89,39 +103,70 @@ public class AdminController {
 
     @GetMapping("/disciplines")
     public String disciplines(
+            @RequestParam(required = false) String search,
+            @RequestParam(defaultValue = "id") String sort,
             @RequestParam(defaultValue = "0") int pageNumber,
             @RequestParam(defaultValue = "7") int pageSize,
             Model model
     ) {
-        Page<DisciplineDto> disciplinesPage = disciplineService.findPage(pageNumber, pageSize);
+        Page<DisciplineDto> disciplinesPage;
+        Sort sortOption = Sort.by(sort).ascending();
+        Pageable pageable = PageRequest.of(pageNumber, pageSize, sortOption);
+
+        if ((search != null) && (!search.isEmpty())) {
+            disciplinesPage = disciplineService.findByName(search, pageable);
+        } else {
+            disciplinesPage = disciplineService.findPage(pageable);
+        }
+
         int totalPageNumber = disciplinesPage.getTotalPages();
         int currentPage = disciplinesPage.getNumber();
         long totalElements = disciplinesPage.getTotalElements();
         List<DisciplineDto> disciplines = disciplinesPage.getContent();
 
+        model.addAttribute("sort", sort);
+        model.addAttribute("search", search);
         model.addAttribute("disciplines", disciplines);
         model.addAttribute("currentPage", currentPage);
         model.addAttribute("totalPages", totalPageNumber);
         model.addAttribute("totalElements", totalElements);
+        model.addAttribute("pageSize", pageSize);
+
         return "admin/disciplines";
     }
 
     @GetMapping("/groups")
     public String groups(
+            @RequestParam(defaultValue = "id") String sort,
+            @RequestParam(required = false) String search,
             @RequestParam(defaultValue = "0") int pageNumber,
             @RequestParam(defaultValue = "7") int pageSize,
             Model model
     ) {
-        Page<GroupDto> groupsPage = groupService.findPage(pageNumber, pageSize);
+
+        Page<GroupDto> groupsPage;
+        Sort sortOption = Sort.by(sort).ascending();
+        Pageable pageable = PageRequest.of(pageNumber, pageSize, sortOption);
+
+        if ((search != null) && (!search.isEmpty())) {
+            groupsPage = groupService.findByName(search, pageable);
+        } else {
+            groupsPage = groupService.findPage(pageable);
+        }
+
         int totalPageNumber = groupsPage.getTotalPages();
         int currentPage = groupsPage.getNumber();
         long totalElements = groupsPage.getTotalElements();
         List<GroupDto> groups = groupsPage.getContent();
 
+        model.addAttribute("sort", sort);
+        model.addAttribute("search", search);
         model.addAttribute("groups", groups);
         model.addAttribute("currentPage", currentPage);
         model.addAttribute("totalPages", totalPageNumber);
         model.addAttribute("totalElements", totalElements);
+        model.addAttribute("pageSize", pageSize);
+
         return "admin/groups";
     }
 
@@ -132,7 +177,9 @@ public class AdminController {
             @RequestParam(defaultValue = "7") int pageSize,
             Model model
     ) {
-        Page<LessonDto> lessonsPage = lessonService.findPage(pageNumber, pageSize);
+        Pageable pageable = PageRequest.of(pageNumber, pageSize);
+
+        Page<LessonDto> lessonsPage = lessonService.findPage(pageable);
         int totalPageNumber = lessonsPage.getTotalPages();
         int currentPage = lessonsPage.getNumber();
         long totalElements = lessonsPage.getTotalElements();
@@ -147,59 +194,112 @@ public class AdminController {
 
     @GetMapping("/lesson-types")
     public String lessonTypes(
+            @RequestParam(defaultValue = "id") String sort,
+            @RequestParam(required = false) String search,
             @RequestParam(defaultValue = "0") int pageNumber,
             @RequestParam(defaultValue = "7") int pageSize,
             Model model
     ) {
-        Page<LessonTypeDto> lessonTypesPage = lessonTypeService.findPage(pageNumber, pageSize);
+        Page<LessonTypeDto> lessonTypesPage;
+        Sort sortOption = Sort.by(sort).ascending();
+        Pageable pageable = PageRequest.of(pageNumber, pageSize, sortOption);
+
+        if ((search != null) && (!search.isEmpty())) {
+            lessonTypesPage = lessonTypeService.findByName(search, pageable);
+        } else {
+            lessonTypesPage = lessonTypeService.findPage(pageable);
+        }
+
         int totalPageNumber = lessonTypesPage.getTotalPages();
         int currentPage = lessonTypesPage.getNumber();
         long totalElements = lessonTypesPage.getTotalElements();
-        List<LessonTypeDto> lessons = lessonTypesPage.getContent();
+        List<LessonTypeDto> lessonTypes = lessonTypesPage.getContent();
 
-        model.addAttribute("lessonTypes", lessons);
+        model.addAttribute("sort", sort);
+        model.addAttribute("search", search);
+        model.addAttribute("lessonTypes", lessonTypes);
         model.addAttribute("currentPage", currentPage);
         model.addAttribute("totalPages", totalPageNumber);
         model.addAttribute("totalElements", totalElements);
+        model.addAttribute("pageSize", pageSize);
+
         return "admin/lesson-types";
     }
 
     @GetMapping("/specialities")
     public String specialities(
+            @RequestParam(required = false) String search,
+            @RequestParam(defaultValue = "id") String sort,
             @RequestParam(defaultValue = "0") int pageNumber,
             @RequestParam(defaultValue = "7") int pageSize,
             Model model
     ) {
-        Page<SpecialityDto> specialitiesPage = specialityService.findPage(pageNumber, pageSize);
+
+        Page<SpecialityDto> specialitiesPage;
+        Sort sortOption = Sort.by(sort).ascending();
+        Pageable pageable = PageRequest.of(pageNumber, pageSize, sortOption);
+
+        if ((search != null) && (!search.isEmpty())) {
+            specialitiesPage = specialityService.findByName(search, pageable);
+        } else {
+            specialitiesPage = specialityService.findPage(pageable);
+        }
+
         int totalPageNumber = specialitiesPage.getTotalPages();
         int currentPage = specialitiesPage.getNumber();
         long totalElements = specialitiesPage.getTotalElements();
         List<SpecialityDto> specialities = specialitiesPage.getContent();
 
+        model.addAttribute("sort", sort);
+        model.addAttribute("search", search);
         model.addAttribute("specialities", specialities);
         model.addAttribute("currentPage", currentPage);
         model.addAttribute("totalPages", totalPageNumber);
         model.addAttribute("totalElements", totalElements);
+        model.addAttribute("pageSize", pageSize);
+
         return "admin/specialities";
     }
 
     @GetMapping("/students")
     public String students(
+            @RequestParam(defaultValue = "id") String sort,
+            @RequestParam(required = false) String search,
             @RequestParam(defaultValue = "0") int pageNumber,
             @RequestParam(defaultValue = "7") int pageSize,
             Model model
     ) {
 
-        Page<StudentDto> studentsPage = studentService.findPage(pageNumber, pageSize);
+
+        Sort sortOption;
+        if ("name".equals(sort)) {
+            sortOption = Sort.by("user.firstName").ascending()
+                    .and(Sort.by("user.lastName").ascending());
+        } else {
+            sortOption = Sort.by(sort).ascending();
+        }
+
+        Pageable pageable = PageRequest.of(pageNumber, pageSize, sortOption);
+
+        Page<StudentDto> studentsPage;
+        if ((search != null) && (!search.isEmpty())) {
+            studentsPage = studentService.findByName(search, pageable);
+        } else {
+            studentsPage = studentService.findPage(pageable);
+        }
+
         int totalPageNumber = studentsPage.getTotalPages();
         int currentPage = studentsPage.getNumber();
         long totalElements = studentsPage.getTotalElements();
         List<StudentDto> students = studentsPage.getContent();
 
+        model.addAttribute("sort", sort);
+        model.addAttribute("search", search);
         model.addAttribute("students", students);
         model.addAttribute("currentPage", currentPage);
         model.addAttribute("totalPages", totalPageNumber);
         model.addAttribute("totalElements", totalElements);
+        model.addAttribute("pageSize", pageSize);
 
         return "admin/students";
     }
@@ -210,7 +310,8 @@ public class AdminController {
         StudentRegistrationDto studentRegistrationDto = new StudentRegistrationDto();
 
         model.addAttribute("studentRegistrationDto", studentRegistrationDto);
-        model.addAttribute("groups", groupService.findAll());
+        Pageable pageable = PageRequest.of(0, 10);
+        model.addAttribute("groups", groupService.findAllNameProjections());
 
         return "admin/create/create-student";
     }
@@ -227,7 +328,7 @@ public class AdminController {
         }
 
         if (bindingResult.hasErrors()) {
-            model.addAttribute("groups", groupService.findAll());
+            model.addAttribute("groups", groupService.findAllNameProjections());
             return "admin/create/create-student";
         }
 
@@ -241,7 +342,7 @@ public class AdminController {
             if (ex instanceof PhoneNumberAlreadyExistsException) {
                 bindingResult.rejectValue("user.phoneNumber", "error.phoneNumber", ex.getMessage());
             }
-            model.addAttribute("groups", groupService.findAll());
+            model.addAttribute("groups", groupService.findAllNameProjections());
             return "admin/create/create-student";
         }
 
@@ -251,19 +352,40 @@ public class AdminController {
 
     @GetMapping("/teachers")
     public String teachers(
+            @RequestParam(required = false) String search,
+            @RequestParam(defaultValue = "id") String sort,
             @RequestParam(defaultValue = "0") int pageNumber,
             @RequestParam(defaultValue = "7") int pageSize,
             Model model
     ) {
-        Page<TeacherDto> teachersPage = teacherService.findPage(pageNumber, pageSize);
-        int totalPageNumber = teachersPage.getTotalPages();
-        int currentPage = teachersPage.getNumber();
-        long totalElements = teachersPage.getTotalElements();
-        List<TeacherDto> teachers = teachersPage.getContent();
+        Sort sortOption;
+        if ("name".equals(sort)) {
+            sortOption = Sort.by("user.firstName").ascending()
+                    .and(Sort.by("user.lastName").ascending());
+        } else {
+            sortOption = Sort.by(sort).ascending();
+        }
 
+        Pageable pageable = PageRequest.of(pageNumber, pageSize, sortOption);
+
+        Page<TeacherDto> teachersPage;
+        if ((search != null) && !(search.isEmpty())) {
+            teachersPage = teacherService.findByName(search, pageable);
+        } else {
+            teachersPage = teacherService.findPage(pageable);
+        }
+
+        List<TeacherDto> teachers = teachersPage.getContent();
+        int totalPages = teachersPage.getTotalPages();
+        int currentPage = teachersPage.getNumber();
+        int totalElements = teachers.size();
+
+        model.addAttribute("pageSize", pageSize);
+        model.addAttribute("sort", sort);
+        model.addAttribute("search", search);
         model.addAttribute("teachers", teachers);
         model.addAttribute("currentPage", currentPage);
-        model.addAttribute("totalPages", totalPageNumber);
+        model.addAttribute("totalPages", totalPages);
         model.addAttribute("totalElements", totalElements);
         return "admin/teachers";
     }
@@ -272,7 +394,7 @@ public class AdminController {
     public String createTeacherPage(Model model) {
         TeacherRegistrationDto teacherRegistrationDto = new TeacherRegistrationDto();
         model.addAttribute("teacherRegistrationDto", teacherRegistrationDto);
-        model.addAttribute("disciplines", disciplineService.findAll());
+        model.addAttribute("disciplines", disciplineService.findAllDisciplineOptions());
         return "admin/create/create-teacher";
     }
 
@@ -290,7 +412,7 @@ public class AdminController {
 
         if (bindingResult.hasErrors()) {
             model.addAttribute("teacherRegistrationDto", teacherRegistrationDto);
-            model.addAttribute("disciplines", disciplineService.findAll());
+            model.addAttribute("disciplines", disciplineService.findAllDisciplineOptions());
             return "admin/create/create-teacher";
         }
 
@@ -305,7 +427,7 @@ public class AdminController {
                 bindingResult.rejectValue("user.phoneNumber", "error.phoneNumber", ex.getMessage());
 
             }
-            model.addAttribute("disciplines", disciplineService.findAll());
+            model.addAttribute("disciplines", disciplineService.findAllDisciplineOptions());
             return "admin/create/create-teacher";
         }
         return "redirect:/administrators/teachers";
@@ -314,17 +436,38 @@ public class AdminController {
 
     @GetMapping("/admins")
     public String admins(
+            @RequestParam(required = false) String search,
+            @RequestParam(defaultValue = "id") String sort,
             @RequestParam(defaultValue = "0") int pageNumber,
             @RequestParam(defaultValue = "7") int pageSize,
             Model model
     ) {
-        var page = adminService.findPage(pageNumber, pageSize);
 
-        var admins = page.getContent();
-        int totalPages = page.getTotalPages();
-        int currentPage = page.getNumber();
+        Sort sortOption;
+        if ("name".equals(sort)) {
+            sortOption = Sort.by("user.firstName").ascending()
+                    .and(Sort.by("user.lastName").ascending());
+        } else {
+            sortOption = Sort.by(sort).ascending();
+        }
+
+        Pageable pageable = PageRequest.of(pageNumber, pageSize, sortOption);
+
+        Page<AdminDto> adminsPage;
+        if ((search != null) && !(search.isEmpty())) {
+            adminsPage = adminService.findByName(search, pageable);
+        } else {
+            adminsPage = adminService.findPage(pageable);
+        }
+
+        List<AdminDto> admins = adminsPage.getContent();
+        int totalPages = adminsPage.getTotalPages();
+        int currentPage = adminsPage.getNumber();
         int totalElements = admins.size();
 
+        model.addAttribute("pageSize", pageSize);
+        model.addAttribute("sort", sort);
+        model.addAttribute("search", search);
         model.addAttribute("administrators", admins);
         model.addAttribute("currentPage", currentPage);
         model.addAttribute("totalPages", totalPages);
@@ -373,12 +516,10 @@ public class AdminController {
             @PathVariable("id") Long adminId,
             RedirectAttributes redirectAttributes
     ) {
-        try {
-            adminService.deleteById(adminId);
-            redirectAttributes.addFlashAttribute("successMessage", "Admin deleted successfully");
-        } catch (AdminNotFoundException ex) {
-            redirectAttributes.addFlashAttribute("errorMessage", ex.getMessage());
-        }
+
+        adminService.deleteById(adminId);
+        redirectAttributes.addFlashAttribute("successMessage", "Admin deleted successfully");
+
         return "redirect:/administrators/admins";
     }
 
@@ -388,12 +529,10 @@ public class AdminController {
             @PathVariable("id") Long studentId,
             RedirectAttributes redirectAttributes
     ) {
-        try {
-            studentService.deleteById(studentId);
-            redirectAttributes.addFlashAttribute("successMessage", "Student deleted successfully");
-        } catch (StudentNotFoundException ex) {
-            redirectAttributes.addFlashAttribute("errorMessage", ex.getMessage());
-        }
+
+        studentService.deleteById(studentId);
+        redirectAttributes.addFlashAttribute("successMessage", "Student deleted successfully");
+
         return "redirect:/administrators/students";
     }
 
@@ -402,12 +541,10 @@ public class AdminController {
             @PathVariable("id") Long teacherId,
             RedirectAttributes redirectAttributes
     ) {
-        try {
-            teacherService.deleteById(teacherId);
-            redirectAttributes.addFlashAttribute("successMessage", "Teacher deleted successfully");
-        } catch (TeacherNotFoundException ex) {
-            redirectAttributes.addFlashAttribute("errorMessage", ex.getMessage());
-        }
+
+        teacherService.deleteById(teacherId);
+        redirectAttributes.addFlashAttribute("successMessage", "Teacher deleted successfully");
+
         return "redirect:/administrators/teachers";
     }
 
@@ -417,20 +554,17 @@ public class AdminController {
             Model model,
             RedirectAttributes redirectAttributes
     ) {
-        try {
-            StudentUpdateDto studentUpdateDto = studentService.getStudentUpdateDto(studentId);
-            List<GroupDto> groups = groupService.findAll();
 
-            model.addAttribute("studentUpdateDto", studentUpdateDto);
-            model.addAttribute("groups", groups);
-        } catch (StudentNotFoundException ex) {
-            redirectAttributes.addFlashAttribute("errorMessage", ex.getMessage());
-            return "redirect:/administrators/students";
-        }
+        StudentUpdateDto studentUpdateDto = studentService.getStudentUpdateDto(studentId);
+        List<NameProjection> groups = groupService.findAllNameProjections();
+
+        model.addAttribute("studentUpdateDto", studentUpdateDto);
+        model.addAttribute("groups", groups);
+
         return "admin/edit/edit-student";
     }
 
-    @PostMapping("/students/edit")
+    @PutMapping("/students/edit")
     public String editStudent(
             @ModelAttribute @Valid StudentUpdateDto studentUpdateDto,
             BindingResult bindingResult,
@@ -438,8 +572,8 @@ public class AdminController {
             Model model
     ) {
 
-        String emailBeforeUpdate =  studentService.findById(studentUpdateDto.getId()).getUser().getEmail();
-        String phoneNumberBeforeUpdate =  studentService.findById(studentUpdateDto.getId()).getUser().getPhoneNumber();
+        String emailBeforeUpdate = studentService.findById(studentUpdateDto.getId()).getUser().getEmail();
+        String phoneNumberBeforeUpdate = studentService.findById(studentUpdateDto.getId()).getUser().getPhoneNumber();
 
         String emailAfterUpdate = studentUpdateDto.getUser().getEmail();
         String phoneNumberAfterUpdate = studentUpdateDto.getUser().getPhoneNumber();
@@ -447,31 +581,28 @@ public class AdminController {
 
         if ((!emailBeforeUpdate.equals(emailAfterUpdate)) && (userService.isExistsByEmail(emailAfterUpdate))) {
             bindingResult.rejectValue("user.email", "error.email", "This email already registered");
-            model.addAttribute("groups", groupService.findAll());
+            model.addAttribute("groups", groupService.findAllNameProjections());
             return "admin/edit/edit-student";
         }
 
         if ((!phoneNumberBeforeUpdate.equals(phoneNumberAfterUpdate)) && (userService.isExistsByPhoneNumber(phoneNumberAfterUpdate))) {
             bindingResult.rejectValue("user.phoneNumber", "error.phoneNumber", "This phone number already registered");
-            model.addAttribute("groups", groupService.findAll());
+            model.addAttribute("groups", groupService.findAllNameProjections());
             return "admin/edit/edit-student";
         }
 
         if (bindingResult.hasErrors()) {
-            List<GroupDto> groups = groupService.findAll();
+            List<NameProjection> groups = groupService.findAllNameProjections();
             model.addAttribute("groups", groups);
             model.addAttribute("studentUpdateDto", studentUpdateDto);
             return "admin/edit/edit-student";
         }
 
-        try {
-            studentService.update(studentUpdateDto);
-            redirectAttributes.addFlashAttribute("successMessage", "Student updated successfully!");
-            return "redirect:/administrators/students";
-        } catch (StudentNotFoundException ex) {
-            redirectAttributes.addFlashAttribute("errorMessage", ex.getMessage());
-            return "redirect:/administrators/students" + studentUpdateDto.getId();
-        }
+
+        studentService.update(studentUpdateDto);
+        redirectAttributes.addFlashAttribute("successMessage", "Student updated successfully!");
+        return "redirect:/administrators/students";
+
     }
 
 
@@ -481,13 +612,10 @@ public class AdminController {
             RedirectAttributes redirectAttributes,
             Model model
     ) {
-        try {
-            AdminUpdateDto adminUpdateDto = adminService.getAdminUpdateDto(adminId);
-            model.addAttribute("adminUpdateDto", adminUpdateDto);
-        } catch (AdminNotFoundException ex) {
-            redirectAttributes.addFlashAttribute("errorMessage", ex.getMessage());
-            return "redirect:/administrators/admins";
-        }
+
+        AdminUpdateDto adminUpdateDto = adminService.getAdminUpdateDto(adminId);
+        model.addAttribute("adminUpdateDto", adminUpdateDto);
+
 
         return "admin/edit/edit-admin";
     }
@@ -500,8 +628,8 @@ public class AdminController {
             Model model
     ) {
 
-        String emailBeforeUpdate =  adminService.findById(adminUpdateDto.getId()).getUser().getEmail();
-        String phoneNumberBeforeUpdate =  adminService.findById(adminUpdateDto.getId()).getUser().getPhoneNumber();
+        String emailBeforeUpdate = adminService.findById(adminUpdateDto.getId()).getUser().getEmail();
+        String phoneNumberBeforeUpdate = adminService.findById(adminUpdateDto.getId()).getUser().getPhoneNumber();
 
         String emailAfterUpdate = adminUpdateDto.getUser().getEmail();
         String phoneNumberAfterUpdate = adminUpdateDto.getUser().getPhoneNumber();
@@ -522,15 +650,10 @@ public class AdminController {
             return "admin/edit/edit-admin";
         }
 
-        try {
-            adminService.update(adminUpdateDto);
-            redirectAttributes.addFlashAttribute("successMessage", "Admin updated successfully");
-            return "redirect:/administrators/admins";
-        } catch (Exception ex) {
-            redirectAttributes.addFlashAttribute("errorMessage", ex.getMessage());
-            return "redirect:/administrators/admins";
-        }
 
+        adminService.update(adminUpdateDto);
+        redirectAttributes.addFlashAttribute("successMessage", "Admin updated successfully");
+        return "redirect:/administrators/admins";
     }
 
     @GetMapping("/teachers/edit/{id}")
@@ -539,15 +662,12 @@ public class AdminController {
             RedirectAttributes redirectAttributes,
             Model model
     ) {
-        try {
-            TeacherUpdateDto teacherUpdateDto = teacherService.getTeacherUpdateDto(teacherId);
-            List<DisciplineDto> disciplines = disciplineService.findAll();
-            model.addAttribute("disciplines", disciplines);
-            model.addAttribute("teacherUpdateDto", teacherUpdateDto);
-        } catch (TeacherNotFoundException ex) {
-            redirectAttributes.addFlashAttribute("errorMessage", ex.getMessage());
-            return "redirect:/administrators/teachers";
-        }
+
+        TeacherUpdateDto teacherUpdateDto = teacherService.getTeacherUpdateDto(teacherId);
+        List<NameProjection> disciplines = disciplineService.findAllDisciplineOptions();
+        model.addAttribute("disciplines", disciplines);
+        model.addAttribute("teacherUpdateDto", teacherUpdateDto);
+
 
         return "admin/edit/edit-teacher";
 
@@ -562,8 +682,8 @@ public class AdminController {
             Model model
     ) {
 
-        String emailBeforeUpdate =  teacherService.findById(teacherUpdateDto.getId()).getUser().getEmail();
-        String phoneNumberBeforeUpdate =  teacherService.findById(teacherUpdateDto.getId()).getUser().getPhoneNumber();
+        String emailBeforeUpdate = teacherService.findById(teacherUpdateDto.getId()).getUser().getEmail();
+        String phoneNumberBeforeUpdate = teacherService.findById(teacherUpdateDto.getId()).getUser().getPhoneNumber();
 
         String emailAfterUpdate = teacherUpdateDto.getUser().getEmail();
         String phoneNumberAfterUpdate = teacherUpdateDto.getUser().getPhoneNumber();
@@ -571,32 +691,184 @@ public class AdminController {
 
         if ((!emailBeforeUpdate.equals(emailAfterUpdate)) && (userService.isExistsByEmail(emailAfterUpdate))) {
             bindingResult.rejectValue("user.email", "error.email", "This email already registered");
-            model.addAttribute("disciplines", disciplineService.findAll());
+            model.addAttribute("disciplines", disciplineService.findAllDisciplineOptions());
             return "admin/edit/edit-teacher";
         }
 
         if ((!phoneNumberBeforeUpdate.equals(phoneNumberAfterUpdate)) && (userService.isExistsByPhoneNumber(phoneNumberAfterUpdate))) {
             bindingResult.rejectValue("user.phoneNumber", "error.phoneNumber", "This phone number already registered");
-            model.addAttribute("disciplines", disciplineService.findAll());
+            model.addAttribute("disciplines", disciplineService.findAllDisciplineOptions());
             return "admin/edit/edit-teacher";
         }
 
 
         if (bindingResult.hasErrors()) {
             model.addAttribute("teacherUpdateDto", teacherUpdateDto);
-            List<DisciplineDto> disciplines = disciplineService.findAll();
+            List<NameProjection> disciplines = disciplineService.findAllDisciplineOptions();
             model.addAttribute("disciplines", disciplines);
             return "admin/edit/edit-teacher";
         }
 
 
-        try {
-            teacherService.update(teacherUpdateDto);
-            redirectAttributes.addFlashAttribute("successMessage", "Teacher updated successfully");
-            return "redirect:/administrators/teachers";
-        } catch (TeacherNotFoundException ex) {
-            redirectAttributes.addFlashAttribute("errorMessage", ex.getMessage());
-            return "redirect:/administrators/teachers";
+        teacherService.update(teacherUpdateDto);
+        redirectAttributes.addFlashAttribute("successMessage", "Teacher updated successfully");
+        return "redirect:/administrators/teachers";
+
+    }
+
+    @GetMapping("/groups/create-page")
+    String createGroupPage(Model model) {
+
+        List<SpecialityOptionDto> specialities = specialityService.findAllSpecialityOptions();
+        GroupRegistrationDto groupRegistrationDto = new GroupRegistrationDto();
+
+        model.addAttribute("groupRegistrationDto", groupRegistrationDto);
+        model.addAttribute("specialities", specialities);
+
+        return "admin/create/create-group";
+    }
+
+    @PostMapping("/groups/create-page")
+    String createGroup(
+            @ModelAttribute @Valid GroupRegistrationDto groupRegistrationDto,
+            BindingResult bindingResult,
+            Model model
+    ) {
+
+        if (bindingResult.hasErrors()) {
+            List<SpecialityOptionDto> specialities = specialityService.findAllSpecialityOptions();
+
+            model.addAttribute("groupRegistrationDto", groupRegistrationDto);
+            model.addAttribute("specialities", specialities);
+            return "admin/create/create-group";
         }
+
+        String newGroupName = groupRegistrationDto.getName();
+
+        if (groupService.isExistsByName(newGroupName)) {
+            bindingResult.rejectValue("name", "error.name", "This name already in use by another group");
+
+            List<SpecialityOptionDto> specialities = specialityService.findAllSpecialityOptions();
+            model.addAttribute("groupRegistrationDto", groupRegistrationDto);
+            model.addAttribute("specialities", specialities);
+            return "admin/create/create-group";
+        }
+
+        groupService.registerGroup(groupRegistrationDto);
+        return "redirect:/administrators/groups";
+
+    }
+
+    @DeleteMapping("/groups/delete/{id}")
+    public String deleteGroup(
+            @PathVariable Long id,
+            RedirectAttributes redirectAttributes
+    ) {
+
+        groupService.deleteById(id);
+        redirectAttributes.addFlashAttribute("successMessage", "Group deleted successfully");
+
+
+        return "redirect:/administrators/groups";
+    }
+
+    @GetMapping("/groups/edit/{id}")
+    public String editGroupPage(
+            @PathVariable Long id,
+            RedirectAttributes redirectAttributes,
+            Model model) {
+
+        List<StudentProjection> students = studentService.findStudentsByGroupId(id);
+
+        model.addAttribute("students", students);
+
+        GroupUpdateDto groupUpdateDto = groupService.getGroupUpdateDtoById(id);
+        model.addAttribute("groupUpdateDto", groupUpdateDto);
+
+        model.addAttribute("totalElements", students.size());
+
+
+        List<StudentOptionDto> studentsWithoutGroups = studentService.findAllStudentOptionsWithoutGroup();
+        model.addAttribute("studentsWithoutGroup", studentsWithoutGroups);
+
+        List<SpecialityOptionDto> specialities = specialityService.findAllSpecialityOptions();
+        model.addAttribute("specialities", specialities);
+        return "admin/edit/edit-group";
+    }
+
+    @PutMapping("/groups/edit/unassign-group/{studentId}")
+    String unassignGroup(
+            @PathVariable Long studentId,
+            @RequestParam Long groupId,
+            RedirectAttributes redirectAttributes
+    ) {
+
+        studentService.unassignGroup(studentId);
+        redirectAttributes.addFlashAttribute("successMessage", "Student removed from group successfully");
+
+        return "redirect:/administrators/groups/edit/" + groupId;
+    }
+
+    @PutMapping("/groups/edit")
+    String editGroup(@ModelAttribute @Valid GroupUpdateDto groupUpdateDto,
+                     BindingResult bindingResult,
+                     RedirectAttributes redirectAttributes,
+                     Model model) {
+
+
+        String nameBeforeUpdate = groupService.getNameById(groupUpdateDto.getId());
+
+        if (!nameBeforeUpdate.equals(groupUpdateDto.getName()) && groupService.isExistsByName(nameBeforeUpdate)) {
+            bindingResult.rejectValue("name", "error.name", "This name already in use by another group");
+        }
+
+        if (bindingResult.hasErrors()) {
+            List<SpecialityOptionDto> specialities = specialityService.findAllSpecialityOptions();
+
+            List<StudentProjection> students = studentService.findStudentsByGroupId(groupUpdateDto.getId());
+
+            model.addAttribute("students", students);
+            model.addAttribute("groupUpdateDto", groupUpdateDto);
+            model.addAttribute("specialities", specialities);
+            model.addAttribute("totalElements", model.getAttribute("totalElements"));
+
+            return "admin/edit/edit-group";
+        }
+
+
+        groupService.update(groupUpdateDto);
+        redirectAttributes.addFlashAttribute("successMessage", "Group updated successfully");
+
+        return "redirect:/administrators/groups";
+
+    }
+
+
+    @PutMapping("/groups/add-student/{studentId}")
+    String addStudentToGroup(
+            @PathVariable Long studentId,
+            @RequestParam Long groupId,
+            RedirectAttributes redirectAttributes,
+            Model model
+    ) {
+
+
+        studentService.assignGroup(groupId, studentId);
+        redirectAttributes.addFlashAttribute("successMessage", "Student was added to group successfully");
+
+
+        List<SpecialityOptionDto> specialities = specialityService.findAllSpecialityOptions();
+
+        Pageable pageable = PageRequest.of(0, 7);
+        List<StudentProjection> students = studentService.findStudentsByGroupId(groupId);
+
+        GroupUpdateDto groupUpdateDto = groupService.getGroupUpdateDtoById(groupId);
+
+        model.addAttribute("students", students);
+        model.addAttribute("groupUpdateDto", groupUpdateDto);
+        model.addAttribute("specialities", specialities);
+        model.addAttribute("totalElements", students.size());
+
+        return "redirect:/administrators/groups/edit/" + groupId;
     }
 }

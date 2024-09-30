@@ -14,28 +14,19 @@
   <div th:replace="~{home :: greeting}"></div>
   <header class="dashboard-header">
     <span>Lesson types dashboard</span>
-    <div class="input-wrapper">
-      <div class="input-container">
-        <i class="fas fa-search"></i>
-        <input type="text" placeholder="Search...">
-      </div>
+    <div th:replace="~{reusable/admin-search-bar :: search-bar (${currentPage}, ${totalPages}, ${search}, ${sort}, ${pageSize},'/administrators/lesson-types' ,'/administrators/lesson-types/create-page')}">
 
-      <button type="button" >
-        Add
-        <i class="fa-solid fa-plus"></i>
-      </button>
-      <div class="sort-by-wrapper">
-        <span>Sort by</span>
-        <span>▼</span>
-      </div>
-      <div class="filter-wrapper">
-        <span>Filter</span>
-        <i class="fa-solid fa-sliders fa-sm"></i>
-      </div>
     </div>
 
   </header>
   <div class="list-wrapper">
+
+    <span th:if="${totalElements == 0}"
+          style="font-size: 30px;
+                font-style: italic;
+                text-align: center;
+                ">No results found</span>
+
     <div class="list" th:if="${totalElements != 0}">
       <header>Lesson types list</header>
       <table>
@@ -60,73 +51,13 @@
       </table>
     </div>
 
-    <div class="pagination">
-      <div>
-        <a th:if="${currentPage > 0}" th:href="@{/administrators/lesson-types(pageNumber=${currentPage - 1})}">
-          <i class="fa-solid fa-arrow-left"></i>
-        </a>
-        <a th:unless="${currentPage > 0}">
-          <i class="fa-solid fa-arrow-left" style="color: #a1a1a1;"></i>
-        </a>
-      </div>
+    <div th:insert="~{reusable/notification-modal}">
 
-      <ul class="pagination" th:if="${totalPages <= 7}">
-        <li th:each="i : ${#numbers.sequence(1, totalPages)}">
+    </div>
 
-          <a th:text="${i}" th:id="${i == currentPage + 1 ? 'selected-page-number' : ''}"
-             th:href="@{/administrators/lesson-types(pageNumber=${i - 1})}"></a>
-        </li>
-      </ul>
-      <ul class="pagination" th:if="${totalPages > 7 and currentPage < 7}">
-        <li th:each="i : ${#numbers.sequence(1, 7)}">
+    <div class="pagination-wrapper" th:if="${totalElements != 0}">
+      <div  th:replace="~{reusable/pagination :: pagination(${currentPage}, ${totalPages}, ${search}, ${sort}, ${pageSize}, '/administrators/lesson-types')}">
 
-          <a th:text="${i}" th:id="${i == currentPage + 1 ? 'selected-page-number' : ''}"
-             th:href="@{/administrators/lesson-types(pageNumber=${i - 1})}"></a>
-        </li>
-        <li>
-          <a th:text="..." th:href="@{/administrators/lesson-types(pageNumber=7)}" ></a>
-        </li>
-        <li>
-          <a th:text="${totalPages}" th:href="@{/administrators/lesson-types(pageNumber=${totalPages - 1})}" ></a>
-        </li>
-      </ul>
-      <ul class="pagination" th:if="${totalPages > 7 and currentPage > 6 and totalPages - currentPage > 7 } ">
-        <li>
-          <a th:text="1" th:href="@{/administrators/lesson-types(pageNumber=0)}"></a>
-        </li>
-        <li>
-          <a th:text="..." th:href="@{/administrators/lesson-types(pageNumber=${currentPage - 3})}" ></a>
-        </li>
-        <li th:each="i : ${#numbers.sequence(currentPage - 1, currentPage + 3)}">
-          <a th:text="${i}" th:id="${i == currentPage + 1 ? 'selected-page-number' : ''}"
-             th:href="@{/administrators/lesson-types(pageNumber=${i - 1})}"></a>
-        </li>
-        <li>
-          <a th:text="..." th:href="@{/administrators/lesson-types(pageNumber=${currentPage + 3})}"></a>
-        </li>
-        <li>
-          <a th:text="${totalPages}" th:href="@{/administrators/lesson-types(pageNumber=${totalPages - 1})}"></a>
-        </li>
-      </ul>
-      <ul class = "pagination" th:if="${totalPages > 7 and currentPage > 6 and totalPages - currentPage <= 7}">
-        <li>
-          <a th:text="1" th:href="@{/administrators/lesson-types(pageNumber=0)}"></a>
-        </li>
-        <li>
-          <a th:text="..." th:href="@{/administrators/lesson-types(pageNumber=${totalPages - 7})}" ></a>
-        <li th:each="i : ${#numbers.sequence(totalPages - 6, totalPages)}">
-          <a th:text="${i}" th:id="${i == currentPage + 1 ? 'selected-page-number' : ''}"
-             th:href="@{/administrators/lesson-types(pageNumber=${i - 1})}"></a>
-        </li>
-        </li>
-      </ul>
-      <div>
-        <a th:if="${currentPage < totalPages - 1}" th:href="@{/administrators/lesson-types(pageNumber=${currentPage + 1})}">
-          <i class="fa-solid fa-arrow-right"></i>
-        </a>
-        <a th:unless="${currentPage < totalPages - 1}">
-          <i class="fa-solid fa-arrow-right" style="color: #a1a1a1"></i>
-        </a>
       </div>
     </div>
   </div>

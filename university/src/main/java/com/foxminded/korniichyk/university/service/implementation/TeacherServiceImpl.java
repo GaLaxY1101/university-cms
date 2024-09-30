@@ -7,7 +7,6 @@ import com.foxminded.korniichyk.university.dao.UserDao;
 import com.foxminded.korniichyk.university.dto.display.TeacherDto;
 import com.foxminded.korniichyk.university.dto.registration.TeacherRegistrationDto;
 import com.foxminded.korniichyk.university.dto.update.TeacherUpdateDto;
-import com.foxminded.korniichyk.university.mapper.display.RoleMapper;
 import com.foxminded.korniichyk.university.mapper.display.TeacherMapper;
 import com.foxminded.korniichyk.university.mapper.update.TeacherUpdateMapper;
 import com.foxminded.korniichyk.university.model.Discipline;
@@ -18,14 +17,11 @@ import com.foxminded.korniichyk.university.security.CustomUserDetails;
 import com.foxminded.korniichyk.university.service.contract.DisciplineService;
 import com.foxminded.korniichyk.university.service.contract.TeacherService;
 import com.foxminded.korniichyk.university.service.contract.UserService;
-import com.foxminded.korniichyk.university.service.exception.AdminNotFoundException;
-import com.foxminded.korniichyk.university.service.exception.StudentNotFoundException;
 import com.foxminded.korniichyk.university.service.exception.TeacherNotFoundException;
 import com.foxminded.korniichyk.university.service.exception.UserNotFoundException;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.domain.Page;
-import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
@@ -33,7 +29,8 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.Set;
-import java.util.stream.Collectors;
+
+import static java.util.stream.Collectors.toSet;
 
 @Transactional(readOnly = true)
 @Service
@@ -55,8 +52,12 @@ public class TeacherServiceImpl implements TeacherService {
     public TeacherDto findById(Long id) {
         return teacherDao.findById(id)
                 .map(teacherMapper::toDto)
-                .orElseThrow(() -> new TeacherNotFoundException("Teacher with id: " + id + " not found"));
+                .orElseThrow(() -> {
+                    log.error("Teacher with id {} not found", id);
+                    return new TeacherNotFoundException("Teacher not found");
+                });
     }
+
 
     @Transactional
     @Override
@@ -72,26 +73,36 @@ public class TeacherServiceImpl implements TeacherService {
                 .ifPresentOrElse(
                         teacher -> {
                             teacherDao.delete(teacher);
-                            log.info("{} deleted", teacher);
+                            log.info("Teacher {} deleted", teacher);
                         },
                         () -> {
-                            throw new TeacherNotFoundException("Teacher with id: " + id + " not found");
+                            log.error("Teacher with id {} not found", id);
+                            throw new TeacherNotFoundException("Teacher not found");
                         });
     }
 
+
     @Override
     public Teacher findByUserId(Long userId) {
-        if (userDao.findById(userId).isEmpty()) {
-            throw new UserNotFoundException("User with id " + userId + " not found");
-        }
+        userDao.findById(userId)
+                .orElseThrow(() -> {
+                    log.error("User with id {} not found", userId);
+                    return new UserNotFoundException("User not found");
+                });
+
         return teacherDao.findByUserId(userId);
     }
 
 
+
     @Override
-    public Page<TeacherDto> findPage(int pageNumber, int pageSize) {
-        Pageable pageable = PageRequest.of(pageNumber, pageSize);
+    public Page<TeacherDto> findPage(Pageable pageable) {
         return teacherDao.findAll(pageable).map(teacherMapper::toDto);
+    }
+
+    @Override
+    public Page<TeacherDto> findByName(String search, Pageable pageable) {
+        return teacherDao.findByFullName(search, pageable).map(teacherMapper::toDto);
     }
 
     @Transactional
@@ -115,25 +126,32 @@ public class TeacherServiceImpl implements TeacherService {
 
     @Override
     public TeacherUpdateDto getTeacherUpdateDto(Long id) {
+        Teacher teacher = teacherDao.findById(id)
+                .orElseThrow(() -> {
+                    log.error("Teacher with id {} not found", id);
+                    return new TeacherNotFoundException("Teacher not found");
+                });
 
-        Teacher teacher = teacherDao.findById(id).orElseThrow(() -> new AdminNotFoundException("Admin with id " + id + " not found"));
         return teacherUpdateMapper.toDto(teacher);
     }
+
 
     @Transactional
     @Override
     public void update(TeacherUpdateDto teacherUpdateDto) {
         Long teacherId = teacherUpdateDto.getId();
-        Teacher teacher = teacherDao.findById(teacherUpdateDto.getId()).orElseThrow(
-                () -> new TeacherNotFoundException("Teacher with id: " + teacherId + " not found")
-        );
+        Teacher teacher = teacherDao.findById(teacherId).orElseThrow(() -> {
+            log.error("Teacher with id: {} not found", teacherId);
+            return new TeacherNotFoundException("Teacher not found");
+        });
+
 
         Set<Long> existingDisciplineIds = teacher.getDisciplines()
                 .stream()
                 .map(discipline -> discipline.getId())
-                .collect(Collectors.toSet());
+                .collect(toSet());
 
-        if (!existingDisciplineIds.equals(existingDisciplineIds)) {
+        if (!existingDisciplineIds.equals(teacherUpdateDto.getDisciplineIds())) {
             Set<Discipline> disciplines = disciplineService.findAllByIdIn(teacherUpdateDto.getDisciplineIds());
             teacher.setDisciplines(disciplines);
         }
@@ -152,10 +170,13 @@ public class TeacherServiceImpl implements TeacherService {
         CustomUserDetails userDetails = (CustomUserDetails) authentication.getPrincipal();
         Long userId = userDetails.getUser().getId();
         Long teacherId = findByUserId(userId).getId();
-        return teacherDao.findById(teacherId).orElseThrow(
-                () -> new StudentNotFoundException("Teacher with id " + teacherId + "not found")
-        );
+
+        return teacherDao.findById(teacherId).orElseThrow(() -> {
+            log.error("Teacher with id: {} not found", teacherId);
+            return new TeacherNotFoundException("Teacher not found");
+        });
     }
+
 
     @Override
     public boolean isExistsById(Long id) {

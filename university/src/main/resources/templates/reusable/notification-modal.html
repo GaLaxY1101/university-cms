@@ -1,0 +1,38 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org"
+      xmlns:sec="http://www.thymeleaf.org/thymeleaf-extras-springsecurity6">
+<head>
+    <meta charset="UTF-8">
+    <title>Title</title>
+    <th:block th:insert="~{/reusable/admin_panel_head :: admin_panel_links}"></th:block>
+
+</head>
+<body>
+  <div th:fragment="notification-modal" class="modal fade" id="messageModal" tabindex="-1" aria-labelledby="messageModalLabel"
+       aria-hidden="true">
+      <div class="modal-dialog">
+          <div class="modal-content">
+              <div class="modal-header">
+                  <h5 class="modal-title" id="messageModalLabel">Notification</h5>
+                  <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+              </div>
+              <div class="modal-body">
+                  <div th:if="${successMessage}" style="display: flex; align-items: center; gap:10px">
+                      <i class="fa-solid fa-circle-check fa-2x" style="color: green"></i>
+                      <span id="successMessage" th:text="${successMessage}"></span>
+                  </div>
+
+                  <div th:if="${errorMessage}" style="display: flex; align-items: center; gap:10px">
+                      <i class="fa-solid fa-circle-xmark fa-2x" style="color: red"></i>
+                      <span id="errorMessage" th:text="${errorMessage}"></span>
+                  </div>
+
+              </div>
+              <div class="modal-footer">
+                  <button type="button" class="btn btn-primary" data-bs-dismiss="modal">Close</button>
+              </div>
+          </div>
+      </div>
+  </div>
+</body>
+</html>

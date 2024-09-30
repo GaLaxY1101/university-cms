@@ -3,23 +3,22 @@ package com.foxminded.korniichyk.university.service.implementation;
 
 import com.foxminded.korniichyk.university.dao.DisciplineDao;
 import com.foxminded.korniichyk.university.dto.display.DisciplineDto;
+import com.foxminded.korniichyk.university.mapper.display.DisciplineMapper;
 import com.foxminded.korniichyk.university.model.Discipline;
+import com.foxminded.korniichyk.university.projection.input.NameProjection;
 import com.foxminded.korniichyk.university.service.contract.DisciplineService;
 import com.foxminded.korniichyk.university.service.exception.DisciplineNotFoundException;
-import com.foxminded.korniichyk.university.mapper.display.DisciplineMapper;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.slf4j.Logger;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
-import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
 import java.util.Set;
-import java.util.stream.Collectors;
+
+import static java.util.stream.Collectors.toList;
 
 @Service
 @Transactional(readOnly = true)
@@ -35,8 +34,12 @@ public class DisciplineServiceImpl implements DisciplineService {
     public DisciplineDto findById(Long id) {
         return disciplineDao.findById(id)
                 .map(disciplineMapper::toDto)
-                .orElseThrow(() -> new DisciplineNotFoundException("Discipline with id: " + id + " not found"));
+                .orElseThrow(() -> {
+                    log.error("Discipline with id {} not found", id);
+                    return new DisciplineNotFoundException("Discipline not found");
+                });
     }
+
 
     @Override
     public List<DisciplineDto> findAll() {
@@ -44,8 +47,15 @@ public class DisciplineServiceImpl implements DisciplineService {
                 .map(discipline -> {
                     return disciplineMapper.toDto(discipline);
                 })
-                .collect(Collectors.toList());
+                .collect(toList());
     }
+
+    @Override
+    public List<NameProjection> findAllDisciplineOptions() {
+        return disciplineDao.findAllDisciplineOptions();
+    }
+
+
 
     @Transactional
     @Override
@@ -61,21 +71,39 @@ public class DisciplineServiceImpl implements DisciplineService {
                 .ifPresentOrElse(
                         discipline -> {
                             disciplineDao.delete(discipline);
-                            log.info("{} deleted", discipline);
+                            log.info("Discipline with id {} deleted", id);
                         },
                         () -> {
-                            throw new DisciplineNotFoundException("Discipline with id: " + id + " not found");
-                        });
+                            log.error("Discipline with id {} not found", id);
+                            throw new DisciplineNotFoundException("Discipline not found");
+                        }
+                );
+    }
+
+
+    @Override
+    public Page<DisciplineDto> findPage(Pageable pageable) {
+        return disciplineDao.findAll(pageable).map(disciplineMapper::toDto);
     }
 
     @Override
-    public Page<DisciplineDto> findPage(int pageNumber, int pageSize) {
-        Pageable pageable = PageRequest.of(pageNumber, pageSize);
-        return disciplineDao.findAll(pageable).map(disciplineMapper::toDto);
+    public Page<DisciplineDto> findByName(String search, Pageable pageable) {
+        return disciplineDao.findByNameContainingIgnoreCase(search, pageable).map(disciplineMapper::toDto);
     }
 
     @Override
     public Set<Discipline> findAllByIdIn(Set<Long> disciplineIds) {
         return disciplineDao.findAllByIdIn(disciplineIds);
     }
+
+    @Override
+    public Page<DisciplineDto> findAllByTeacherId(Long teacherId, Pageable pageable) {
+        return disciplineDao.findAllByTeacherId(teacherId, pageable).map(disciplineMapper::toDto);
+    }
+
+    @Override
+    public Page<DisciplineDto> findAllByNameAndTeacherId(Long teacherId, String name, Pageable pageable) {
+        return disciplineDao.findAllByNameAndTeacherId(teacherId, name, pageable).map(disciplineMapper::toDto);
+    }
+
 }

@@ -1,0 +1,37 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Error</title>
+  <link href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css" rel="stylesheet">
+  <style>
+    body {
+      background-color: #f8f9fa;
+    }
+    .error-container {
+      margin-top: 100px;
+      text-align: center;
+    }
+    .error-code {
+      font-size: 96px;
+      color: #ff6f61;
+    }
+    .error-message {
+      font-size: 24px;
+      color: #343a40;
+    }
+    .home-btn {
+      margin-top: 20px;
+    }
+  </style>
+</head>
+<body>
+<div class="container error-container">
+  <div class="error-code">Oops!</div>
+  <p class="error-message">Something went wrong: <span th:text="${errorMessage}">Unexpected error</span></p>
+  <p class="error-message">Status code: <span th:text="${statusCode}">Status code</span></p>
+  <a href="/" class="btn btn-primary home-btn">Go to Home</a>
+</div>
+</body>
+</html>

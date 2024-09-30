@@ -1,0 +1,59 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org"
+      xmlns:sec="http://www.thymeleaf.org/thymeleaf-extras-springsecurity6">
+<head>
+  <th:block th:insert="~{/reusable/admin_panel_head :: admin_panel_links}"></th:block>
+  <link rel="stylesheet" th:href="@{/styles/add_entity_form.css}"/>
+
+
+</head>
+<body>
+
+<nav th:replace="~{reusable/sidebar :: sidebar}"></nav>
+
+<div>
+  <div class="main-content">
+    <div th:replace="~{home :: greeting}"></div>
+    <div class="list-wrapper">
+      <div class="create-teacher-form-wrapper">
+        <h2>Create group</h2>
+        <form th:action="@{/administrators/groups/create-page}" th:object="${groupRegistrationDto}" method="post">
+          <div class="label-and-input-wrapper">
+            <label for="firstName">Name</label>
+            <div class="registration-input-wrapper">
+              <input type="text" id="firstName" th:field="*{name}"/>
+              <div class="error-text" th:if="${#fields.hasErrors('name')}"
+                   th:errors="*{name}"></div>
+            </div>
+          </div>
+
+          <div class="label-and-input-wrapper">
+            <label for="specialityId">Speciality</label>
+            <div class="registration-input-wrapper">
+              <select id="specialityId" th:field="*{specialityId}" class="form-control select2">
+                <option value="" disabled selected>Select a speciality</option>
+                <option th:each="speciality : ${specialities}"
+                        th:value="${speciality.id}"
+                        th:text="${speciality.code + ' ' + speciality.name}">
+                </option>
+              </select>
+            </div>
+
+            <div class="error-text" th:if="${#fields.hasErrors('specialityId')}"
+                 th:errors="*{specialityId}"></div>
+
+            <button type="submit" class="create-user-button">Create</button>
+
+          </div>
+        </form>
+
+      </div>
+    </div>
+
+
+  </div>
+</div>
+
+
+</body>
+</html>

@@ -1,6 +1,8 @@
 package com.foxminded.korniichyk.university.service.exception;
 
-public class SpecialityNotFoundException extends RuntimeException {
+import jakarta.persistence.EntityNotFoundException;
+
+public class SpecialityNotFoundException extends EntityNotFoundException {
     public SpecialityNotFoundException(String message) {
         super(message);
     }

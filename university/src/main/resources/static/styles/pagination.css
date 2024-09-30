@@ -12,6 +12,10 @@
     list-style: none;
 }
 
+.pagination-wrapper{
+    display: flex;
+    align-self: center;
+}
 
 .pagination a{
     display: flex;

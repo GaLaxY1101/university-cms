@@ -5,7 +5,7 @@ import com.foxminded.korniichyk.university.dto.registration.AdminRegistrationDto
 import com.foxminded.korniichyk.university.dto.update.AdminUpdateDto;
 import com.foxminded.korniichyk.university.model.Admin;
 
-public interface AdminService extends CrudService<Admin, AdminDto>{
+public interface AdminService extends CrudService<Admin, AdminDto>, SearchableByName<AdminDto> {
 
     void registerAdmin(AdminRegistrationDto adminRegistrationDto);
 

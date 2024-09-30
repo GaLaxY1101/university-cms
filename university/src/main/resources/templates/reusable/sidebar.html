@@ -8,7 +8,7 @@
 <body>
 <div th:fragment="sidebar" class="sidebar" sec:authorize="isAuthenticated()">
     <div class="sidebar-inner">
-        <a class="logo-link" th:href="@{/static}">
+        <a class="logo-link" th:href="@{/}">
             <div class="logo-wrapper">
                 <i class="fa-solid fa-calendar-days fa-lg"></i>
                 <span class="company-name"> UniSchedule</span>
@@ -17,7 +17,7 @@
         <nav class="sidebar-nav">
             <ul>
                 <li class="nav-link sidebar-nav-item" sec:authorize="hasAnyRole('ROLE_TEACHER')">
-                    <a th:href="@{/students/}">
+                    <a th:href="@{/students}">
                         <i class="fa-solid fa-user-graduate"></i>
                         <span class="nav-text">
                                         Students
@@ -25,7 +25,7 @@
                     </a>
                 </li>
                 <li class="nav-link sidebar-nav-item" sec:authorize="hasAnyRole('ROLE_STUDENT','ROLE_TEACHER')">
-                    <a th:href="@{/teachers/}">
+                    <a th:href="@{/teachers}">
                         <i class="fa-solid fa-person-chalkboard"></i>
                         <span class="nav-text">
                                         Teachers
@@ -40,7 +40,7 @@
                     </a>
                 </li>
                 <li class="nav-link sidebar-nav-item" sec:authorize="hasAnyRole('ROLE_TEACHER')">
-                    <a th:href="@{/groups/}">
+                    <a th:href="@{/groups}">
                         <i class="fa-solid fa-users-rectangle"></i>
                         <span class="nav-text">
                                         Groups
@@ -48,23 +48,31 @@
                     </a>
                 </li>
                 <li class="nav-link sidebar-nav-item" sec:authorize="hasAnyRole('ROLE_TEACHER','ROLE_STUDENT')">
-                    <a th:href="@{/specialities/}">
+                    <a th:href="@{/specialities}">
                         <i class="fa-solid fa-screwdriver-wrench fa-lg"></i>
                         <span class="nav-text">
                                         Specialities
                                     </span>
                     </a>
                 </li>
-                <li class="nav-link sidebar-nav-item" sec:authorize="hasAnyRole('ROLE_TEACHER','ROLE_STUDENT')">
-                    <a th:href="@{/disciplines/}">
+                <li class="nav-link sidebar-nav-item" sec:authorize="hasAnyRole('ROLE_TEACHER')">
+                    <a th:href="@{/teachers/my-disciplines}">
                         <i class="fa-solid fa-book"></i>
                         <span class="nav-text">
-                                        Disciplines
+                                        My disciplines
                                     </span>
                     </a>
                 </li>
                 <li class="nav-link sidebar-nav-item" sec:authorize="hasAnyRole('ROLE_TEACHER','ROLE_STUDENT')">
-                    <a th:href="@{/lesson-types/}">
+                    <a th:href="@{/disciplines}">
+                        <i class="fa-solid fa-book"></i>
+                        <span class="nav-text">
+                                        All disciplines
+                                    </span>
+                    </a>
+                </li>
+                <li class="nav-link sidebar-nav-item" sec:authorize="hasAnyRole('ROLE_TEACHER','ROLE_STUDENT')">
+                    <a th:href="@{/lesson-types}">
                         <i class="fa-solid fa-shapes"></i>
                         <span class="nav-text">
                                         Lesson types
@@ -72,7 +80,7 @@
                     </a>
                 </li>
                 <li class="nav-link sidebar-nav-item" sec:authorize="hasAnyRole('ROLE_TEACHER','ROLE_STUDENT')">
-                    <a th:href="@{/lessons/}">
+                    <a th:href="@{/lessons}">
                         <i class="fa-solid fa-business-time"></i>
                         <span class="nav-text">
                                         Lessons

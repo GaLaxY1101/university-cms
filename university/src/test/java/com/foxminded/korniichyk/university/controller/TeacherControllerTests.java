@@ -105,7 +105,7 @@ public class TeacherControllerTests {
 
         currentUserTeacher.setUser(user);
         when(teacherService.getCurrentTeacher()).thenReturn(currentUserTeacher);
-        when(groupService.findPageByTeacherId(anyLong(), anyInt(), anyInt()))
+        when(groupService.findByTeacherId(anyLong(), anyInt(), anyInt()))
                 .thenReturn(new PageImpl<>(Collections.singletonList(groupDto)));
 
 

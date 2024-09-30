@@ -12,18 +12,12 @@ import com.foxminded.korniichyk.university.service.exception.PhoneNumberAlreadyE
 import com.foxminded.korniichyk.university.service.exception.UserNotFoundException;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 import org.springframework.data.domain.Page;
-import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-
-import java.util.List;
-import java.util.stream.Collectors;
 
 
 @Service
@@ -42,8 +36,12 @@ public class UserServiceImpl implements UserService {
     public UserDto findById(Long id) {
         return userDao.findById(id)
                 .map(userMapper::toDto)
-                .orElseThrow(() -> new UserNotFoundException("User with id " + id + " not found"));
+                .orElseThrow(() -> {
+                    log.error("User with id: {} not found", id);
+                    return new UserNotFoundException("User not found");
+                });
     }
+
 
     @Transactional
     @Override
@@ -59,13 +57,14 @@ public class UserServiceImpl implements UserService {
             userDao.delete(user);
             log.info("{} deleted", user);
         }, () -> {
-            throw new UserNotFoundException("User with id " + id + " not found");
+            log.error("User with id: {} not found", id);
+            throw new UserNotFoundException("User not found");
         });
     }
 
+
     @Override
-    public Page<UserDto> findPage(int pageNumber, int pageSize) {
-        Pageable pageable = PageRequest.of(pageNumber, pageSize);
+    public Page<UserDto> findPage(Pageable pageable) {
         return userDao.findAll(pageable).map(userMapper::toDto);
     }
 
@@ -73,8 +72,10 @@ public class UserServiceImpl implements UserService {
     public User findByEmail(String email) {
         User user = userDao.findByEmail(email);
         if (user == null) {
-            throw new UserNotFoundException("User with email " + email + " not found");
+            log.error("User with email: {} not found", email);
+            throw new UserNotFoundException("User not found");
         }
+
         return user;
     }
 
