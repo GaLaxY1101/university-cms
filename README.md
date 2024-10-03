@@ -2,10 +2,11 @@
 University cms
 
 ## Description
-This app created for manage university scedule. 
-There are a few user types: Teacher and Student.
-Teacher has disciplines which he are able to teach. Also teacher have lessons.
-Student includes in group. Student also has lessons.
+This app is designed for managing the university schedule. 
+There are several user types: Teacher and Student. 
+A Teacher has disciplines they are qualified to teach and also has lessons assigned to them. 
+A Student is part of a group and also has lessons assigned to them.
+Another user type is Admin. Admin can create/update/delete all possible entities(lessons, disciplines, user etc.) in the project.
 
 Uml diagram:
 ![Uml diagram](university-uml.png)
