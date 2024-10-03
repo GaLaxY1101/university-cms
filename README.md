@@ -1,5 +1,3 @@
-# university-cms
-
 ## Name
 University cms
 
