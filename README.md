@@ -1,2 +1,2 @@
 # university-cms
-This app created for manage university scedule.
+This app created for managing university scedule.
